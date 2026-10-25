@@ -1,0 +1,134 @@
+{
+  "type": "FeatureCollection",
+  "name": "caregap-demo-facilities",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.916676,
+          18.545636
+        ]
+      },
+      "properties": {
+        "facility_id": "F001",
+        "name": "District Hospital",
+        "facility_type": "district_hospital",
+        "facility_type_label": "District hospital",
+        "services": [
+          "primary_care",
+          "maternal_health",
+          "diagnostics",
+          "emergency"
+        ],
+        "data_status": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.868698,
+          18.637529
+        ]
+      },
+      "properties": {
+        "facility_id": "F002",
+        "name": "North Primary Health Centre",
+        "facility_type": "primary_health_centre",
+        "facility_type_label": "Primary health centre",
+        "services": [
+          "primary_care",
+          "maternal_health",
+          "diagnostics"
+        ],
+        "data_status": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.040084,
+          18.502926
+        ]
+      },
+      "properties": {
+        "facility_id": "F003",
+        "name": "East Primary Health Centre",
+        "facility_type": "primary_health_centre",
+        "facility_type_label": "Primary health centre",
+        "services": [
+          "primary_care",
+          "maternal_health",
+          "diagnostics"
+        ],
+        "data_status": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.840994,
+          18.528921
+        ]
+      },
+      "properties": {
+        "facility_id": "F004",
+        "name": "Central Community Health Centre",
+        "facility_type": "community_health_centre",
+        "facility_type_label": "Community health centre",
+        "services": [
+          "primary_care",
+          "maternal_health"
+        ],
+        "data_status": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.92659,
+          18.475205
+        ]
+      },
+      "properties": {
+        "facility_id": "F005",
+        "name": "East Diagnostic Centre",
+        "facility_type": "diagnostic_centre",
+        "facility_type_label": "Diagnostic centre",
+        "services": [
+          "diagnostics"
+        ],
+        "data_status": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.774298,
+          18.582719
+        ]
+      },
+      "properties": {
+        "facility_id": "F006",
+        "name": "North Maternal Health Centre",
+        "facility_type": "maternal_health_centre",
+        "facility_type_label": "Maternal health centre",
+        "services": [
+          "maternal_health"
+        ],
+        "data_status": "synthetic"
+      }
+    }
+  ]
+}

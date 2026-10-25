@@ -1,0 +1,72 @@
+{
+  "dataset_id": "caregap-demo",
+  "name": "CareGap Synthetic Demo District",
+  "short_name": "Demo District",
+  "description": "A fully synthetic district created to demonstrate CareGap's accessibility analysis. It does not represent an actual administrative boundary, real population counts, real facilities, or real roads.",
+  "geography": {
+    "region": "Pune region, Maharashtra, India (synthetic polygon)",
+    "center": [
+      73.86,
+      18.52
+    ],
+    "crs": "EPSG:4326",
+    "projected_crs": "EPSG:32643",
+    "area_km2": 1556.13,
+    "bbox": [
+      73.616023,
+      18.345696,
+      74.122394,
+      18.692899
+    ]
+  },
+  "is_synthetic": true,
+  "data_status": "synthetic",
+  "seed": 20261024,
+  "generated_at": "2026-10-24T21:51:10Z",
+  "generator": "backend/scripts/generate_demo_data.py",
+  "counts": {
+    "areas": 96,
+    "facilities": 6,
+    "road_nodes": 638,
+    "road_edges": 1617,
+    "population": 3571121
+  },
+  "road_model": {
+    "name": "Synthetic street grid",
+    "description": "A deterministic 2.0 km grid with plausible district road speeds. Travel times are model estimates, not live traffic or turn-by-turn routing.",
+    "grid_spacing_km": 2.0,
+    "local_access_speed_kph": 18,
+    "speed_classes_kph": {
+      "arterial": 48,
+      "collector": 36,
+      "local": 24,
+      "diagonal_local": 20
+    }
+  },
+  "sources": [
+    {
+      "id": "synthetic-demo",
+      "name": "CareGap synthetic demonstration dataset",
+      "publisher": "CareGap project",
+      "type": "synthetic",
+      "url": "backend/app/data/demo/README.md",
+      "retrieved_at": "generated locally",
+      "licence": "Repository licence (see LICENSE)",
+      "coverage": "Synthetic Demo District near Pune, Maharashtra",
+      "limitations": [
+        "Not a real administrative boundary",
+        "Population and vulnerability values are synthetic",
+        "Facilities are fictional",
+        "Road network is a synthetic grid, not OpenStreetMap"
+      ]
+    }
+  ],
+  "limitations": [
+    "Travel time is estimated from a synthetic grid network and does not include live traffic.",
+    "Population is a ward-level estimate, not a residence-level count.",
+    "Facility capacity, staffing, opening hours, cost, and quality are not modelled.",
+    "The demo maps six facilities. Missing facilities in the synthetic inventory do not prove that care is absent.",
+    "Coverage within a travel-time threshold is not the same as receiving quality care.",
+    "Vulnerability index is synthetic and must not be used for real policy decisions."
+  ]
+}

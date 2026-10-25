@@ -1,0 +1,4982 @@
+{
+  "type": "FeatureCollection",
+  "name": "caregap-demo-areas",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.823037,
+              18.670182
+            ],
+            [
+              73.786831,
+              18.658696
+            ],
+            [
+              73.778316,
+              18.68333
+            ],
+            [
+              73.778938,
+              18.68357
+            ],
+            [
+              73.793618,
+              18.689191
+            ],
+            [
+              73.80939,
+              18.692845
+            ],
+            [
+              73.817128,
+              18.69287
+            ],
+            [
+              73.823037,
+              18.670182
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A001",
+        "name": "Ward 01",
+        "population": 11057,
+        "vulnerability_index": 0.611,
+        "area_km2": 11.882,
+        "centroid_lon": 73.800866,
+        "centroid_lat": 18.676974,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.872394,
+              18.672638
+            ],
+            [
+              73.834831,
+              18.659205
+            ],
+            [
+              73.823037,
+              18.670182
+            ],
+            [
+              73.817128,
+              18.69287
+            ],
+            [
+              73.826123,
+              18.692899
+            ],
+            [
+              73.842936,
+              18.689228
+            ],
+            [
+              73.858912,
+              18.683359
+            ],
+            [
+              73.873771,
+              18.677566
+            ],
+            [
+              73.874528,
+              18.67735
+            ],
+            [
+              73.872394,
+              18.672638
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A002",
+        "name": "Ward 02",
+        "population": 13001,
+        "vulnerability_index": 0.488,
+        "area_km2": 13.054,
+        "centroid_lon": 73.841877,
+        "centroid_lat": 18.676908,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.786831,
+              18.658696
+            ],
+            [
+              73.775805,
+              18.640575
+            ],
+            [
+              73.740656,
+              18.662259
+            ],
+            [
+              73.738166,
+              18.671502
+            ],
+            [
+              73.749599,
+              18.673778
+            ],
+            [
+              73.764604,
+              18.678031
+            ],
+            [
+              73.778316,
+              18.68333
+            ],
+            [
+              73.786831,
+              18.658696
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A003",
+        "name": "Ward 03",
+        "population": 12414,
+        "vulnerability_index": 0.759,
+        "area_km2": 13.533,
+        "centroid_lon": 73.765773,
+        "centroid_lat": 18.663201,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.872394,
+              18.672638
+            ],
+            [
+              73.874528,
+              18.67735
+            ],
+            [
+              73.887966,
+              18.673525
+            ],
+            [
+              73.902174,
+              18.671455
+            ],
+            [
+              73.91053,
+              18.670777
+            ],
+            [
+              73.918602,
+              18.648135
+            ],
+            [
+              73.914774,
+              18.645885
+            ],
+            [
+              73.883975,
+              18.651963
+            ],
+            [
+              73.872394,
+              18.672638
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A004",
+        "name": "Ward 04",
+        "population": 13482,
+        "vulnerability_index": 0.647,
+        "area_km2": 10.15,
+        "centroid_lon": 73.896091,
+        "centroid_lat": 18.661328,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.944028,
+              18.651704
+            ],
+            [
+              73.918602,
+              18.648135
+            ],
+            [
+              73.91053,
+              18.670777
+            ],
+            [
+              73.916683,
+              18.670277
+            ],
+            [
+              73.931241,
+              18.668625
+            ],
+            [
+              73.945499,
+              18.665903
+            ],
+            [
+              73.947958,
+              18.665333
+            ],
+            [
+              73.944028,
+              18.651704
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A005",
+        "name": "Ward 05",
+        "population": 9407,
+        "vulnerability_index": 0.682,
+        "area_km2": 6.843,
+        "centroid_lon": 73.928983,
+        "centroid_lat": 18.659827,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.740656,
+              18.662259
+            ],
+            [
+              73.72382,
+              18.635969
+            ],
+            [
+              73.703219,
+              18.641175
+            ],
+            [
+              73.691585,
+              18.657742
+            ],
+            [
+              73.701172,
+              18.662288
+            ],
+            [
+              73.716963,
+              18.667163
+            ],
+            [
+              73.733512,
+              18.670575
+            ],
+            [
+              73.738166,
+              18.671502
+            ],
+            [
+              73.740656,
+              18.662259
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A006",
+        "name": "Ward 06",
+        "population": 10939,
+        "vulnerability_index": 0.48,
+        "area_km2": 12.111,
+        "centroid_lon": 73.717751,
+        "centroid_lat": 18.654405,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.994078,
+              18.644437
+            ],
+            [
+              73.957886,
+              18.637175
+            ],
+            [
+              73.951551,
+              18.640149
+            ],
+            [
+              73.944028,
+              18.651704
+            ],
+            [
+              73.947958,
+              18.665333
+            ],
+            [
+              73.959621,
+              18.662626
+            ],
+            [
+              73.974431,
+              18.659837
+            ],
+            [
+              73.990823,
+              18.658083
+            ],
+            [
+              73.99951,
+              18.657451
+            ],
+            [
+              73.994078,
+              18.644437
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A007",
+        "name": "Ward 07",
+        "population": 15983,
+        "vulnerability_index": 0.67,
+        "area_km2": 11.758,
+        "centroid_lon": 73.968827,
+        "centroid_lat": 18.651007,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.77946,
+              18.626932
+            ],
+            [
+              73.775805,
+              18.640575
+            ],
+            [
+              73.786831,
+              18.658696
+            ],
+            [
+              73.823037,
+              18.670182
+            ],
+            [
+              73.834831,
+              18.659205
+            ],
+            [
+              73.832428,
+              18.636174
+            ],
+            [
+              73.797661,
+              18.61781
+            ],
+            [
+              73.784637,
+              18.622027
+            ],
+            [
+              73.77946,
+              18.626932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A008",
+        "name": "Ward 08",
+        "population": 26034,
+        "vulnerability_index": 0.613,
+        "area_km2": 24.292,
+        "centroid_lon": 73.80589,
+        "centroid_lat": 18.644043,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.703219,
+              18.641175
+            ],
+            [
+              73.690341,
+              18.625332
+            ],
+            [
+              73.666209,
+              18.642237
+            ],
+            [
+              73.674238,
+              18.647596
+            ],
+            [
+              73.687001,
+              18.655568
+            ],
+            [
+              73.691585,
+              18.657742
+            ],
+            [
+              73.703219,
+              18.641175
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A009",
+        "name": "Ward 09",
+        "population": 6424,
+        "vulnerability_index": 0.749,
+        "area_km2": 7.128,
+        "centroid_lon": 73.68669,
+        "centroid_lat": 18.641811,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.834831,
+              18.659205
+            ],
+            [
+              73.872394,
+              18.672638
+            ],
+            [
+              73.883975,
+              18.651963
+            ],
+            [
+              73.868888,
+              18.60598
+            ],
+            [
+              73.832428,
+              18.636174
+            ],
+            [
+              73.834831,
+              18.659205
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A010",
+        "name": "Ward 10",
+        "population": 36862,
+        "vulnerability_index": 0.341,
+        "area_km2": 24.593,
+        "centroid_lon": 73.859103,
+        "centroid_lat": 18.642826,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.039527,
+              18.62425
+            ],
+            [
+              74.022899,
+              18.643848
+            ],
+            [
+              74.022349,
+              18.655008
+            ],
+            [
+              74.027117,
+              18.654386
+            ],
+            [
+              74.043468,
+              18.649423
+            ],
+            [
+              74.046378,
+              18.647559
+            ],
+            [
+              74.039527,
+              18.62425
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A011",
+        "name": "Ward 11",
+        "population": 4869,
+        "vulnerability_index": 0.506,
+        "area_km2": 4.8,
+        "centroid_lon": 74.034375,
+        "centroid_lat": 18.642421,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.99951,
+              18.657451
+            ],
+            [
+              74.00883,
+              18.656772
+            ],
+            [
+              74.022349,
+              18.655008
+            ],
+            [
+              74.022899,
+              18.643848
+            ],
+            [
+              74.013905,
+              18.616346
+            ],
+            [
+              74.004138,
+              18.619294
+            ],
+            [
+              73.994078,
+              18.644437
+            ],
+            [
+              73.99951,
+              18.657451
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A012",
+        "name": "Ward 12",
+        "population": 11452,
+        "vulnerability_index": 0.617,
+        "area_km2": 9.647,
+        "centroid_lon": 74.009088,
+        "centroid_lat": 18.63968,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.72382,
+              18.635969
+            ],
+            [
+              73.740656,
+              18.662259
+            ],
+            [
+              73.775805,
+              18.640575
+            ],
+            [
+              73.77946,
+              18.626932
+            ],
+            [
+              73.729728,
+              18.612671
+            ],
+            [
+              73.72382,
+              18.635969
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A013",
+        "name": "Ward 13",
+        "population": 17834,
+        "vulnerability_index": 0.703,
+        "area_km2": 19.02,
+        "centroid_lon": 73.748718,
+        "centroid_lat": 18.635604,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.914774,
+              18.645885
+            ],
+            [
+              73.918602,
+              18.648135
+            ],
+            [
+              73.944028,
+              18.651704
+            ],
+            [
+              73.951551,
+              18.640149
+            ],
+            [
+              73.932583,
+              18.609397
+            ],
+            [
+              73.910417,
+              18.623953
+            ],
+            [
+              73.914774,
+              18.645885
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A014",
+        "name": "Ward 14",
+        "population": 28592,
+        "vulnerability_index": 0.491,
+        "area_km2": 12.927,
+        "centroid_lon": 73.930083,
+        "centroid_lat": 18.633232,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.870823,
+              18.601499
+            ],
+            [
+              73.868888,
+              18.60598
+            ],
+            [
+              73.883975,
+              18.651963
+            ],
+            [
+              73.914774,
+              18.645885
+            ],
+            [
+              73.910417,
+              18.623953
+            ],
+            [
+              73.870823,
+              18.601499
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A015",
+        "name": "Ward 15",
+        "population": 34479,
+        "vulnerability_index": 0.431,
+        "area_km2": 14.951,
+        "centroid_lon": 73.891573,
+        "centroid_lat": 18.629494,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.050675,
+              18.611838
+            ],
+            [
+              74.037714,
+              18.611947
+            ],
+            [
+              74.039527,
+              18.62425
+            ],
+            [
+              74.046378,
+              18.647559
+            ],
+            [
+              74.056061,
+              18.641355
+            ],
+            [
+              74.064692,
+              18.630943
+            ],
+            [
+              74.069338,
+              18.622683
+            ],
+            [
+              74.050675,
+              18.611838
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A016",
+        "name": "Ward 16",
+        "population": 7809,
+        "vulnerability_index": 0.6,
+        "area_km2": 7.816,
+        "centroid_lon": 74.051643,
+        "centroid_lat": 18.626938,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.649138,
+              18.631318
+            ],
+            [
+              73.661804,
+              18.639297
+            ],
+            [
+              73.666209,
+              18.642237
+            ],
+            [
+              73.690341,
+              18.625332
+            ],
+            [
+              73.690512,
+              18.61118
+            ],
+            [
+              73.668579,
+              18.606596
+            ],
+            [
+              73.649138,
+              18.631318
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A017",
+        "name": "Ward 17",
+        "population": 9279,
+        "vulnerability_index": 0.536,
+        "area_km2": 10.295,
+        "centroid_lon": 73.671552,
+        "centroid_lat": 18.623598,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.957886,
+              18.637175
+            ],
+            [
+              73.994078,
+              18.644437
+            ],
+            [
+              74.004138,
+              18.619294
+            ],
+            [
+              73.975825,
+              18.601028
+            ],
+            [
+              73.957886,
+              18.637175
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A018",
+        "name": "Ward 18",
+        "population": 24579,
+        "vulnerability_index": 0.276,
+        "area_km2": 13.625,
+        "centroid_lon": 73.981846,
+        "centroid_lat": 18.62526,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.013905,
+              18.616346
+            ],
+            [
+              74.022899,
+              18.643848
+            ],
+            [
+              74.039527,
+              18.62425
+            ],
+            [
+              74.037714,
+              18.611947
+            ],
+            [
+              74.030814,
+              18.60773
+            ],
+            [
+              74.013905,
+              18.616346
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A019",
+        "name": "Ward 19",
+        "population": 7352,
+        "vulnerability_index": 0.639,
+        "area_km2": 6.218,
+        "centroid_lon": 74.027088,
+        "centroid_lat": 18.623163,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.690341,
+              18.625332
+            ],
+            [
+              73.703219,
+              18.641175
+            ],
+            [
+              73.72382,
+              18.635969
+            ],
+            [
+              73.729728,
+              18.612671
+            ],
+            [
+              73.720755,
+              18.593501
+            ],
+            [
+              73.690512,
+              18.61118
+            ],
+            [
+              73.690341,
+              18.625332
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A020",
+        "name": "Ward 20",
+        "population": 13533,
+        "vulnerability_index": 0.748,
+        "area_km2": 14.77,
+        "centroid_lon": 73.710538,
+        "centroid_lat": 18.618813,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.797661,
+              18.61781
+            ],
+            [
+              73.832428,
+              18.636174
+            ],
+            [
+              73.868888,
+              18.60598
+            ],
+            [
+              73.870823,
+              18.601499
+            ],
+            [
+              73.870846,
+              18.599952
+            ],
+            [
+              73.868271,
+              18.596751
+            ],
+            [
+              73.825107,
+              18.581887
+            ],
+            [
+              73.809556,
+              18.58977
+            ],
+            [
+              73.797661,
+              18.61781
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A021",
+        "name": "Ward 21",
+        "population": 58817,
+        "vulnerability_index": 0.261,
+        "area_km2": 27.496,
+        "centroid_lon": 73.832154,
+        "centroid_lat": 18.607522,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.932583,
+              18.609397
+            ],
+            [
+              73.951551,
+              18.640149
+            ],
+            [
+              73.957886,
+              18.637175
+            ],
+            [
+              73.975825,
+              18.601028
+            ],
+            [
+              73.970176,
+              18.58664
+            ],
+            [
+              73.936657,
+              18.583658
+            ],
+            [
+              73.932583,
+              18.609397
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A022",
+        "name": "Ward 22",
+        "population": 60970,
+        "vulnerability_index": 0.57,
+        "area_km2": 18.731,
+        "centroid_lon": 73.95321,
+        "centroid_lat": 18.607201,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.720755,
+              18.593501
+            ],
+            [
+              73.729728,
+              18.612671
+            ],
+            [
+              73.77946,
+              18.626932
+            ],
+            [
+              73.784637,
+              18.622027
+            ],
+            [
+              73.762979,
+              18.584034
+            ],
+            [
+              73.721294,
+              18.589856
+            ],
+            [
+              73.720755,
+              18.593501
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A023",
+        "name": "Ward 23",
+        "population": 20643,
+        "vulnerability_index": 0.442,
+        "area_km2": 18.944,
+        "centroid_lon": 73.752676,
+        "centroid_lat": 18.604239,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.077723,
+              18.587358
+            ],
+            [
+              74.050675,
+              18.611838
+            ],
+            [
+              74.069338,
+              18.622683
+            ],
+            [
+              74.071016,
+              18.6197
+            ],
+            [
+              74.077525,
+              18.608931
+            ],
+            [
+              74.085931,
+              18.599045
+            ],
+            [
+              74.094272,
+              18.591217
+            ],
+            [
+              74.077723,
+              18.587358
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A024",
+        "name": "Ward 24",
+        "population": 7200,
+        "vulnerability_index": 0.639,
+        "area_km2": 7.378,
+        "centroid_lon": 74.07176,
+        "centroid_lat": 18.604006,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.668579,
+              18.606596
+            ],
+            [
+              73.658235,
+              18.577118
+            ],
+            [
+              73.619041,
+              18.577587
+            ],
+            [
+              73.616023,
+              18.588659
+            ],
+            [
+              73.617289,
+              18.601591
+            ],
+            [
+              73.624308,
+              18.61299
+            ],
+            [
+              73.635653,
+              18.622631
+            ],
+            [
+              73.648805,
+              18.631109
+            ],
+            [
+              73.649138,
+              18.631318
+            ],
+            [
+              73.668579,
+              18.606596
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A025",
+        "name": "Ward 25",
+        "population": 21056,
+        "vulnerability_index": 0.837,
+        "area_km2": 23.383,
+        "centroid_lon": 73.641941,
+        "centroid_lat": 18.599908,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.870823,
+              18.601499
+            ],
+            [
+              73.910417,
+              18.623953
+            ],
+            [
+              73.932583,
+              18.609397
+            ],
+            [
+              73.936657,
+              18.583658
+            ],
+            [
+              73.92459,
+              18.573884
+            ],
+            [
+              73.870846,
+              18.599952
+            ],
+            [
+              73.870823,
+              18.601499
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A026",
+        "name": "Ward 26",
+        "population": 93979,
+        "vulnerability_index": 0.437,
+        "area_km2": 21.234,
+        "centroid_lon": 73.909585,
+        "centroid_lat": 18.599212,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.975825,
+              18.601028
+            ],
+            [
+              74.004138,
+              18.619294
+            ],
+            [
+              74.013905,
+              18.616346
+            ],
+            [
+              74.030814,
+              18.60773
+            ],
+            [
+              74.029319,
+              18.592999
+            ],
+            [
+              74.02583,
+              18.584766
+            ],
+            [
+              73.982265,
+              18.574053
+            ],
+            [
+              73.970176,
+              18.58664
+            ],
+            [
+              73.975825,
+              18.601028
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A027",
+        "name": "Ward 27",
+        "population": 44869,
+        "vulnerability_index": 0.599,
+        "area_km2": 21.056,
+        "centroid_lon": 74.001492,
+        "centroid_lat": 18.595978,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.030814,
+              18.60773
+            ],
+            [
+              74.037714,
+              18.611947
+            ],
+            [
+              74.050675,
+              18.611838
+            ],
+            [
+              74.077723,
+              18.587358
+            ],
+            [
+              74.068974,
+              18.578196
+            ],
+            [
+              74.029319,
+              18.592999
+            ],
+            [
+              74.030814,
+              18.60773
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A028",
+        "name": "Ward 28",
+        "population": 12280,
+        "vulnerability_index": 0.379,
+        "area_km2": 10.899,
+        "centroid_lon": 74.051404,
+        "centroid_lat": 18.59587,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.762979,
+              18.584034
+            ],
+            [
+              73.784637,
+              18.622027
+            ],
+            [
+              73.797661,
+              18.61781
+            ],
+            [
+              73.809556,
+              18.58977
+            ],
+            [
+              73.778177,
+              18.563294
+            ],
+            [
+              73.762979,
+              18.584034
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A029",
+        "name": "Ward 29",
+        "population": 29351,
+        "vulnerability_index": 0.26,
+        "area_km2": 17.596,
+        "centroid_lon": 73.786179,
+        "centroid_lat": 18.592945,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.668579,
+              18.606596
+            ],
+            [
+              73.690512,
+              18.61118
+            ],
+            [
+              73.720755,
+              18.593501
+            ],
+            [
+              73.721294,
+              18.589856
+            ],
+            [
+              73.718659,
+              18.583515
+            ],
+            [
+              73.662013,
+              18.574223
+            ],
+            [
+              73.658235,
+              18.577118
+            ],
+            [
+              73.668579,
+              18.606596
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A030",
+        "name": "Ward 30",
+        "population": 16055,
+        "vulnerability_index": 0.682,
+        "area_km2": 17.53,
+        "centroid_lon": 73.687662,
+        "centroid_lat": 18.591934,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.029319,
+              18.592999
+            ],
+            [
+              74.068974,
+              18.578196
+            ],
+            [
+              74.058146,
+              18.54489
+            ],
+            [
+              74.037371,
+              18.551984
+            ],
+            [
+              74.02583,
+              18.584766
+            ],
+            [
+              74.029319,
+              18.592999
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A031",
+        "name": "Ward 31",
+        "population": 19159,
+        "vulnerability_index": 0.605,
+        "area_km2": 14.512,
+        "centroid_lon": 74.046982,
+        "centroid_lat": 18.569618,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.825331,
+              18.550001
+            ],
+            [
+              73.825107,
+              18.581887
+            ],
+            [
+              73.868271,
+              18.596751
+            ],
+            [
+              73.866122,
+              18.551754
+            ],
+            [
+              73.831597,
+              18.542165
+            ],
+            [
+              73.825331,
+              18.550001
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A032",
+        "name": "Ward 32",
+        "population": 100801,
+        "vulnerability_index": 0.216,
+        "area_km2": 20.684,
+        "centroid_lon": 73.846774,
+        "centroid_lat": 18.568383,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.778177,
+              18.563294
+            ],
+            [
+              73.809556,
+              18.58977
+            ],
+            [
+              73.825107,
+              18.581887
+            ],
+            [
+              73.825331,
+              18.550001
+            ],
+            [
+              73.77748,
+              18.551126
+            ],
+            [
+              73.778177,
+              18.563294
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A033",
+        "name": "Ward 33",
+        "population": 52783,
+        "vulnerability_index": 0.361,
+        "area_km2": 16.017,
+        "centroid_lon": 73.804899,
+        "centroid_lat": 18.566067,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.721294,
+              18.589856
+            ],
+            [
+              73.762979,
+              18.584034
+            ],
+            [
+              73.778177,
+              18.563294
+            ],
+            [
+              73.77748,
+              18.551126
+            ],
+            [
+              73.767683,
+              18.535948
+            ],
+            [
+              73.725616,
+              18.556328
+            ],
+            [
+              73.720238,
+              18.563349
+            ],
+            [
+              73.718659,
+              18.583515
+            ],
+            [
+              73.721294,
+              18.589856
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A034",
+        "name": "Ward 34",
+        "population": 38255,
+        "vulnerability_index": 0.444,
+        "area_km2": 24.845,
+        "centroid_lon": 73.748761,
+        "centroid_lat": 18.565382,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.662013,
+              18.574223
+            ],
+            [
+              73.718659,
+              18.583515
+            ],
+            [
+              73.720238,
+              18.563349
+            ],
+            [
+              73.675238,
+              18.536542
+            ],
+            [
+              73.662013,
+              18.574223
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A035",
+        "name": "Ward 35",
+        "population": 17800,
+        "vulnerability_index": 0.397,
+        "area_km2": 18.731,
+        "centroid_lon": 73.69105,
+        "centroid_lat": 18.563688,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.870846,
+              18.599952
+            ],
+            [
+              73.92459,
+              18.573884
+            ],
+            [
+              73.920996,
+              18.537662
+            ],
+            [
+              73.878146,
+              18.541036
+            ],
+            [
+              73.866122,
+              18.551754
+            ],
+            [
+              73.868271,
+              18.596751
+            ],
+            [
+              73.870846,
+              18.599952
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A036",
+        "name": "Ward 36",
+        "population": 215049,
+        "vulnerability_index": 0.113,
+        "area_km2": 30.831,
+        "centroid_lon": 73.893351,
+        "centroid_lat": 18.564823,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.077723,
+              18.587358
+            ],
+            [
+              74.094272,
+              18.591217
+            ],
+            [
+              74.096053,
+              18.589546
+            ],
+            [
+              74.106025,
+              18.579618
+            ],
+            [
+              74.113664,
+              18.568791
+            ],
+            [
+              74.117987,
+              18.557181
+            ],
+            [
+              74.118297,
+              18.555091
+            ],
+            [
+              74.069042,
+              18.532852
+            ],
+            [
+              74.058146,
+              18.54489
+            ],
+            [
+              74.068974,
+              18.578196
+            ],
+            [
+              74.077723,
+              18.587358
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A037",
+        "name": "Ward 37",
+        "population": 24307,
+        "vulnerability_index": 0.641,
+        "area_km2": 24.988,
+        "centroid_lon": 74.086493,
+        "centroid_lat": 18.562248,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.675238,
+              18.536542
+            ],
+            [
+              73.675222,
+              18.53648
+            ],
+            [
+              73.63083,
+              18.545723
+            ],
+            [
+              73.630156,
+              18.550311
+            ],
+            [
+              73.625509,
+              18.562177
+            ],
+            [
+              73.619704,
+              18.575155
+            ],
+            [
+              73.619041,
+              18.577587
+            ],
+            [
+              73.658235,
+              18.577118
+            ],
+            [
+              73.662013,
+              18.574223
+            ],
+            [
+              73.675238,
+              18.536542
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A038",
+        "name": "Ward 38",
+        "population": 15635,
+        "vulnerability_index": 0.499,
+        "area_km2": 17.311,
+        "centroid_lon": 73.647579,
+        "centroid_lat": 18.559153,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.982265,
+              18.574053
+            ],
+            [
+              74.02583,
+              18.584766
+            ],
+            [
+              74.037371,
+              18.551984
+            ],
+            [
+              74.014564,
+              18.54141
+            ],
+            [
+              73.987125,
+              18.541938
+            ],
+            [
+              73.982265,
+              18.574053
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A039",
+        "name": "Ward 39",
+        "population": 53469,
+        "vulnerability_index": 0.417,
+        "area_km2": 20.533,
+        "centroid_lon": 74.008872,
+        "centroid_lat": 18.561357,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.936657,
+              18.583658
+            ],
+            [
+              73.970176,
+              18.58664
+            ],
+            [
+              73.982265,
+              18.574053
+            ],
+            [
+              73.987125,
+              18.541938
+            ],
+            [
+              73.98695,
+              18.541722
+            ],
+            [
+              73.922555,
+              18.53503
+            ],
+            [
+              73.920996,
+              18.537662
+            ],
+            [
+              73.92459,
+              18.573884
+            ],
+            [
+              73.936657,
+              18.583658
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A040",
+        "name": "Ward 40",
+        "population": 195583,
+        "vulnerability_index": 0.125,
+        "area_km2": 31.801,
+        "centroid_lon": 73.953165,
+        "centroid_lat": 18.560065,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.675238,
+              18.536542
+            ],
+            [
+              73.720238,
+              18.563349
+            ],
+            [
+              73.725616,
+              18.556328
+            ],
+            [
+              73.712735,
+              18.513202
+            ],
+            [
+              73.708434,
+              18.509604
+            ],
+            [
+              73.675668,
+              18.517567
+            ],
+            [
+              73.675222,
+              18.53648
+            ],
+            [
+              73.675238,
+              18.536542
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A041",
+        "name": "Ward 41",
+        "population": 19982,
+        "vulnerability_index": 0.597,
+        "area_km2": 18.878,
+        "centroid_lon": 73.701005,
+        "centroid_lat": 18.533902,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.725616,
+              18.556328
+            ],
+            [
+              73.767683,
+              18.535948
+            ],
+            [
+              73.768781,
+              18.523748
+            ],
+            [
+              73.712735,
+              18.513202
+            ],
+            [
+              73.725616,
+              18.556328
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A042",
+        "name": "Ward 42",
+        "population": 28600,
+        "vulnerability_index": 0.46,
+        "area_km2": 16.192,
+        "centroid_lon": 73.738954,
+        "centroid_lat": 18.532437,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.829925,
+              18.530317
+            ],
+            [
+              73.831597,
+              18.542165
+            ],
+            [
+              73.866122,
+              18.551754
+            ],
+            [
+              73.878146,
+              18.541036
+            ],
+            [
+              73.863111,
+              18.508082
+            ],
+            [
+              73.829925,
+              18.530317
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A043",
+        "name": "Ward 43",
+        "population": 104129,
+        "vulnerability_index": 0.12,
+        "area_km2": 14.406,
+        "centroid_lon": 73.855011,
+        "centroid_lat": 18.532669,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.768781,
+              18.523748
+            ],
+            [
+              73.767683,
+              18.535948
+            ],
+            [
+              73.77748,
+              18.551126
+            ],
+            [
+              73.825331,
+              18.550001
+            ],
+            [
+              73.831597,
+              18.542165
+            ],
+            [
+              73.829925,
+              18.530317
+            ],
+            [
+              73.809407,
+              18.507796
+            ],
+            [
+              73.772611,
+              18.516239
+            ],
+            [
+              73.768781,
+              18.523748
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A044",
+        "name": "Ward 44",
+        "population": 117873,
+        "vulnerability_index": 0.228,
+        "area_km2": 24.902,
+        "centroid_lon": 73.798913,
+        "centroid_lat": 18.531862,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.037371,
+              18.551984
+            ],
+            [
+              74.058146,
+              18.54489
+            ],
+            [
+              74.069042,
+              18.532852
+            ],
+            [
+              74.068487,
+              18.520388
+            ],
+            [
+              74.023166,
+              18.512395
+            ],
+            [
+              74.014564,
+              18.54141
+            ],
+            [
+              74.037371,
+              18.551984
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A045",
+        "name": "Ward 45",
+        "population": 27322,
+        "vulnerability_index": 0.654,
+        "area_km2": 17.587,
+        "centroid_lon": 74.041253,
+        "centroid_lat": 18.531785,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.675222,
+              18.53648
+            ],
+            [
+              73.675668,
+              18.517567
+            ],
+            [
+              73.663243,
+              18.506121
+            ],
+            [
+              73.629283,
+              18.509787
+            ],
+            [
+              73.629203,
+              18.518467
+            ],
+            [
+              73.630734,
+              18.528951
+            ],
+            [
+              73.631756,
+              18.539419
+            ],
+            [
+              73.63083,
+              18.545723
+            ],
+            [
+              73.675222,
+              18.53648
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A046",
+        "name": "Ward 46",
+        "population": 15377,
+        "vulnerability_index": 0.638,
+        "area_km2": 16.942,
+        "centroid_lon": 73.651409,
+        "centroid_lat": 18.524815,
+        "quadrant": "NorthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.07179,
+              18.508247
+            ],
+            [
+              74.068487,
+              18.520388
+            ],
+            [
+              74.069042,
+              18.532852
+            ],
+            [
+              74.118297,
+              18.555091
+            ],
+            [
+              74.119759,
+              18.545241
+            ],
+            [
+              74.12067,
+              18.533306
+            ],
+            [
+              74.121773,
+              18.521397
+            ],
+            [
+              74.122391,
+              18.509469
+            ],
+            [
+              74.07179,
+              18.508247
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A047",
+        "name": "Ward 47",
+        "population": 20243,
+        "vulnerability_index": 0.48,
+        "area_km2": 21.42,
+        "centroid_lon": 74.097685,
+        "centroid_lat": 18.527012,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.878146,
+              18.541036
+            ],
+            [
+              73.920996,
+              18.537662
+            ],
+            [
+              73.922555,
+              18.53503
+            ],
+            [
+              73.923108,
+              18.523364
+            ],
+            [
+              73.864277,
+              18.503296
+            ],
+            [
+              73.863111,
+              18.508082
+            ],
+            [
+              73.878146,
+              18.541036
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A048",
+        "name": "Ward 48",
+        "population": 130818,
+        "vulnerability_index": 0.298,
+        "area_km2": 15.621,
+        "centroid_lon": 73.892175,
+        "centroid_lat": 18.525009,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.922555,
+              18.53503
+            ],
+            [
+              73.98695,
+              18.541722
+            ],
+            [
+              73.985558,
+              18.51323
+            ],
+            [
+              73.973698,
+              18.503531
+            ],
+            [
+              73.926585,
+              18.509232
+            ],
+            [
+              73.923108,
+              18.523364
+            ],
+            [
+              73.922555,
+              18.53503
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A049",
+        "name": "Ward 49",
+        "population": 148346,
+        "vulnerability_index": 0.395,
+        "area_km2": 22.898,
+        "centroid_lon": 73.956376,
+        "centroid_lat": 18.522832,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.987125,
+              18.541938
+            ],
+            [
+              74.014564,
+              18.54141
+            ],
+            [
+              74.023166,
+              18.512395
+            ],
+            [
+              74.012663,
+              18.496203
+            ],
+            [
+              73.985558,
+              18.51323
+            ],
+            [
+              73.98695,
+              18.541722
+            ],
+            [
+              73.987125,
+              18.541938
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A050",
+        "name": "Ward 50",
+        "population": 44834,
+        "vulnerability_index": 0.276,
+        "area_km2": 14.572,
+        "centroid_lon": 74.003769,
+        "centroid_lat": 18.521745,
+        "quadrant": "NorthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.809407,
+              18.507796
+            ],
+            [
+              73.829925,
+              18.530317
+            ],
+            [
+              73.863111,
+              18.508082
+            ],
+            [
+              73.864277,
+              18.503296
+            ],
+            [
+              73.863346,
+              18.488381
+            ],
+            [
+              73.821267,
+              18.48543
+            ],
+            [
+              73.809407,
+              18.507796
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A051",
+        "name": "Ward 51",
+        "population": 127750,
+        "vulnerability_index": 0.259,
+        "area_km2": 19.042,
+        "centroid_lon": 73.837121,
+        "centroid_lat": 18.504311,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.712735,
+              18.513202
+            ],
+            [
+              73.768781,
+              18.523748
+            ],
+            [
+              73.772611,
+              18.516239
+            ],
+            [
+              73.76193,
+              18.488795
+            ],
+            [
+              73.7542,
+              18.480729
+            ],
+            [
+              73.720442,
+              18.482725
+            ],
+            [
+              73.708434,
+              18.509604
+            ],
+            [
+              73.712735,
+              18.513202
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A052",
+        "name": "Ward 52",
+        "population": 44837,
+        "vulnerability_index": 0.428,
+        "area_km2": 22.375,
+        "centroid_lon": 73.741684,
+        "centroid_lat": 18.50183,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.012663,
+              18.496203
+            ],
+            [
+              74.023166,
+              18.512395
+            ],
+            [
+              74.068487,
+              18.520388
+            ],
+            [
+              74.07179,
+              18.508247
+            ],
+            [
+              74.071435,
+              18.504968
+            ],
+            [
+              74.069443,
+              18.502843
+            ],
+            [
+              74.033242,
+              18.479832
+            ],
+            [
+              74.01404,
+              18.492164
+            ],
+            [
+              74.012663,
+              18.496203
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A053",
+        "name": "Ward 53",
+        "population": 23720,
+        "vulnerability_index": 0.418,
+        "area_km2": 16.538,
+        "centroid_lon": 74.04195,
+        "centroid_lat": 18.501817,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.864277,
+              18.503296
+            ],
+            [
+              73.923108,
+              18.523364
+            ],
+            [
+              73.926585,
+              18.509232
+            ],
+            [
+              73.92412,
+              18.499071
+            ],
+            [
+              73.910789,
+              18.483631
+            ],
+            [
+              73.869377,
+              18.481687
+            ],
+            [
+              73.863346,
+              18.488381
+            ],
+            [
+              73.864277,
+              18.503296
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A054",
+        "name": "Ward 54",
+        "population": 150531,
+        "vulnerability_index": 0.402,
+        "area_km2": 20.452,
+        "centroid_lon": 73.896275,
+        "centroid_lat": 18.499509,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.071435,
+              18.504968
+            ],
+            [
+              74.07179,
+              18.508247
+            ],
+            [
+              74.122391,
+              18.509469
+            ],
+            [
+              74.122394,
+              18.509413
+            ],
+            [
+              74.120401,
+              18.497501
+            ],
+            [
+              74.113695,
+              18.486203
+            ],
+            [
+              74.101878,
+              18.476164
+            ],
+            [
+              74.098735,
+              18.474372
+            ],
+            [
+              74.071435,
+              18.504968
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A055",
+        "name": "Ward 55",
+        "population": 11778,
+        "vulnerability_index": 0.493,
+        "area_km2": 12.622,
+        "centroid_lon": 74.099037,
+        "centroid_lat": 18.496382,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.663243,
+              18.506121
+            ],
+            [
+              73.665859,
+              18.479378
+            ],
+            [
+              73.639513,
+              18.471019
+            ],
+            [
+              73.63845,
+              18.477088
+            ],
+            [
+              73.635312,
+              18.48732
+            ],
+            [
+              73.631691,
+              18.497516
+            ],
+            [
+              73.6293,
+              18.507923
+            ],
+            [
+              73.629283,
+              18.509787
+            ],
+            [
+              73.663243,
+              18.506121
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A056",
+        "name": "Ward 56",
+        "population": 10683,
+        "vulnerability_index": 0.638,
+        "area_km2": 11.789,
+        "centroid_lon": 73.648299,
+        "centroid_lat": 18.49212,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.665859,
+              18.479378
+            ],
+            [
+              73.663243,
+              18.506121
+            ],
+            [
+              73.675668,
+              18.517567
+            ],
+            [
+              73.708434,
+              18.509604
+            ],
+            [
+              73.720442,
+              18.482725
+            ],
+            [
+              73.70695,
+              18.46456
+            ],
+            [
+              73.670324,
+              18.471616
+            ],
+            [
+              73.665859,
+              18.479378
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A057",
+        "name": "Ward 57",
+        "population": 25657,
+        "vulnerability_index": 0.653,
+        "area_km2": 25.697,
+        "centroid_lon": 73.690169,
+        "centroid_lat": 18.490634,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.772611,
+              18.516239
+            ],
+            [
+              73.809407,
+              18.507796
+            ],
+            [
+              73.821267,
+              18.48543
+            ],
+            [
+              73.812354,
+              18.463097
+            ],
+            [
+              73.808823,
+              18.46244
+            ],
+            [
+              73.76193,
+              18.488795
+            ],
+            [
+              73.772611,
+              18.516239
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A058",
+        "name": "Ward 58",
+        "population": 102611,
+        "vulnerability_index": 0.42,
+        "area_km2": 22.588,
+        "centroid_lon": 73.793164,
+        "centroid_lat": 18.490984,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.926585,
+              18.509232
+            ],
+            [
+              73.973698,
+              18.503531
+            ],
+            [
+              73.9741,
+              18.455485
+            ],
+            [
+              73.973849,
+              18.454892
+            ],
+            [
+              73.92412,
+              18.499071
+            ],
+            [
+              73.926585,
+              18.509232
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A059",
+        "name": "Ward 59",
+        "population": 85808,
+        "vulnerability_index": 0.184,
+        "area_km2": 17.041,
+        "centroid_lon": 73.954632,
+        "centroid_lat": 18.488831,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.973698,
+              18.503531
+            ],
+            [
+              73.985558,
+              18.51323
+            ],
+            [
+              74.012663,
+              18.496203
+            ],
+            [
+              74.01404,
+              18.492164
+            ],
+            [
+              73.9741,
+              18.455485
+            ],
+            [
+              73.973698,
+              18.503531
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A060",
+        "name": "Ward 60",
+        "population": 47236,
+        "vulnerability_index": 0.486,
+        "area_km2": 14.871,
+        "centroid_lon": 73.988636,
+        "centroid_lat": 18.488273,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.069443,
+              18.502843
+            ],
+            [
+              74.071435,
+              18.504968
+            ],
+            [
+              74.098735,
+              18.474372
+            ],
+            [
+              74.086869,
+              18.467609
+            ],
+            [
+              74.071989,
+              18.460037
+            ],
+            [
+              74.063779,
+              18.454787
+            ],
+            [
+              74.069443,
+              18.502843
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A061",
+        "name": "Ward 61",
+        "population": 9579,
+        "vulnerability_index": 0.419,
+        "area_km2": 9.791,
+        "centroid_lon": 74.077544,
+        "centroid_lat": 18.478651,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.033242,
+              18.479832
+            ],
+            [
+              74.069443,
+              18.502843
+            ],
+            [
+              74.063779,
+              18.454787
+            ],
+            [
+              74.0601,
+              18.452434
+            ],
+            [
+              74.058651,
+              18.4509
+            ],
+            [
+              74.033447,
+              18.476944
+            ],
+            [
+              74.033242,
+              18.479832
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A062",
+        "name": "Ward 62",
+        "population": 12552,
+        "vulnerability_index": 0.72,
+        "area_km2": 11.226,
+        "centroid_lon": 74.054538,
+        "centroid_lat": 18.47661,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.92412,
+              18.499071
+            ],
+            [
+              73.973849,
+              18.454892
+            ],
+            [
+              73.973914,
+              18.451883
+            ],
+            [
+              73.916559,
+              18.449998
+            ],
+            [
+              73.910789,
+              18.483631
+            ],
+            [
+              73.92412,
+              18.499071
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A063",
+        "name": "Ward 63",
+        "population": 88007,
+        "vulnerability_index": 0.266,
+        "area_km2": 20.359,
+        "centroid_lon": 73.935758,
+        "centroid_lat": 18.468686,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.665859,
+              18.479378
+            ],
+            [
+              73.670324,
+              18.471616
+            ],
+            [
+              73.666063,
+              18.45859
+            ],
+            [
+              73.645971,
+              18.443362
+            ],
+            [
+              73.645156,
+              18.444521
+            ],
+            [
+              73.641835,
+              18.455417
+            ],
+            [
+              73.64031,
+              18.466462
+            ],
+            [
+              73.639513,
+              18.471019
+            ],
+            [
+              73.665859,
+              18.479378
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A064",
+        "name": "Ward 64",
+        "population": 7068,
+        "vulnerability_index": 0.448,
+        "area_km2": 7.798,
+        "centroid_lon": 73.65417,
+        "centroid_lat": 18.463359,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.9741,
+              18.455485
+            ],
+            [
+              74.01404,
+              18.492164
+            ],
+            [
+              74.033242,
+              18.479832
+            ],
+            [
+              74.033447,
+              18.476944
+            ],
+            [
+              74.016537,
+              18.450658
+            ],
+            [
+              73.999255,
+              18.443221
+            ],
+            [
+              73.998269,
+              18.443222
+            ],
+            [
+              73.975898,
+              18.448177
+            ],
+            [
+              73.973914,
+              18.451883
+            ],
+            [
+              73.973849,
+              18.454892
+            ],
+            [
+              73.9741,
+              18.455485
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A065",
+        "name": "Ward 65",
+        "population": 34198,
+        "vulnerability_index": 0.471,
+        "area_km2": 18.37,
+        "centroid_lon": 74.005147,
+        "centroid_lat": 18.465109,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.821267,
+              18.48543
+            ],
+            [
+              73.863346,
+              18.488381
+            ],
+            [
+              73.869377,
+              18.481687
+            ],
+            [
+              73.864052,
+              18.437605
+            ],
+            [
+              73.86169,
+              18.435059
+            ],
+            [
+              73.83235,
+              18.438594
+            ],
+            [
+              73.812354,
+              18.463097
+            ],
+            [
+              73.821267,
+              18.48543
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A066",
+        "name": "Ward 66",
+        "population": 118049,
+        "vulnerability_index": 0.151,
+        "area_km2": 27.241,
+        "centroid_lon": 73.84345,
+        "centroid_lat": 18.463395,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.7542,
+              18.480729
+            ],
+            [
+              73.76193,
+              18.488795
+            ],
+            [
+              73.808823,
+              18.46244
+            ],
+            [
+              73.768086,
+              18.435806
+            ],
+            [
+              73.760105,
+              18.440926
+            ],
+            [
+              73.7542,
+              18.480729
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A067",
+        "name": "Ward 67",
+        "population": 47098,
+        "vulnerability_index": 0.342,
+        "area_km2": 17.935,
+        "centroid_lon": 73.775126,
+        "centroid_lat": 18.462337,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.869377,
+              18.481687
+            ],
+            [
+              73.910789,
+              18.483631
+            ],
+            [
+              73.916559,
+              18.449998
+            ],
+            [
+              73.911741,
+              18.442561
+            ],
+            [
+              73.864052,
+              18.437605
+            ],
+            [
+              73.869377,
+              18.481687
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A068",
+        "name": "Ward 68",
+        "population": 97856,
+        "vulnerability_index": 0.478,
+        "area_km2": 23.275,
+        "centroid_lon": 73.889993,
+        "centroid_lat": 18.460755,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.70695,
+              18.46456
+            ],
+            [
+              73.720442,
+              18.482725
+            ],
+            [
+              73.7542,
+              18.480729
+            ],
+            [
+              73.760105,
+              18.440926
+            ],
+            [
+              73.722754,
+              18.43338
+            ],
+            [
+              73.712096,
+              18.442519
+            ],
+            [
+              73.70695,
+              18.46456
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A069",
+        "name": "Ward 69",
+        "population": 32828,
+        "vulnerability_index": 0.471,
+        "area_km2": 23.889,
+        "centroid_lon": 73.733839,
+        "centroid_lat": 18.458596,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.033447,
+              18.476944
+            ],
+            [
+              74.058651,
+              18.4509
+            ],
+            [
+              74.052063,
+              18.443925
+            ],
+            [
+              74.048111,
+              18.437125
+            ],
+            [
+              74.016537,
+              18.450658
+            ],
+            [
+              74.033447,
+              18.476944
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A070",
+        "name": "Ward 70",
+        "population": 11268,
+        "vulnerability_index": 0.448,
+        "area_km2": 9.718,
+        "centroid_lon": 74.037736,
+        "centroid_lat": 18.455053,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.670324,
+              18.471616
+            ],
+            [
+              73.70695,
+              18.46456
+            ],
+            [
+              73.712096,
+              18.442519
+            ],
+            [
+              73.681648,
+              18.431491
+            ],
+            [
+              73.666063,
+              18.45859
+            ],
+            [
+              73.670324,
+              18.471616
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A071",
+        "name": "Ward 71",
+        "population": 13489,
+        "vulnerability_index": 0.449,
+        "area_km2": 14.236,
+        "centroid_lon": 73.688686,
+        "centroid_lat": 18.452732,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.666063,
+              18.45859
+            ],
+            [
+              73.681648,
+              18.431491
+            ],
+            [
+              73.67475,
+              18.419857
+            ],
+            [
+              73.662708,
+              18.426473
+            ],
+            [
+              73.652076,
+              18.43468
+            ],
+            [
+              73.645971,
+              18.443362
+            ],
+            [
+              73.666063,
+              18.45859
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A072",
+        "name": "Ward 72",
+        "population": 7494,
+        "vulnerability_index": 0.583,
+        "area_km2": 8.262,
+        "centroid_lon": 73.665027,
+        "centroid_lat": 18.438698,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.999255,
+              18.443221
+            ],
+            [
+              74.016537,
+              18.450658
+            ],
+            [
+              74.048111,
+              18.437125
+            ],
+            [
+              74.046512,
+              18.434373
+            ],
+            [
+              74.042528,
+              18.427203
+            ],
+            [
+              74.021282,
+              18.423561
+            ],
+            [
+              73.999255,
+              18.443221
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A073",
+        "name": "Ward 73",
+        "population": 9913,
+        "vulnerability_index": 0.565,
+        "area_km2": 8.677,
+        "centroid_lon": 74.024227,
+        "centroid_lat": 18.436803,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.768086,
+              18.435806
+            ],
+            [
+              73.808823,
+              18.46244
+            ],
+            [
+              73.812354,
+              18.463097
+            ],
+            [
+              73.83235,
+              18.438594
+            ],
+            [
+              73.809314,
+              18.412172
+            ],
+            [
+              73.804251,
+              18.408597
+            ],
+            [
+              73.77633,
+              18.416135
+            ],
+            [
+              73.768086,
+              18.435806
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A074",
+        "name": "Ward 74",
+        "population": 49471,
+        "vulnerability_index": 0.185,
+        "area_km2": 23.878,
+        "centroid_lon": 73.800501,
+        "centroid_lat": 18.434354,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.916559,
+              18.449998
+            ],
+            [
+              73.973914,
+              18.451883
+            ],
+            [
+              73.975898,
+              18.448177
+            ],
+            [
+              73.96663,
+              18.421548
+            ],
+            [
+              73.923111,
+              18.409386
+            ],
+            [
+              73.911741,
+              18.442561
+            ],
+            [
+              73.916559,
+              18.449998
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A075",
+        "name": "Ward 75",
+        "population": 48404,
+        "vulnerability_index": 0.499,
+        "area_km2": 22.819,
+        "centroid_lon": 73.942593,
+        "centroid_lat": 18.433982,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.722263,
+              18.430318
+            ],
+            [
+              73.6855,
+              18.413709
+            ],
+            [
+              73.675271,
+              18.41957
+            ],
+            [
+              73.67475,
+              18.419857
+            ],
+            [
+              73.681648,
+              18.431491
+            ],
+            [
+              73.712096,
+              18.442519
+            ],
+            [
+              73.722754,
+              18.43338
+            ],
+            [
+              73.722263,
+              18.430318
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A076",
+        "name": "Ward 76",
+        "population": 7697,
+        "vulnerability_index": 0.435,
+        "area_km2": 8.216,
+        "centroid_lon": 73.69823,
+        "centroid_lat": 18.428333,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.96663,
+              18.421548
+            ],
+            [
+              73.975898,
+              18.448177
+            ],
+            [
+              73.998269,
+              18.443222
+            ],
+            [
+              74.004915,
+              18.41154
+            ],
+            [
+              74.003088,
+              18.405037
+            ],
+            [
+              73.971738,
+              18.409217
+            ],
+            [
+              73.96663,
+              18.421548
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A077",
+        "name": "Ward 77",
+        "population": 19239,
+        "vulnerability_index": 0.509,
+        "area_km2": 14.145,
+        "centroid_lon": 73.986125,
+        "centroid_lat": 18.425231,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.021282,
+              18.423561
+            ],
+            [
+              74.020693,
+              18.417047
+            ],
+            [
+              74.004915,
+              18.41154
+            ],
+            [
+              73.998269,
+              18.443222
+            ],
+            [
+              73.999255,
+              18.443221
+            ],
+            [
+              74.021282,
+              18.423561
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A078",
+        "name": "Ward 78",
+        "population": 4852,
+        "vulnerability_index": 0.561,
+        "area_km2": 4.192,
+        "centroid_lon": 74.009141,
+        "centroid_lat": 18.425182,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.864052,
+              18.437605
+            ],
+            [
+              73.911741,
+              18.442561
+            ],
+            [
+              73.923111,
+              18.409386
+            ],
+            [
+              73.917023,
+              18.397303
+            ],
+            [
+              73.903205,
+              18.394722
+            ],
+            [
+              73.867124,
+              18.408066
+            ],
+            [
+              73.86169,
+              18.435059
+            ],
+            [
+              73.864052,
+              18.437605
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A079",
+        "name": "Ward 79",
+        "population": 45075,
+        "vulnerability_index": 0.381,
+        "area_km2": 25.247,
+        "centroid_lon": 73.893476,
+        "centroid_lat": 18.419612,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.722263,
+              18.430318
+            ],
+            [
+              73.720807,
+              18.415394
+            ],
+            [
+              73.694256,
+              18.406675
+            ],
+            [
+              73.687197,
+              18.412737
+            ],
+            [
+              73.6855,
+              18.413709
+            ],
+            [
+              73.722263,
+              18.430318
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A080",
+        "name": "Ward 80",
+        "population": 4289,
+        "vulnerability_index": 0.562,
+        "area_km2": 4.584,
+        "centroid_lon": 73.70648,
+        "centroid_lat": 18.417202,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.83235,
+              18.438594
+            ],
+            [
+              73.86169,
+              18.435059
+            ],
+            [
+              73.867124,
+              18.408066
+            ],
+            [
+              73.857869,
+              18.395305
+            ],
+            [
+              73.809314,
+              18.412172
+            ],
+            [
+              73.83235,
+              18.438594
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A081",
+        "name": "Ward 81",
+        "population": 31545,
+        "vulnerability_index": 0.47,
+        "area_km2": 18.53,
+        "centroid_lon": 73.842599,
+        "centroid_lat": 18.41794,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.020693,
+              18.417047
+            ],
+            [
+              74.021282,
+              18.423561
+            ],
+            [
+              74.042528,
+              18.427203
+            ],
+            [
+              74.041006,
+              18.424462
+            ],
+            [
+              74.033668,
+              18.41515
+            ],
+            [
+              74.024175,
+              18.406911
+            ],
+            [
+              74.023858,
+              18.406687
+            ],
+            [
+              74.020693,
+              18.417047
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A082",
+        "name": "Ward 82",
+        "population": 2612,
+        "vulnerability_index": 0.598,
+        "area_km2": 2.596,
+        "centroid_lon": 74.029316,
+        "centroid_lat": 18.418705,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.722754,
+              18.43338
+            ],
+            [
+              73.760105,
+              18.440926
+            ],
+            [
+              73.768086,
+              18.435806
+            ],
+            [
+              73.77633,
+              18.416135
+            ],
+            [
+              73.765467,
+              18.400174
+            ],
+            [
+              73.736242,
+              18.390068
+            ],
+            [
+              73.731182,
+              18.392714
+            ],
+            [
+              73.724947,
+              18.404335
+            ],
+            [
+              73.720807,
+              18.415394
+            ],
+            [
+              73.722263,
+              18.430318
+            ],
+            [
+              73.722754,
+              18.43338
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A083",
+        "name": "Ward 83",
+        "population": 25679,
+        "vulnerability_index": 0.439,
+        "area_km2": 23.647,
+        "centroid_lon": 73.747128,
+        "centroid_lat": 18.41676,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.720807,
+              18.415394
+            ],
+            [
+              73.724947,
+              18.404335
+            ],
+            [
+              73.702249,
+              18.396789
+            ],
+            [
+              73.696749,
+              18.404533
+            ],
+            [
+              73.694256,
+              18.406675
+            ],
+            [
+              73.720807,
+              18.415394
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A084",
+        "name": "Ward 84",
+        "population": 3285,
+        "vulnerability_index": 0.589,
+        "area_km2": 3.548,
+        "centroid_lon": 73.710627,
+        "centroid_lat": 18.405968,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.003088,
+              18.405037
+            ],
+            [
+              74.004915,
+              18.41154
+            ],
+            [
+              74.020693,
+              18.417047
+            ],
+            [
+              74.023858,
+              18.406687
+            ],
+            [
+              74.013513,
+              18.399378
+            ],
+            [
+              74.009815,
+              18.396709
+            ],
+            [
+              74.003088,
+              18.405037
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A085",
+        "name": "Ward 85",
+        "population": 2935,
+        "vulnerability_index": 0.394,
+        "area_km2": 2.901,
+        "centroid_lon": 74.013358,
+        "centroid_lat": 18.407388,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.923111,
+              18.409386
+            ],
+            [
+              73.96663,
+              18.421548
+            ],
+            [
+              73.971738,
+              18.409217
+            ],
+            [
+              73.971961,
+              18.396734
+            ],
+            [
+              73.971262,
+              18.394874
+            ],
+            [
+              73.943143,
+              18.380531
+            ],
+            [
+              73.930246,
+              18.379422
+            ],
+            [
+              73.917023,
+              18.397303
+            ],
+            [
+              73.923111,
+              18.409386
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A086",
+        "name": "Ward 86",
+        "population": 21632,
+        "vulnerability_index": 0.529,
+        "area_km2": 17.927,
+        "centroid_lon": 73.945924,
+        "centroid_lat": 18.4001,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.971738,
+              18.409217
+            ],
+            [
+              74.003088,
+              18.405037
+            ],
+            [
+              74.009815,
+              18.396709
+            ],
+            [
+              74.002859,
+              18.391689
+            ],
+            [
+              73.998195,
+              18.387906
+            ],
+            [
+              73.971961,
+              18.396734
+            ],
+            [
+              73.971738,
+              18.409217
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A087",
+        "name": "Ward 87",
+        "population": 6330,
+        "vulnerability_index": 0.618,
+        "area_km2": 6.056,
+        "centroid_lon": 73.989623,
+        "centroid_lat": 18.399247,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.724947,
+              18.404335
+            ],
+            [
+              73.731182,
+              18.392714
+            ],
+            [
+              73.710859,
+              18.382429
+            ],
+            [
+              73.710778,
+              18.382542
+            ],
+            [
+              73.704038,
+              18.39427
+            ],
+            [
+              73.702249,
+              18.396789
+            ],
+            [
+              73.724947,
+              18.404335
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A088",
+        "name": "Ward 88",
+        "population": 3692,
+        "vulnerability_index": 0.605,
+        "area_km2": 4.018,
+        "centroid_lon": 73.716937,
+        "centroid_lat": 18.393942,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.804251,
+              18.408597
+            ],
+            [
+              73.809314,
+              18.412172
+            ],
+            [
+              73.857869,
+              18.395305
+            ],
+            [
+              73.850365,
+              18.377208
+            ],
+            [
+              73.822271,
+              18.372761
+            ],
+            [
+              73.813573,
+              18.377359
+            ],
+            [
+              73.804251,
+              18.408597
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A089",
+        "name": "Ward 89",
+        "population": 17199,
+        "vulnerability_index": 0.394,
+        "area_km2": 15.461,
+        "centroid_lon": 73.829191,
+        "centroid_lat": 18.391111,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.77633,
+              18.416135
+            ],
+            [
+              73.804251,
+              18.408597
+            ],
+            [
+              73.813573,
+              18.377359
+            ],
+            [
+              73.779681,
+              18.362243
+            ],
+            [
+              73.765467,
+              18.400174
+            ],
+            [
+              73.77633,
+              18.416135
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A090",
+        "name": "Ward 90",
+        "population": 20095,
+        "vulnerability_index": 0.635,
+        "area_km2": 19.396,
+        "centroid_lon": 73.788753,
+        "centroid_lat": 18.390445,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.971262,
+              18.394874
+            ],
+            [
+              73.971961,
+              18.396734
+            ],
+            [
+              73.998195,
+              18.387906
+            ],
+            [
+              73.992529,
+              18.383312
+            ],
+            [
+              73.981776,
+              18.374688
+            ],
+            [
+              73.976767,
+              18.371602
+            ],
+            [
+              73.971262,
+              18.394874
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A091",
+        "name": "Ward 91",
+        "population": 3807,
+        "vulnerability_index": 0.572,
+        "area_km2": 3.855,
+        "centroid_lon": 73.982031,
+        "centroid_lat": 18.385332,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.857869,
+              18.395305
+            ],
+            [
+              73.867124,
+              18.408066
+            ],
+            [
+              73.903205,
+              18.394722
+            ],
+            [
+              73.881275,
+              18.348309
+            ],
+            [
+              73.877421,
+              18.346776
+            ],
+            [
+              73.874841,
+              18.345696
+            ],
+            [
+              73.850365,
+              18.377208
+            ],
+            [
+              73.857869,
+              18.395305
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A092",
+        "name": "Ward 92",
+        "population": 22606,
+        "vulnerability_index": 0.471,
+        "area_km2": 21.884,
+        "centroid_lon": 73.875543,
+        "centroid_lat": 18.37975,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.731182,
+              18.392714
+            ],
+            [
+              73.736242,
+              18.390068
+            ],
+            [
+              73.738421,
+              18.374825
+            ],
+            [
+              73.730188,
+              18.360941
+            ],
+            [
+              73.730143,
+              18.360966
+            ],
+            [
+              73.719075,
+              18.370916
+            ],
+            [
+              73.710859,
+              18.382429
+            ],
+            [
+              73.731182,
+              18.392714
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A093",
+        "name": "Ward 93",
+        "population": 5333,
+        "vulnerability_index": 0.393,
+        "area_km2": 5.851,
+        "centroid_lon": 73.726965,
+        "centroid_lat": 18.378242,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.971262,
+              18.394874
+            ],
+            [
+              73.976767,
+              18.371602
+            ],
+            [
+              73.969499,
+              18.367123
+            ],
+            [
+              73.964302,
+              18.365233
+            ],
+            [
+              73.943143,
+              18.380531
+            ],
+            [
+              73.971262,
+              18.394874
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A094",
+        "name": "Ward 94",
+        "population": 6175,
+        "vulnerability_index": 0.739,
+        "area_km2": 6.245,
+        "centroid_lon": 73.963075,
+        "centroid_lat": 18.379198,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.736242,
+              18.390068
+            ],
+            [
+              73.765467,
+              18.400174
+            ],
+            [
+              73.779681,
+              18.362243
+            ],
+            [
+              73.774457,
+              18.353148
+            ],
+            [
+              73.738421,
+              18.374825
+            ],
+            [
+              73.736242,
+              18.390068
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A095",
+        "name": "Ward 95",
+        "population": 12528,
+        "vulnerability_index": 0.363,
+        "area_km2": 13.415,
+        "centroid_lon": 73.758817,
+        "centroid_lat": 18.377958,
+        "quadrant": "SouthWest",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.903205,
+              18.394722
+            ],
+            [
+              73.917023,
+              18.397303
+            ],
+            [
+              73.930246,
+              18.379422
+            ],
+            [
+              73.929065,
+              18.358669
+            ],
+            [
+              73.923308,
+              18.358281
+            ],
+            [
+              73.907724,
+              18.356642
+            ],
+            [
+              73.892675,
+              18.352844
+            ],
+            [
+              73.881275,
+              18.348309
+            ],
+            [
+              73.903205,
+              18.394722
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "area_id": "A096",
+        "name": "Ward 96",
+        "population": 15665,
+        "vulnerability_index": 0.718,
+        "area_km2": 15.777,
+        "centroid_lon": 73.90931,
+        "centroid_lat": 18.372613,
+        "quadrant": "SouthEast",
+        "population_source": "synthetic",
+        "vulnerability_source": "synthetic"
+      }
+    }
+  ]
+}

@@ -13,3 +13,20 @@ venv/
 .coverage
 htmlcov/
 .DS_Store
+
+# Runtime and local data
+*.db
+*.sqlite3
+.data/
+.venv
+!.env.example
+backend/.ruff_cache/
+backend/.mypy_cache/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+backend/imports/
+*.log
+public/maplibre-gl-worker.mjs
+
+frontend/public/maplibre-gl-worker.mjs
