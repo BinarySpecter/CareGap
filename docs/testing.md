@@ -17,8 +17,8 @@ Last verified locally on 2026-10-25:
 | Alembic + app against PostgreSQL 16/PostGIS 3.4 | Compose DB + local API | Passed (schema, 96 seeded areas, overview) |
 
 **CI verified:** GitHub Actions run
-[40145025379](https://github.com/BinarySpecter/CareGap/actions/runs/40145025379)
-passed all three jobs on commit `2f97b87`: backend lint/tests/migrations
+[40145309253](https://github.com/BinarySpecter/CareGap/actions/runs/40145309253)
+passed all three jobs on commit `b55f0a4`: backend lint/tests/migrations
 (SQLite and PostgreSQL/PostGIS), frontend lint/typecheck/tests/build, and the
 Playwright E2E suite. Re-check the latest run for subsequent commits; local
 verification alone is not a claim about a newer commit.

@@ -123,6 +123,6 @@ No provider-specific configuration has been tested or deployed.
 - Frontend lint, typecheck, unit tests, and production build.
 - Playwright E2E with backend and frontend started by the test config.
 
-The workflow passed all three jobs for commit `2f97b87` (run
-[40145025379](https://github.com/BinarySpecter/CareGap/actions/runs/40145025379)).
+The workflow passed all three jobs for commit `b55f0a4` (run
+[40145309253](https://github.com/BinarySpecter/CareGap/actions/runs/40145309253)).
 Check the latest run for newer commits before relying on it.

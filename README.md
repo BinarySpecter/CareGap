@@ -139,10 +139,10 @@ Local E2E was run with the system Chrome (`PLAYWRIGHT_CHROME_PATH`). CI installs
 the matching Playwright Chromium build instead. Test commands and coverage are
 documented in [docs/testing.md](docs/testing.md).
 
-**Latest verified CI run:** [run 40145025379](https://github.com/BinarySpecter/CareGap/actions/runs/40145025379)
-passed backend lint/tests/migrations (SQLite and PostgreSQL/PostGIS), frontend
-lint/typecheck/tests/build, and Playwright E2E. Verify the latest run for any
-newer commit before relying on it.
+**Verified CI run:** [run 40145309253](https://github.com/BinarySpecter/CareGap/actions/runs/40145309253)
+on commit `b55f0a4` passed backend lint/tests/migrations (SQLite and
+PostgreSQL/PostGIS), frontend lint/typecheck/tests/build, and Playwright E2E.
+Verify the latest run for newer commits before relying on it.
 
 ## Architecture
 
