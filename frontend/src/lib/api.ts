@@ -213,7 +213,6 @@ export async function importData(
   const body = new FormData();
   body.append("file", file);
   body.append("kind", kind);
-  body.append("dataset_id", "caregap-demo");
   return requestJson<ImportReport>(apiUrl("/api/v1/data/import"), {
     method: "POST",
     body,

@@ -108,7 +108,7 @@ export function DataNotice({
         <span className="status-dot status-dot--gap mt-[6px] h-[5px] w-[5px]" aria-hidden="true" />
         <p className="max-w-[90ch] text-[10.5px] leading-relaxed text-[var(--ink-3)]">
           {notice ??
-            "Synthetic demonstration data. Accessibility is modelled, not observed care."}
+            "Accessibility is modelled from the active dataset; it is not observed care or live traffic."}
         </p>
       </div>
       <div className="flex shrink-0 flex-wrap items-center gap-3">

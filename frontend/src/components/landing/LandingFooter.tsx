@@ -32,14 +32,15 @@ export function LandingFooter() {
             <div className="lg:col-span-5">
               <Logo />
               <p className="measure-narrow mt-4 text-[12px] leading-relaxed text-[var(--ink-2)]">
-                CareGap is a demonstration decision-support platform for
-                healthcare accessibility, intervention simulation, and
-                explainable facility planning.
+                CareGap is a decision-support platform for healthcare
+                accessibility, intervention simulation, and explainable facility
+                planning. The initial pilot covers the National Capital Territory
+                of Delhi.
               </p>
               <p className="mono mt-4 max-w-[46ch] text-[9px] uppercase leading-relaxed tracking-[0.08em] text-[var(--ink-3)]">
-                No patient-identifiable data. Synthetic district, fictional
-                facilities, modelled travel times. Not a clinical or diagnostic
-                system.
+                No patient-identifiable data. Census 2011 ward populations,
+                OpenStreetMap facilities, modelled travel times. Not a clinical
+                or diagnostic system.
               </p>
             </div>
             {GROUPS.map((group) => (

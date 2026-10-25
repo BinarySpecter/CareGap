@@ -37,8 +37,8 @@ export function LandingHeader() {
           <div className="flex items-center gap-2">
             <span className="hidden xl:block">
               <span className="status-pill">
-                <span className="status-dot status-dot--gap" aria-hidden="true" />
-                Synthetic demo
+                <span className="status-dot" aria-hidden="true" />
+                Delhi pilot · 2011
               </span>
             </span>
             <Link href="/app" className="btn btn-primary btn-sm">

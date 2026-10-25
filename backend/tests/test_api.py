@@ -18,7 +18,7 @@ def test_meta_exposes_catalog_and_provenance(client: TestClient):
     payload = response.json()
     assert payload["api_version"] == "v1"
     assert len(payload["services"]) == 4
-    assert len(payload["interventions"]) == 4
+    assert len(payload["interventions"]) == 6
     assert payload["dataset"]["is_synthetic"] is True
     assert payload["dataset"]["counts"]["areas"] == 96
     assert payload["routing"]["live_traffic"] is False
@@ -52,7 +52,10 @@ def test_overview_rejects_invalid_parameters(client: TestClient):
 def test_default_threshold_is_service_specific(client: TestClient):
     response = client.get("/api/v1/overview", params={"service": "maternal_health"})
     assert response.status_code == 200
-    assert response.json()["threshold_minutes"] == 45
+    assert response.json()["threshold_minutes"] == 15
+    response = client.get("/api/v1/overview", params={"service": "emergency"})
+    assert response.status_code == 200
+    assert response.json()["threshold_minutes"] == 60
 
 
 def test_analysis_post_matches_get_accessibility(client: TestClient):

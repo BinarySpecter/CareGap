@@ -86,6 +86,12 @@ def recommend(
     if strategy not in ("equity_weighted", "max_coverage"):
         raise ValueError("Unknown strategy")
 
+    # Population-less areas cannot contribute to coverage or equity gains.
+    areas = [area for area in areas if area.has_population]
+    if not areas:
+        raise ValueError("No population areas with valid population data are available")
+    vulnerability_available = any(area.vulnerability_index is not None for area in areas)
+
     definition = INTERVENTION_BY_ID.get(intervention_type)
     if definition is None:
         raise ValueError("Unknown intervention type")
@@ -180,7 +186,9 @@ def recommend(
             intervention_type=intervention_type,
             intervention_label=str(definition["label"]),
             set_size=set_size,
-            equity_weight=max(equity_weight, 0.05),
+            equity_weight=(
+                max(equity_weight, 0.05) if vulnerability_available else 0.0
+            ),
             strategy="equity_weighted",
         ),
     }
@@ -193,6 +201,18 @@ def recommend(
         "The greedy set is a heuristic, not a globally optimal solution.",
         "The demo dataset, travel-time model, and vulnerability index are synthetic; results are illustrative only.",
     ]
+    if not vulnerability_available:
+        limitations = [
+            item
+            for item in limitations
+            if "vulnerability index are synthetic" not in item
+        ]
+        limitations.extend(
+            [
+                "No validated vulnerability indicator is available, so the equity component is zero and equity weighting has no effect.",
+                "The demo dataset and travel-time model are model estimates; results are illustrative only.",
+            ]
+        )
     return {
         "service": service,
         "threshold_minutes": threshold_minutes,
@@ -254,6 +274,7 @@ def recommend(
         "comparison": both_sets,
         "assumptions": list(definition["assumptions"]),
         "limitations": limitations,
+        "vulnerability_available": vulnerability_available,
         "methodology": {
             "objective": (
                 "Favour underserved populations, increase the number of people within "
@@ -316,11 +337,10 @@ def evaluate_candidate(
         base_area = baseline_by_id[proposed_area.area.id]
         if proposed_area.covered and not base_area.covered:
             newly_covered.append(
-                (proposed_area.area, proposed_area.area.population)
+                (proposed_area.area, proposed_area.area.population or 0)
             )
-            vulnerability_gain += (
-                proposed_area.area.population
-                * proposed_area.area.vulnerability_index
+            vulnerability_gain += (proposed_area.area.population or 0) * (
+                proposed_area.area.vulnerability_index or 0.0
             )
         if (
             proposed_area.travel_time_minutes is not None
@@ -336,7 +356,7 @@ def evaluate_candidate(
         newly_covered,
         key=lambda pair: (
             -pair[1],
-            -pair[0].vulnerability_index,
+            -(pair[0].vulnerability_index or 0.0),
             pair[0].id,
         ),
     )
@@ -350,8 +370,12 @@ def evaluate_candidate(
         for item, population in newly_sorted[:3]
     ]
     residual = sorted(
-        (item for item in result.areas if not item.covered),
-        key=lambda item: (-item.area.population, item.area.id),
+        (
+            item
+            for item in result.areas
+            if not item.covered and item.area.has_population
+        ),
+        key=lambda item: (-(item.area.population or 0), item.area.id),
     )
     residual_areas = [
         {
@@ -501,8 +525,12 @@ def _greedy_set(
         current = chosen.result
 
     residual = sorted(
-        (item for item in current.areas if not item.covered),
-        key=lambda item: (-item.area.population, item.area.id),
+        (
+            item
+            for item in current.areas
+            if not item.covered and item.area.has_population
+        ),
+        key=lambda item: (-(item.area.population or 0), item.area.id),
     )
     residual_gaps = [
         {

@@ -37,6 +37,7 @@ export interface DatasetInfo {
   description: string;
   is_synthetic: boolean;
   data_status: string;
+  release: string | null;
   seed: number | null;
   generated_at: string | null;
   geography: {
@@ -46,12 +47,38 @@ export interface DatasetInfo {
     projected_crs?: string;
     area_km2?: number;
     bbox?: [number, number, number, number];
+    study_boundary?: string;
+    analysis_unit?: string;
     [key: string]: unknown;
   };
   counts: Record<string, number>;
   sources: DataSource[];
   limitations: string[];
   road_model: Record<string, unknown>;
+  population: {
+    reference_year?: number;
+    source?: string;
+    represented_population?: number;
+    delhi_census_total?: number;
+    unrepresented_population?: number;
+    unrepresented_share_percent?: number;
+    wards_with_population?: number;
+    areas_without_population?: number;
+    note?: string;
+    [key: string]: unknown;
+  };
+  vulnerability: { available?: boolean; reason?: string; [key: string]: unknown };
+  capabilities: { facility_import?: boolean; area_import?: boolean; area_import_reason?: string };
+  validation_summary: Record<string, unknown>;
+}
+
+export interface DatasetProfile {
+  id: string;
+  label: string;
+  is_synthetic: boolean;
+  active: boolean;
+  available: boolean;
+  release: string | null;
 }
 
 export interface DataSource {
@@ -96,6 +123,11 @@ export interface AccessSummary {
   unreachable_wards: number;
   suitable_facility_count: number;
   distribution: DistributionBucket[];
+  areas_total: number;
+  areas_with_population: number;
+  areas_without_population: number;
+  areas_without_population_over_threshold: number;
+  population_reference_year: number | null;
 }
 
 export interface Facility {
@@ -107,16 +139,28 @@ export interface Facility {
   lon: number;
   lat: number;
   data_status: string;
+  source: string;
+  source_id: string;
+  source_url: string;
+  ownership: string;
+  operational_status: string;
+  address: string;
+  admin_area: string;
+  source_tags: Record<string, string>;
 }
 
 export interface AreaAccess {
   area_id: string;
   name: string;
-  population: number;
-  vulnerability_index: number;
+  population: number | null;
+  population_status: string;
+  population_reference_year: number | null;
+  population_included: boolean;
+  vulnerability_index: number | null;
   area_km2: number;
   centroid: [number, number];
   quadrant: string;
+  municipality: string;
   travel_time_minutes: number | null;
   nearest_facility_id: string | null;
   nearest_facility_name: string | null;
@@ -127,10 +171,14 @@ export interface AreaAccess {
 export interface AreaProperties {
   area_id: string;
   name: string;
-  population: number;
-  vulnerability_index: number;
+  population: number | null;
+  population_status?: string;
+  population_reference_year?: number | null;
+  population_included?: boolean;
+  vulnerability_index: number | null;
   area_km2?: number;
   quadrant: string;
+  municipality?: string;
   centroid?: [number, number];
   travel_time_minutes: number | null;
   nearest_facility_id?: string | null;
@@ -142,9 +190,11 @@ export interface AreaProperties {
 export interface ScenarioAreaProperties {
   area_id: string;
   name: string;
-  population: number;
-  vulnerability_index: number;
+  population: number | null;
+  population_included?: boolean;
+  vulnerability_index: number | null;
   quadrant: string;
+  municipality?: string;
   centroid?: [number, number];
   travel_time_baseline: number | null;
   travel_time_proposed: number | null;
@@ -238,7 +288,7 @@ export interface Improvement {
   area_id: string;
   name: string;
   population: number;
-  vulnerability_index: number;
+  vulnerability_index: number | null;
   travel_time_baseline: number | null;
   travel_time_proposed: number | null;
   improvement_minutes: number | null;
@@ -250,10 +300,11 @@ export interface ResidualGap {
   name: string;
   population: number;
   travel_time_minutes: number | null;
-  vulnerability_index: number;
+  vulnerability_index: number | null;
 }
 
 export interface SimulationResponse {
+  dataset: DatasetInfo;
   scenario: Scenario;
   service: string;
   threshold_minutes: number;
@@ -305,7 +356,7 @@ export interface RecommendationCandidate {
     area_id: string;
     name: string;
     population: number;
-    vulnerability_index: number;
+    vulnerability_index: number | null;
   }>;
   residual_gap_areas: ResidualGap[];
   explanation: string;
@@ -343,6 +394,10 @@ export interface GreedySet {
 }
 
 export interface RecommendationsResponse {
+  dataset_id: string;
+  release: string | null;
+  vulnerability_available: boolean;
+  data_notice: string;
   service: string;
   threshold_minutes: number;
   intervention_type: string;
@@ -373,14 +428,17 @@ export interface RecommendationsResponse {
 export interface MetaResponse {
   api_version: string;
   dataset: DatasetInfo;
+  datasets: DatasetProfile[];
   services: ServiceDefinition[];
   interventions: InterventionDefinition[];
   facility_types: FacilityTypeDefinition[];
   allowed_thresholds: number[];
   default_service: string;
   default_threshold_minutes: number;
+  default_lens_note: string;
   routing: RoutingInfo;
   data_notice: string;
+  read_only: boolean;
 }
 
 export interface ImportIssue {
@@ -425,6 +483,10 @@ export interface HealthResponse {
   dataset_loaded: boolean;
   database: string;
   environment: string;
+  dataset_id: string | null;
+  release: string | null;
+  routing_model: string | null;
+  read_only: boolean;
 }
 
 export interface MapPoint {

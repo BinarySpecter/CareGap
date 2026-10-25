@@ -16,7 +16,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 export const metadata: Metadata = {
   title: "Methodology",
   description:
-    "How CareGap computes accessibility, simulates interventions, ranks candidate sites, validates imports, and states its limits.",
+    "How CareGap computes Delhi accessibility, simulates interventions, ranks candidate sites, validates imports, and states its limits.",
 };
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(
@@ -39,15 +39,25 @@ const TOC = [
 ] as const;
 
 const SERVICE_MATRIX = [
-  ["District hospital", "Primary care · Maternal health · Diagnostics · Emergency"],
-  ["Primary health centre", "Primary care · Maternal health · Diagnostics"],
-  ["Community health centre", "Primary care · Maternal health"],
-  ["Diagnostic centre", "Diagnostics"],
-  ["Maternal health centre", "Maternal health"],
-  ["Primary care clinic (proposal)", "Primary care · Maternal health"],
-  ["Mobile clinic (proposal)", "Primary care"],
-  ["Diagnostic centre (proposal)", "Diagnostics"],
-  ["Medical camp (proposal)", "Primary care · Maternal health"],
+  ["Hospital (OSM amenity/healthcare)", "Primary care; emergency only with emergency=yes"],
+  ["Health centre / Ayushman Arogya Mandir", "Primary care"],
+  ["Dispensary", "Primary care"],
+  ["Clinic / doctor", "Primary care"],
+  ["Birthing centre", "Maternal health"],
+  ["Diagnostic laboratory", "Diagnostics"],
+  ["Maternal or obstetric tag", "Maternal health added from the mapped speciality"],
+  ["Proposed clinic / sub-centre / AAM", "Primary care + maternal health (assumed)"],
+  ["Proposed diagnostic centre", "Diagnostics (assumed)"],
+];
+
+const METRICS = [
+  ["Coverage", "Population in areas whose modelled nearest suitable facility is within the threshold ÷ represented population"],
+  ["Covered population", "Sum of Census 2011 ward population in covered areas"],
+  ["Weighted mean time", "Σ(population × nearest-facility minutes) ÷ Σ(population), populated areas only"],
+  ["Weighted median / p90", "Population-weighted percentile of area travel times"],
+  ["Newly covered population", "People moving from outside to inside the threshold after an additive intervention"],
+  ["Worst-served group", "Areas sorted by baseline travel time until at least 20% of represented population is included"],
+  ["Residual gap", "Population still outside the threshold after the intervention"],
 ];
 
 export default function MethodologyPage() {
@@ -58,7 +68,7 @@ export default function MethodologyPage() {
           index="07"
           eyebrow="Methodology & governance"
           title="A conclusion you can trace."
-          description="The accessibility model, scoring rules, data-validation gates, mathematical invariants, and explicit limitations behind every number in CareGap. This page is documentation for a decision-support tool, not clinical guidance."
+          description="The accessibility model, scoring rules, data-validation gates, mathematical invariants, and explicit limitations behind every number in the Delhi pilot. This is documentation for a decision-support tool, not clinical guidance."
         />
 
         <div className="mt-6 grid gap-10 lg:grid-cols-[210px_minmax(0,1fr)_260px]">
@@ -94,42 +104,62 @@ export default function MethodologyPage() {
               </h2>
               <p className="measure mt-4 text-[13px] leading-[1.75] text-[var(--ink-2)]">
                 Every population area is evaluated against the facilities that
-                actually provide the selected service. CareGap does not assume
-                that the nearest facility is suitable. Service suitability is an
-                explicit mapping maintained in the backend catalogue and shown
-                below.
-              </p>
-              <p className="measure mt-3 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                For service <span className="mono">s</span>, threshold{" "}
-                <span className="mono">T</span>, population area{" "}
-                <span className="mono">i</span>, and suitable facility set{" "}
-                <span className="mono">F_s</span>:
+                actually provide the selected service. CareGap does not assume the
+                nearest facility is suitable. In the Delhi release, services are
+                attributed only from OpenStreetMap tags; a facility name is never
+                used to infer a service.
               </p>
               <pre className="mono mt-4 overflow-x-auto border border-[var(--rule)] bg-[var(--sheet)] p-4 text-[11px] leading-relaxed text-[var(--ink)]">
 {`t_i = min over f in F_s of travel_time(i, f)
 covered_i = 1 if t_i <= T else 0
-coverage = sum(population_i * covered_i) / sum(population_i)
-weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
+coverage  = Σ(pop_i * covered_i) / Σ(pop_i)      for areas with population
+weighted_mean_time = Σ(pop_i * t_i) / Σ(pop_i)`}
               </pre>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="border border-[var(--rule)] bg-[var(--sheet)] p-3">
+                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
+                    Delhi denominator
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-[var(--ink-2)]">
+                    272 MCD wards, 16,000,745 people (Census 2011). The 18
+                    NDMC/Cantonment charge polygons and the unassigned riverbed
+                    polygon carry <span className="mono">population: null</span>.
+                    They are analysed for travel time but excluded from every
+                    population denominator.
+                  </p>
+                </div>
+                <div className="border border-[var(--rule)] bg-[var(--sheet)] p-3">
+                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
+                    Not in the denominator
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-[var(--ink-2)]">
+                    787,196 people (4.7% of the 2011 NCT total) are not
+                    represented: NDMC and Cantonment residents, rural village
+                    population inside wards, and boundary mismatch. Coverage is
+                    reported against the represented 16,000,745 only.
+                  </p>
+                </div>
+              </div>
               <p className="mt-3 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                Areas with no suitable mapped facility are treated as uncovered
-                with no travel time. They are surfaced separately rather than
-                assigned an invented distance.
+                A service tag means the facility is modelled as offering the
+                service. It does not verify staff, equipment, stock, hours,
+                affordability, or quality. Areas with no suitable mapped facility
+                are uncovered with no invented travel time.
               </p>
 
               <div className="mt-6 overflow-hidden border border-[var(--rule)] bg-[var(--sheet)]">
                 <div className="border-b border-[var(--rule)] px-4 py-3">
                   <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                    Service suitability used by the demo
+                    Service attribution in the Delhi pilot
                   </p>
                 </div>
                 <table className="data-table">
                   <caption className="sr-only">
-                    Facility types and the services they are modelled as providing
+                    Facility categories and tag rules used for service attribution
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">Facility type</th>
+                      <th scope="col">Facility category</th>
                       <th scope="col">Modelled services</th>
                     </tr>
                   </thead>
@@ -143,32 +173,34 @@ weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
                   </tbody>
                 </table>
               </div>
-              <p className="mt-3 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                A service tag means the facility is modelled as offering the
-                service. It does not verify staff, equipment, stock, hours,
-                affordability, or quality.
-              </p>
             </section>
 
             <section id="travel" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
               <SectionLabel index="02">Travel-time model</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                A synthetic street grid, clearly labelled.
+                Shortest paths over OpenStreetMap roads.
               </h2>
               <div className="mt-4 grid gap-5 md:grid-cols-2">
                 <div>
                   <p className="text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                    The bundled demo builds a deterministic 2.0 km road grid over
-                    the synthetic district. Edges have plausible speed classes
-                    (arterial 48 km/h, collector 36, local 24, diagonal local 20).
-                    Shortest paths use Dijkstra over edge time. Population
-                    centroids and facilities are snapped to the nearest grid node;
-                    a local access leg is added at 18 km/h.
+                    The Delhi release ships a routed graph built from
+                    OpenStreetMap drivable ways (motorway through residential and
+                    living-street classes) clipped to the NCT boundary. Edge time
+                    is length ÷ class speed, capped by a parsable{" "}
+                    <span className="mono">maxspeed</span> tag. Dijkstra is run on
+                    an undirected graph; one-way restrictions are not modelled.
                   </p>
                   <p className="mt-3 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                    Travel time is computed in UTM zone 43N for distance accuracy,
-                    then returned in minutes. Results are cached per facility
-                    source within the running server process.
+                    Ward centroids and facilities snap to the nearest road node.
+                    A straight-line local-access leg is added at 15 km/h with a
+                    1.25 detour factor. Population-weighted statistics use the
+                    same area times shown on the map.
+                  </p>
+                  <p className="mt-3 text-[13px] leading-[1.75] text-[var(--ink-2)]">
+                    Speeds (km/h): motorway 80 · trunk 60 · primary 50 · secondary
+                    40 · tertiary 35 · unclassified 30 · residential 25 · living
+                    street 15; links are slightly slower. The snapshot date is
+                    recorded in the data source register.
                   </p>
                 </div>
                 <div className="border border-[var(--rule)] bg-[var(--paper-2)] p-4">
@@ -178,9 +210,9 @@ weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
                   <ul className="mt-2 space-y-2">
                     {[
                       "Not live traffic, congestion, closures, or turn-by-turn routing.",
-                      "Not a real road network; the demo grid is synthetic.",
-                      "Not walking, public transport, or emergency-response time.",
-                      "Not facility wait time, opening hours, or service availability.",
+                      "Not walking, cycling, public transport, or emergency-response time.",
+                      "Not facility wait time, opening hours, capacity, or service availability.",
+                      "Not a measurement of actual patient travel or utilisation.",
                     ].map((item) => (
                       <li key={item} className="flex gap-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
                         <TriangleAlert className="mt-0.5 h-3 w-3 shrink-0 text-[var(--gap)]" aria-hidden="true" />
@@ -189,10 +221,9 @@ weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
                     ))}
                   </ul>
                   <p className="mt-3 border-t border-[var(--rule)] pt-2.5 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                    If the travel-time model cannot load, the API falls back to a
-                    straight-line estimate (1.35 detour factor, 28 km/h) and labels
-                    it as such. Straight-line distance is never presented as actual
-                    road travel time.
+                    A straight-line fallback exists only for the explicitly
+                    synthetic demo. It is never used for the Delhi release: a
+                    missing road artifact stops the API with an actionable error.
                   </p>
                 </div>
               </div>
@@ -201,9 +232,10 @@ weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
                   Metric note
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-[var(--ink-2)]">
-                  Mean, median, and p90 travel times are population-weighted. A
-                  median of 18 minutes means half of the modelled population is at
-                  or below that value, not half of the polygons.
+                  A median of 9.6 minutes means half of the represented
+                  population lives in a ward whose centroid is at or below that
+                  value. It is not a measurement for every resident, and it can
+                  conceal large differences inside a ward.
                 </p>
               </div>
             </section>
@@ -216,29 +248,27 @@ weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
               <p className="measure mt-4 text-[13px] leading-[1.75] text-[var(--ink-2)]">
                 For scenario comparisons, CareGap sorts population areas from
                 longest to shortest baseline travel time and includes areas until
-                at least <span className="mono">20%</span> of the modelled
+                at least <span className="mono">20%</span> of the represented
                 population is in the group. Unreachable areas sort first. The
-                page then reports coverage and population-weighted mean time for
-                that fixed group before and after the intervention.
-              </p>
-              <p className="measure mt-3 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                This is a transparent, reproducible working definition, not an
-                official equity standard. It captures one dimension of
-                distribution (baseline travel access); it does not measure income,
-                caste, gender, disability, informal settlement status, or
-                community-reported barriers.
+                group is fixed from the baseline and then compared before and
+                after the intervention; it is not re-selected to flatter the
+                result.
               </p>
               <div className="mt-4 border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                  Vulnerability in the demo
+                <p className="mono flex items-center gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[var(--gap)]">
+                  <Info className="h-3 w-3" strokeWidth={1.7} aria-hidden="true" />
+                  Vulnerability weighting is unavailable in this release
                 </p>
                 <p className="mt-2 text-[11px] leading-relaxed text-[var(--ink-2)]">
-                  The demo vulnerability index is synthetic and correlated with
-                  invented distance from invented urban centres plus seeded noise.
-                  It is used only to weight candidate ranking. It must not be
-                  interpreted as a real demographic or health-risk measure. For a
-                  production deployment, vulnerability inputs require validated
-                  provenance, community review, and an explicit governance process.
+                  No defensible ward-level vulnerability indicator was acquired
+                  for the Delhi pilot. Rather than fabricate one, the release
+                  reports{" "}
+                  <span className="mono">vulnerability_index: null</span>, disables
+                  the equity-weight slider, and forces the equity weight to zero.
+                  Candidate ranking still uses newly covered population,
+                  person-minutes saved, and the worst-served group. The synthetic
+                  demo has its own clearly labelled synthetic index for workflow
+                  testing only.
                 </p>
               </div>
             </section>
@@ -246,130 +276,67 @@ weighted_mean_time = sum(population_i * t_i) / sum(population_i)`}
             <section id="simulator" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
               <SectionLabel index="04">Intervention simulation</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                Additive, recomputed, and unable to worsen modelled access.
+                Additive by design.
               </h2>
               <p className="measure mt-4 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                A scenario adds one or more proposed facilities at validated
-                coordinates and re-runs the accessibility calculation for every
-                population area. Existing facilities remain available and are not
-                removed or downgraded. The intervention type determines which
-                services it is modelled as providing.
+                A scenario stores 1–5 proposed facilities of a single
+                intervention type, the service, threshold, and coordinates. The
+                same accessibility function is run on the active dataset with the
+                proposed facilities added. Existing facilities are never removed
+                or degraded, so an area&apos;s nearest-facility time cannot
+                worsen. Automated tests assert this invariant; a positive worsened
+                count is surfaced as a defect warning.
               </p>
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <div className="border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--signal)]">
-                    Mathematical invariant
-                  </p>
-                  <p className="mt-2 text-[11px] leading-relaxed text-[var(--ink-2)]">
-                    If the model only adds a facility to the suitable set and does
-                    not remove or alter existing facilities, then the minimum
-                    travel time can never increase:
-                  </p>
-                  <pre className="mono mt-2 overflow-x-auto bg-[var(--paper-2)] p-2.5 text-[10px] leading-relaxed">
-{`t_i(proposed) = min(t_i(baseline), t_i(new))
-=> t_i(proposed) <= t_i(baseline)`}
-                  </pre>
-                  <p className="mt-2 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                    This invariant is covered by automated tests. A positive
-                    &ldquo;wards worsened&rdquo; count would indicate a model or data
-                    defect and is shown as a warning.
-                  </p>
-                </div>
-                <div className="border border-[var(--rule)] bg-[var(--paper-2)] p-4">
-                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                    Not modelled
-                  </p>
-                  <ul className="mt-2 space-y-1.5">
-                    {[
-                      "Facility capacity, staffing, and supply availability",
-                      "Opening days/hours, queues, and scheduling",
-                      "Cost, insurance, and affordability",
-                      "Clinical quality, safety, and outcomes",
-                      "Travel mode differences and seasonal road conditions",
-                    ].map((item) => (
-                      <li key={item} className="flex gap-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
-                        <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[var(--ink-3)]" aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-2 border-t border-[var(--rule)] pt-2 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                    Mobile clinics and medical camps therefore share the same
-                    travel-time mechanics, with their schedule/capacity assumptions
-                    documented on the simulator panel and in the API response.
-                  </p>
-                </div>
-              </div>
+              <p className="measure mt-3 text-[13px] leading-[1.75] text-[var(--ink-2)]">
+                Proposed facilities are marked{" "}
+                <span className="mono">proposed</span> in API responses and on the
+                map and are never counted as existing facilities. A proposed site
+                must fall inside the active ward geometry. Capacity, staffing,
+                schedule, cost, and quality are not modelled; intervention
+                assumptions are returned with every simulation and shown in the
+                interface.
+              </p>
             </section>
 
             <section id="recommendations" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
-              <SectionLabel index="05">Recommendations</SectionLabel>
+              <SectionLabel index="05">Candidate ranking</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                A documented heuristic, not an optimum.
+                An explained heuristic, not an optimum.
               </h2>
               <p className="measure mt-4 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                Candidate sites are the centroids of population areas. Each
-                candidate is evaluated by re-running the same accessibility
-                engine with one facility added. The composite score uses three
-                normalised components:
+                Candidates are the representative points of the 272 populated
+                wards. Each candidate is evaluated by adding one facility and
+                re-running the same analysis. Components are normalised by the
+                best candidate in the current set, so scores are relative, not
+                absolute utility.
               </p>
-              <pre className="mono mt-4 overflow-x-auto border border-[var(--rule)] bg-[var(--sheet)] p-4 text-[11px] leading-relaxed">
-{`coverage = newly covered population / best candidate value
-equity   = vulnerability-weighted newly covered / best value
-travel   = person-minutes saved / best value
+              <pre className="mono mt-4 overflow-x-auto border border-[var(--rule)] bg-[var(--sheet)] p-4 text-[11px] leading-relaxed text-[var(--ink)]">
+{`coverage_component = newly_covered_population / best_candidate_value
+equity_component   = vulnerability_weighted_gain / best_candidate_value
+travel_component   = person_minutes_saved / best_candidate_value
 
-score = (1 - w_e) * coverage
-      + w_e * (0.75 * equity + 0.25 * travel)
-score = score * 0.9  if candidate area is already within threshold`}
+score = (1 - w_equity) * coverage_component
+      + w_equity * (0.75 * equity_component + 0.25 * travel_component)
+score *= 0.9 if the candidate's own ward is already covered
+
+Delhi pilot: w_equity = 0 because no validated vulnerability input exists.`}
               </pre>
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <div>
-                  <p className="text-[11px] leading-relaxed text-[var(--ink-2)]">
-                    Default <span className="mono">w_e = 0.35</span>. The weight is
-                    user-configurable. Components are normalised by the maximum
-                    candidate value in the current run, so scores are relative to
-                    that candidate set, not absolute utility. The concentration
-                    penalty softly discourages placing new resources in areas that
-                    are already within the threshold.
-                  </p>
-                  <p className="mt-3 text-[11px] leading-relaxed text-[var(--ink-2)]">
-                    The recommended set is built greedily: select the best
-                    marginal candidate, re-run the analysis with it added, then
-                    select again. Later picks therefore see the effect of earlier
-                    picks. Ties break deterministically by area ID. A greedy
-                    solution is not guaranteed to be globally optimal.
-                  </p>
-                </div>
-                <div className="border border-[var(--rule)] bg-[var(--paper-2)] p-4">
-                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--gap)]">
-                    Limitations
-                  </p>
-                  <ul className="mt-2 space-y-1.5">
-                    {[
-                      "Population-area centroids are not parcels and may be unsuitable sites.",
-                      "Land ownership, flood risk, road access, utilities, and construction cost are absent.",
-                      "The synthetic vulnerability index is not a real demographic input.",
-                      "Relative normalisation can change with candidate composition.",
-                      "One facility per area centroid is a coarse spatial resolution.",
-                    ].map((item) => (
-                      <li key={item} className="flex gap-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
-                        <TriangleAlert className="mt-0.5 h-3 w-3 shrink-0 text-[var(--gap)]" aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              <p className="mt-3 text-[10px] leading-relaxed text-[var(--ink-3)]">
+                The recommended set is greedy: choose the best marginal candidate,
+                add it, re-run, repeat. Ties break by area ID. This is not a
+                global optimum and not a claim about land availability, cost, or
+                political feasibility.
+              </p>
             </section>
 
             <section id="impact" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
               <SectionLabel index="06">Impact metrics</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                Before and after use the same denominator.
+                Every number has a definition.
               </h2>
               <div className="mt-4 overflow-hidden border border-[var(--rule)] bg-[var(--sheet)]">
                 <table className="data-table">
-                  <caption className="sr-only">Impact metric definitions</caption>
+                  <caption className="sr-only">Metric definitions</caption>
                   <thead>
                     <tr>
                       <th scope="col">Metric</th>
@@ -377,325 +344,230 @@ score = score * 0.9  if candidate area is already within threshold`}
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      ["Newly covered population", "Sum of population in areas where nearest suitable time moves from above the threshold to at or below it."],
-                      ["Coverage gain", "Proposed coverage percent minus baseline coverage percent, in percentage points."],
-                      ["Weighted mean time change", "Proposed population-weighted mean time minus baseline; negative values indicate improvement."],
-                      ["Residual gap", "Population and areas still above the threshold after the intervention."],
-                      ["Worst-served improvement", "Change in coverage and mean time for the fixed worst-served population group defined from baseline."],
-                      ["Wards worsened", "Areas whose proposed time exceeds baseline by more than 0.05 minutes. Expected to be zero in this additive model."],
-                    ].map(([metric, definition]) => (
+                    {METRICS.map(([metric, definition]) => (
                       <tr key={metric}>
                         <td className="whitespace-nowrap font-medium">{metric}</td>
-                        <td className="text-[10.5px] leading-relaxed text-[var(--ink-2)]">{definition}</td>
+                        <td className="text-[10.5px] leading-relaxed text-[var(--ink-2)]">
+                          {definition}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
               <p className="mt-3 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                Population coverage is an estimated count of people whose nearest
-                suitable mapped facility is within the threshold. It does not
-                assert that anyone attended, received a service, or experienced a
-                health benefit.
+                Coverage is modelled access, not attendance, utilisation, clinical
+                quality, or health benefit.
               </p>
             </section>
 
             <section id="data" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
               <SectionLabel index="07">Data validation</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                Imports are checked before they change the analysis.
+                Real sources, with their defects visible.
               </h2>
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <div>
-                  <ul className="space-y-2">
-                    {[
-                      "UTF-8 text only; CSV or GeoJSON; 2 MB default maximum; 5,000-row cap.",
-                      "Facilities require a name, known facility_type, valid longitude/latitude, and services (defaulted from type when absent).",
-                      "Facility points must fall inside the dataset's area boundaries.",
-                      "Areas require valid Polygon/MultiPolygon geometry, a name, and positive population.",
-                      "Same-name facilities within 50 m and areas within 200 m are reported as possible duplicates.",
-                      "Every row is validated; a report returns row, field, and message. Valid rows may still be imported with errors reported.",
-                      "No silent replacement: imported records receive new IDs and imported status; existing records remain.",
-                    ].map((item) => (
-                      <li key={item} className="flex gap-2 text-[11px] leading-relaxed text-[var(--ink-2)]">
-                        <CircleCheck className="mt-0.5 h-3 w-3 shrink-0 text-[var(--signal)]" aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                    Facility CSV minimum
-                  </p>
-                  <pre className="mono mt-2 overflow-x-auto bg-[var(--paper-2)] p-2.5 text-[9.5px] leading-relaxed">
-{`name,facility_type,lon,lat,services
-New PHC,primary_health_centre,
-73.860,18.520,primary_care`}
-                  </pre>
-                  <p className="mt-2 text-[9.5px] leading-relaxed text-[var(--ink-3)]">
-                    GeoJSON facility features must be Points; area features must be
-                    Polygons or MultiPolygons. Import history is stored with status
-                    and validation errors.
-                  </p>
-                  <Link href="/app/data-sources" className="link-dashed mt-3 text-[10px]">
-                    Open the data workspace
-                  </Link>
-                </div>
+              <div className="mt-4 space-y-3">
+                {[
+                  ["Boundary", "OpenStreetMap relation 1942586 (admin_level=4, ISO IN-DL), 1,482.04 km², validated against the official 1,483 km² figure."],
+                  ["Wards", "DataMeet 272-ward municipal layer plus 18 NDMC/Cantonment charges. Ward polygons extending outside the NCT boundary were clipped at build time (44 wards, 10.5 km²); population counts are unchanged."],
+                  ["Population", "Census of India 2011 ward-level Primary Census Abstract. All 272 MCD ward numbers joined exactly; the total 16,000,745 cross-checks against the official 16,787,941 NCT total minus NDMC, Cantonment, and rural population."],
+                  ["Facilities", "1,856 OSM elements filtered to 1,368 care facilities; 472 excluded as pharmacies, dentists, laboratories outside the care model, or other out-of-scope tags; 16 duplicates merged only when the normalised name matched within 150 m; zero outside the boundary."],
+                  ["Roads", "125,452 drivable ways assembled into a 532,088-node graph. The largest connected component covers 99.5% of nodes. Zero areas and zero facilities are unreachable in the baseline matrix."],
+                  ["Imports", "CSV/GeoJSON facilities are validated for schema, coordinate range, category, services, duplicates, and boundary containment. Population-area imports are disabled for Delhi because the release must match the validated Census ward set."],
+                  ["Provenance", "Every facility carries its OSM element ID, source URL, relevant tags, and operational_status=unknown. The dataset manifest records release ID, source dates, licences, counts, and validation results."],
+                ].map(([label, detail]) => (
+                  <div key={label} className="border border-[var(--rule)] bg-[var(--sheet)] p-3">
+                    <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
+                      {label}
+                    </p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-[var(--ink-2)]">
+                      {detail}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <a
+                  href={`${API_BASE}/api/v1/meta`}
+                  className="link-dashed text-[10.5px]"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Live dataset manifest
+                  <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+                </a>
+                <Link href="/app/data-sources" className="link-dashed text-[10.5px]">
+                  Source register
+                </Link>
               </div>
             </section>
 
             <section id="testing" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
-              <SectionLabel index="08">Validation &amp; automated tests</SectionLabel>
+              <SectionLabel index="08">Testing</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                Claims are backed by executable checks.
+                Known answers, not vibes.
               </h2>
               <p className="measure mt-4 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                The backend test suite exercises coordinate validation,
-                service-suitability filtering, threshold handling, population
-                coverage, weighted statistics, scenario comparison, the
-                no-worsening invariant, candidate-ranking determinism, import
-                validation, API contracts, and database seeding. The frontend test
-                suite covers formatting, access-band logic, stateful controls, and
-                display of analysis-derived values.
+                Backend tests include known-answer accessibility cases with
+                nullable population, a dictionary/array parity test, the
+                additive non-worsening invariant, release validation (population
+                sum, geometry, boundary containment, facility provenance,
+                duplicate checks), routing consistency, API contracts, import
+                validation, read-only mode, and a failure test proving a missing
+                real-data release does not fall back to synthetic data.
               </p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <a
-                  href={`${API_BASE}/docs`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-outline btn-sm"
-                >
-                  OpenAPI documentation
-                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-                <a
-                  href={`${API_BASE}/health`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-outline btn-sm"
-                >
-                  API health
-                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-              </div>
+              <pre className="mono mt-4 overflow-x-auto border border-[var(--rule)] bg-[var(--sheet)] p-4 text-[11px] leading-relaxed text-[var(--ink)]">
+{`cd backend
+../.venv/bin/ruff check app tests
+../.venv/bin/pytest
+
+cd ../frontend
+npm run lint
+npm run typecheck
+npm test
+npm run build
+
+npx playwright test`}
+              </pre>
               <p className="mt-3 text-[10px] leading-relaxed text-[var(--ink-3)]">
-                CI runs backend lint and tests, migration validation, frontend
-                lint, type checking, unit tests, and a production build. A build
-                is not evidence that a deployed service is healthy; deployment
-                verification is separate.
+                Actual pass/fail counts for each run are recorded in the release
+                report and the repository README. A skipped or unavailable test is
+                reported as such, never counted as a pass.
               </p>
             </section>
 
             <section id="limitations" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
-              <SectionLabel index="09">Known limitations</SectionLabel>
+              <SectionLabel index="09">Limitations</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                What this release does not resolve.
+                What this pilot cannot establish.
               </h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <ul className="mt-4 space-y-2.5">
                 {[
-                  ["Synthetic geography", "The demo boundary, population, vulnerability, facilities, and road grid are generated. They describe no real district."],
-                  ["Incomplete facility inventories", "A missing mapped facility is not evidence that care is absent. Real inventories require authoritative, current sources."],
-                  ["Access ≠ availability", "Travel-time coverage ignores capacity, staffing, opening hours, cost, equipment, and service readiness."],
-                  ["No health outcomes", "The model does not estimate morbidity, mortality, utilisation, or the health impact of a new facility."],
-                  ["Static routing", "No live traffic, public transport, seasonal roads, or turn-by-turn road network. Results are estimates under fixed assumptions."],
-                  ["Coarse spatial units", "Area centroids stand in for populations; within-area inequality and travel by individuals are not represented."],
-                  ["Vulnerability proxy", "The synthetic index is illustrative and not suitable for real prioritisation or protected-group analysis."],
-                  ["Heuristic optimisation", "Greedy ranking is not globally optimal and uses relative normalisation, so scores can shift with candidate composition."],
-                  ["No authentication", "The local build has no accounts, roles, rate limiting, or audit trail. It must not be publicly deployed without those controls."],
-                  ["No public data ingestion", "Only validated local imports are supported. There is no automated scraping or live government-feed integration."],
+                  ["Historical population", "Census 2011 is a 2011 baseline, not current population. The 2022 municipal delimitation is not represented."],
+                  ["Partial denominator", "NDMC and Cantonment charge populations, rural village population, and the unassigned riverbed are outside the denominators. Results describe 95.3% of the 2011 NCT population."],
+                  ["Incomplete facility inventory", "OpenStreetMap completeness is unknown. A facility absent from the map is not evidence that care is absent."],
+                  ["Unverified services", "Service attribution comes from tags. Operating status, staffing, hours, equipment, stock, affordability, and quality are not verified or modelled."],
+                  ["Coarse geography", "Ward centroids represent where people live. Intra-ward differences and informal settlements are concealed."],
+                  ["Routing assumptions", "No live traffic, one-way restrictions, turn restrictions, public transport, walking, or seasonal access."],
+                  ["No vulnerability input", "Equity weighting is disabled rather than fabricated. Vulnerable sub-populations are not identified."],
+                  ["Heuristic ranking", "Greedy candidate selection is not globally optimal and ignores land, ownership, utilities, flood risk, and cost."],
+                  ["No outcome claims", "Coverage is modelled access, not utilisation, treatment, health improvement, or causal effect."],
+                  ["Public-demo controls", "The API has no authentication by default. Mutating endpoints must be disabled (read-only mode) or protected before public exposure."],
                 ].map(([title, detail]) => (
-                  <div key={title} className="border border-[var(--rule)] bg-[var(--sheet)] p-3.5">
-                    <p className="text-[11px] font-medium text-[var(--ink)]">{title}</p>
-                    <p className="mt-1 text-[10px] leading-relaxed text-[var(--ink-2)]">{detail}</p>
-                  </div>
+                  <li key={title} className="border-l-2 border-[var(--rule-strong)] pl-3">
+                    <p className="text-[11.5px] font-medium text-[var(--ink)]">{title}</p>
+                    <p className="mt-0.5 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
+                      {detail}
+                    </p>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </section>
 
             <section id="responsible" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
               <SectionLabel index="10">Responsible use</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                Decision support, not diagnosis or allocation.
+                Coverage is not care.
               </h2>
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <div className="border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-[var(--positive)]" strokeWidth={1.6} aria-hidden="true" />
-                    <p className="text-[11.5px] font-medium text-[var(--ink)]">
-                      Privacy posture
-                    </p>
-                  </div>
-                  <ul className="mt-2 space-y-1.5">
-                    {[
-                      "No patient-identifiable data collected or required.",
-                      "Population values are area-level and synthetic in the demo.",
-                      "No clinical records, addresses, or individual histories.",
-                      "Secrets are environment variables; no credentials are committed.",
-                    ].map((item) => (
-                      <li key={item} className="flex gap-2 text-[10px] leading-relaxed text-[var(--ink-2)]">
-                        <CircleCheck className="mt-0.5 h-2.5 w-2.5 shrink-0 text-[var(--signal)]" aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="flex items-center gap-2 text-[11px] font-medium text-[var(--ink)]">
+                    <CircleCheck className="h-3.5 w-3.5 text-[var(--signal)]" strokeWidth={1.7} aria-hidden="true" />
+                    Appropriate uses
+                  </p>
+                  <p className="mt-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
+                    Comparing modelled access, finding candidate sites, testing
+                    assumptions, and asking better questions before resources are
+                    committed.
+                  </p>
                 </div>
                 <div className="border border-[var(--rule)] bg-[var(--paper-2)] p-4">
-                  <div className="flex items-center gap-2">
-                    <TriangleAlert className="h-4 w-4 text-[var(--gap)]" strokeWidth={1.6} aria-hidden="true" />
-                    <p className="text-[11.5px] font-medium text-[var(--ink)]">
-                      Use constraints
-                    </p>
-                  </div>
-                  <p className="mt-2 text-[10px] leading-relaxed text-[var(--ink-2)]">
-                    Do not use this demo to allocate real resources, infer
-                    individual need, or make clinical decisions. Any real
-                    deployment requires local validation, community engagement,
-                    source governance, privacy review, authentication, audit
-                    logging, and review by public-health professionals. South
-                    Asian district planning also requires sensitivity to
-                    settlements, transport modes, seasonal access, and
-                    informal providers that are not modelled here.
+                  <p className="flex items-center gap-2 text-[11px] font-medium text-[var(--ink)]">
+                    <ShieldCheck className="h-3.5 w-3.5 text-[var(--gap)]" strokeWidth={1.7} aria-hidden="true" />
+                    Not appropriate
+                  </p>
+                  <p className="mt-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
+                    Allocating real resources, inferring individual need, making
+                    clinical decisions, or claiming that a mapped facility is
+                    staffed and available.
                   </p>
                 </div>
               </div>
+              <p className="mt-3 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
+                No patient-identifiable data is collected, accepted, or required.
+                CareGap is an aggregate geographic planning tool, not a clinical
+                record system. It is not affiliated with, endorsed by, or an
+                official product of the Government of NCT of Delhi or any
+                facility operator.
+              </p>
             </section>
 
             <section id="design" className="mt-14 scroll-mt-24 border-t border-[var(--rule-strong)] pt-8">
               <SectionLabel index="11">Design record</SectionLabel>
               <h2 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.9rem)]">
-                Why the product looks like this.
+                An inspection instrument, not a dashboard.
               </h2>
               <p className="measure mt-4 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                CareGap&apos;s interface is an original implementation informed by
-                four references inspected in source from the InstaLanding library:
-                <span className="font-medium text-[var(--ink)]"> Halden Clinical Equipment</span> for
-                clinical restraint, one signal colour, mono instrumentation, and
-                the inspection-board pattern;
-                <span className="font-medium text-[var(--ink)]"> the Footnote design system</span> for
-                warm paper, Source Serif editorial typography, mono labels, and
-                semantic highlighter marks;
-                <span className="font-medium text-[var(--ink)]"> GEO/LAB Planetary Geography</span> for
-                treating spatial data as an instrument rather than wallpaper; and
-                <span className="font-medium text-[var(--ink)]"> Mirador Observability</span> for
-                the rail, context filters, and data-console composition.
+                The interface is an original implementation informed by the
+                InstaLanding design library: Halden Clinical Equipment (clinical
+                restraint, mono instrumentation, inspection board), Footnote
+                (warm paper, Source Serif, semantic highlighter), GEO/LAB (spatial
+                instrumentation), and Mirador (rail + context filters). No
+                third-party code, fonts, or assets were copied. See the design
+                audit and credits in the repository documentation.
               </p>
-              <p className="measure mt-3 text-[13px] leading-[1.75] text-[var(--ink-2)]">
-                SmartCare Clinical AI and Calibre Grading Bench were also inspected.
-                Their iridescent clinical AI treatment and orange threat/gauge
-                language were deliberately not adopted: they signal capability or
-                alarm that this model cannot support. No reference code, assets,
-                fonts, or copy were copied. InstaLanding&apos;s library is MIT;
-                Halden credits the 8B Reflow template (MIT). The full audit and
-                licence notes live in <span className="mono">docs/design-audit.md</span>.
-              </p>
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <div className="border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                    Type system
-                  </p>
-                  <p className="serif mt-2 text-[30px] leading-none text-[var(--ink)]">
-                    Source Serif 4
-                  </p>
-                  <p className="mt-1 text-[11px] text-[var(--ink-2)]">
-                    Display, large values, editorial emphasis
-                  </p>
-                  <p className="mt-3 text-[13px] font-medium text-[var(--ink)]">
-                    Geist · interface and reading copy
-                  </p>
-                  <p className="mono mt-2 text-[9px] uppercase tracking-[0.1em] text-[var(--ink-2)]">
-                    JetBrains Mono · data, units, coordinates, labels
-                  </p>
-                </div>
-                <div className="border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                  <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                    Palette roles
-                  </p>
-                  <div className="mt-3 grid grid-cols-4 gap-2">
-                    {[
-                      ["#f7f4eb", "Paper"],
-                      ["#0c1d1e", "Ink"],
-                      ["#0e7169", "Signal"],
-                      ["#b76f1b", "Gap"],
-                      ["#a94338", "Critical"],
-                      ["#377a5a", "Positive"],
-                      ["#081a1c", "Field"],
-                      ["#d8d2c3", "Rule"],
-                    ].map(([color, label]) => (
-                      <div key={color}>
-                        <span
-                          className="block h-8 w-full rounded-[2px] border border-black/10"
-                          style={{ background: color }}
-                        />
-                        <span className="mono mt-1 block text-[7.5px] uppercase tracking-[0.06em] text-[var(--ink-3)]">
-                          {label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="mt-3 text-[9.5px] leading-relaxed text-[var(--ink-3)]">
-                    Teal is the only interactive accent. Ochre and rose are
-                    reserved for measured gaps and warnings. Colour is never the
-                    sole carrier of meaning: every band has a label and value.
-                  </p>
-                </div>
+              <div className="mt-4 flex flex-wrap gap-4">
+                <Link href="/app/data-sources" className="link-dashed text-[10.5px]">
+                  <BookOpenText className="h-3 w-3" aria-hidden="true" />
+                  Source register
+                </Link>
+                <Link href="/app" className="link-dashed text-[10.5px]">
+                  <FlaskConical className="h-3 w-3" aria-hidden="true" />
+                  Open the workspace
+                </Link>
               </div>
             </section>
-
-            <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--rule-strong)] pt-4">
-              <p className="mono text-[8px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
-                Document status · v0.1 · reviewed against code at this commit
-              </p>
-              <Link href="/app/data-sources" className="arrow-link text-[10.5px] text-[var(--signal)]">
-                Data sources &amp; imports
-                <BookOpenText className="h-3 w-3" aria-hidden="true" />
-              </Link>
-            </div>
           </article>
 
-          <aside className="hidden xl:block">
+          <aside className="hidden lg:block">
             <div className="sticky top-24 space-y-4">
-              <div className="border border-[var(--rule)] bg-[var(--sheet)] p-4">
-                <p className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--ink-3)]">
-                  Document control
+              <div className="border-t border-[var(--rule-strong)] pt-3">
+                <p className="mono text-[8px] uppercase tracking-[0.12em] text-[var(--ink-3)]">
+                  At a glance
                 </p>
-                <dl className="mt-2 space-y-2">
+                <dl className="mt-3 space-y-2">
                   {[
-                    ["Version", "0.1.0"],
-                    ["Backend", "FastAPI + SQLAlchemy"],
-                    ["Spatial", "Shapely + pyproj + NetworkX"],
-                    ["Frontend", "Next.js + MapLibre"],
-                    ["Dataset", "Synthetic demo"],
+                    ["Geography", "NCT of Delhi"],
+                    ["Boundary", "1,482 km²"],
+                    ["Population", "Census 2011"],
+                    ["Represented", "16,000,745"],
+                    ["Areas", "290 (272 populated)"],
+                    ["Facilities", "1,368 OSM"],
+                    ["Routing", "OSM roads"],
+                    ["Live traffic", "No"],
                   ].map(([label, value]) => (
-                    <div key={label} className="flex items-baseline justify-between gap-2 border-b border-[var(--rule)] pb-1.5">
-                      <dt className="mono text-[7.5px] uppercase tracking-[0.06em] text-[var(--ink-3)]">
+                    <div
+                      key={label}
+                      className="flex items-baseline justify-between gap-3 border-b border-[var(--rule)] pb-1.5"
+                    >
+                      <dt className="mono text-[8px] uppercase tracking-[0.07em] text-[var(--ink-3)]">
                         {label}
                       </dt>
-                      <dd className="text-right text-[9.5px] text-[var(--ink-2)]">{value}</dd>
+                      <dd className="mono text-right text-[9.5px] text-[var(--ink-2)]">
+                        {value}
+                      </dd>
                     </div>
                   ))}
                 </dl>
               </div>
-              <div className="border-l-2 border-[var(--gap)] bg-[var(--paper-2)] p-3.5">
-                <p className="flex items-center gap-1.5 text-[10px] font-medium text-[var(--ink)]">
-                  <Info className="h-3 w-3 text-[var(--gap)]" aria-hidden="true" />
-                  Not a clinical tool
+              <div className="border border-[var(--gap)]/30 bg-[var(--gap-soft)]/35 p-3">
+                <p className="mono text-[8px] uppercase tracking-[0.1em] text-[#7d4b0e]">
+                  Honest uncertainty
                 </p>
-                <p className="mt-1.5 text-[9.5px] leading-relaxed text-[var(--ink-2)]">
-                  CareGap estimates geographic accessibility. It does not measure
-                  clinical need, diagnose conditions, or recommend individual care.
-                </p>
-              </div>
-              <div className="border border-[var(--rule)] bg-[var(--sheet)] p-3.5">
-                <p className="flex items-center gap-1.5 text-[10px] font-medium text-[var(--ink)]">
-                  <FlaskConical className="h-3 w-3 text-[var(--signal)]" aria-hidden="true" />
-                  Reproducible demo
-                </p>
-                <p className="mt-1.5 text-[9.5px] leading-relaxed text-[var(--ink-2)]">
-                  The demo dataset is generated deterministically from a committed
-                  script with a fixed seed. Regeneration and provenance are
-                  documented in the repository.
+                <p className="mt-1.5 text-[10px] leading-relaxed text-[var(--ink-2)]">
+                  Missing population values stay null. Missing vulnerability data
+                  disables equity scoring. Missing roads stop the real-data
+                  startup. The model does not fill gaps with invented numbers.
                 </p>
               </div>
             </div>

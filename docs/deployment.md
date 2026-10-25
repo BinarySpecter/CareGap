@@ -1,8 +1,9 @@
 # Deployment guide
 
-**Status: not deployed.** No public endpoint has been created, no domain was
-purchased, and no hosting charges were incurred. Public deployment requires the
-security review below.
+**Status: not deployed.** No public endpoint, domain, database service, or paid
+resource has been created. The steps below are prepared and locally verified
+where stated; public deployment requires the security review in
+[docs/security.md](security.md).
 
 ## Configuration
 
@@ -11,52 +12,78 @@ Copy `.env.example` to `.env` locally. Never commit `.env`.
 | Variable | Purpose |
 | --- | --- |
 | `CAREGAP_ENV` | Environment label (`development`/`production`). |
+| `CAREGAP_ACTIVE_DATASET` | `delhi-pilot` (default) or `caregap-demo`. |
 | `CAREGAP_DATABASE_URL` | SQLAlchemy URL. SQLite default; PostgreSQL via `postgresql+psycopg://...`. |
 | `CAREGAP_CORS_ORIGINS` | Comma-separated allowed frontend origins. |
 | `CAREGAP_LOG_LEVEL` | Python logging level. |
 | `CAREGAP_MAX_IMPORT_BYTES` | Upload limit; default 2 MB. |
+| `CAREGAP_READ_ONLY` | `true` disables scenario creation and imports. |
+| `CAREGAP_ENABLE_DOCS` | `false` disables `/docs`, `/redoc`, `/openapi.json`. |
+| `CAREGAP_ALLOWED_HOSTS` | Comma-separated TrustedHost allow-list; empty disables the check. |
+| `CAREGAP_DATASET_DIR` | Optional absolute path to a release directory. |
 | `NEXT_PUBLIC_API_URL` | Public API origin, baked into the Next client at build time. |
 | `POSTGRES_*` | Compose database credentials (placeholders only in `.env.example`). |
 
-## Local Docker Compose (verified database path)
+## Local (SQLite, no Docker)
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r backend/requirements.txt
+cd backend
+../.venv/bin/uvicorn app.main:app --reload --port 8000
+# second terminal
+cd frontend
+npm ci
+npm run dev
+```
+
+The API creates the database, validates the committed release, and builds the
+routing model. Delete `backend/caregap.db` to reset. A missing or invalid
+real-data release stops startup with an actionable error.
+
+## Docker Compose (PostgreSQL + PostGIS)
 
 ```bash
 cp .env.example .env
-# Set a local-only POSTGRES_PASSWORD in .env.
+# Replace POSTGRES_PASSWORD in .env with a local-only value.
 docker compose up --build
 ```
 
 Services:
 
-- `db`: `postgis/postgis:16-3.4` with a health check and `postgis` extension init.
+- `db`: `postgis/postgis:16-3.4`, health check, PostGIS extension init.
 - `api`: Python 3.12 image; runs `alembic upgrade head` then uvicorn on port 8000.
 - `web`: multi-stage Node 24 image using Next standalone output on port 3000.
 
 Defaults: web <http://localhost:3000>, API <http://localhost:8000/docs>.
-`NEXT_PUBLIC_API_URL` defaults to `http://localhost:8000`; rebuild the web image
-with a different build arg for a remote API.
 
-Verification performed: PostgreSQL 16 + PostGIS 3.4 service, Alembic migration,
-seeded demo data, health endpoint, and overview response; both backend and web
-Docker images built successfully; the backend image was run and health-checked.
-The complete three-container Compose stack and the web container runtime have not
-yet been run end-to-end and must be validated before deployment. The checked-in
-`.dockerignore` files keep build contexts small and exclude local secrets.
+**Verified locally:** PostgreSQL 16 + PostGIS 3.4 migration upgrade → downgrade
+→ upgrade, a live API run against PostgreSQL (Delhi release, 16,000,745
+population, 1,368 facilities, 86.58% maternal coverage at 15 minutes), the
+readiness probe, and both Docker images. The backend image was run and
+health-checked; the web image was run on port 3002 against the live API, and the
+landing page and workspace loaded with the Delhi map and 86.6% coverage. The
+complete three-container Compose orchestration was not run in one command;
+validate it in your environment before relying on it.
 
-## Manual production-style run
+## Production-style run
 
 ### Backend
 
 ```bash
 cd backend
 CAREGAP_ENV=production \
+CAREGAP_ACTIVE_DATASET=delhi-pilot \
 CAREGAP_DATABASE_URL='postgresql+psycopg://user:password@host:5432/caregap' \
 CAREGAP_CORS_ORIGINS='https://your-web-origin.example' \
+CAREGAP_READ_ONLY=true \
+CAREGAP_ENABLE_DOCS=false \
+CAREGAP_ALLOWED_HOSTS='api.your-domain.example' \
 ../.venv/bin/alembic upgrade head
 ../.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
 ```
 
-Do not run multiple workers with SQLite for writes. For Postgres, SQLAlchemy
+Do not run multiple workers with SQLite for writes. For PostgreSQL, SQLAlchemy
 connections are pooled and request-scoped. `psycopg[binary]` is required for
 PostgreSQL (`backend/requirements-postgres.txt`).
 
@@ -64,55 +91,118 @@ PostgreSQL (`backend/requirements-postgres.txt`).
 
 ```bash
 cd frontend
-NEXT_PUBLIC_API_URL='https://your-api-origin.example' npm run build
-# Use the provided Docker image, or the Next standalone server:
-#   copy .next/static and public into .next/standalone, then: node .next/standalone/server.js
+NEXT_PUBLIC_API_URL='https://api.your-domain.example' npm run build
+npm run start
+# or use the provided Docker image / Next standalone server
 ```
 
 `next start` warns with `output: "standalone"`; the standalone server or the
 Docker image is the supported production path.
 
-### Database and PostGIS
+### Reverse proxy
 
-- Keep Alembic as the schema authority. The API also calls `create_all` on
-  startup for local convenience; do not rely on it for controlled migrations.
-- Today, GeoJSON is stored in JSON columns; PostGIS is enabled in Compose for
-  future native geometry adoption. Do not claim PostGIS spatial indexes are in
-  use until that migration is implemented.
-- Configure backups, connection limits, TLS, and least-privilege database users.
+Terminate TLS at a reverse proxy or platform edge. Add:
 
-## Hosting options
+- HTTPS/HSTS, request size limits, timeouts, and per-IP rate limits;
+- a strict CORS origin (the API also enforces `CAREGAP_CORS_ORIGINS`);
+- `CAREGAP_ALLOWED_HOSTS` matching the public API host;
+- access logs without query strings that could contain sensitive data;
+- health checks on `/health` and `/ready`.
 
-The app can run on:
+No specific reverse proxy or hosting account has been configured or tested.
 
-- **Web:** Vercel, a Node 24 container host, or the Docker image on a VM.
-- **API:** Render, Fly.io, Railway, or a VM running the backend image. A Python
-  3.12 runtime or the provided Docker image is required.
-- **Database:** managed PostgreSQL 16 with the PostGIS extension available.
-- **Tiles:** a production tile provider with attribution and a plan that permits
-  your traffic. The public OSM tile endpoint is for low-volume demo use only.
+## Database, migrations, and PostGIS
 
-No provider-specific configuration has been tested or deployed.
+- Alembic is the schema authority. The API also calls `create_all` for local
+  convenience; do not rely on it for controlled migrations.
+- Migrations: `af8d1f78b2a6` (initial) → `3c9a1e6f2b10` (nullable population,
+  provenance columns, range constraints). Verified on SQLite and PostgreSQL,
+  including an upgrade with existing rows preserved.
+- GeoJSON is stored in JSON columns. PostGIS is enabled in Compose for future
+  native geometry adoption; do not claim PostGIS spatial indexes are in use.
+- Use a least-privilege database user, TLS, connection limits, and backups.
 
-## Pre-publication security checklist
+## Dataset release refresh
 
-- [ ] Add authentication and role-based authorisation (public-health planner,
-      analyst, administrator, viewer).
-- [ ] Add per-user/per-IP rate limiting and request size limits at the edge.
-- [ ] Restrict CORS to the exact production origin.
-- [ ] Enable TLS everywhere, HSTS, secure cookies if sessions are added.
-- [ ] Move secrets to a managed secret store; rotate the local demo password.
-- [ ] Use a least-privilege DB user; enable backups and point-in-time recovery.
-- [ ] Add audit logging for scenario creation and imports; do not log PHI.
-- [ ] Add structured error tracking and uptime monitoring without sensitive data.
-- [ ] Run dependency scanning and container image scanning.
-- [ ] Complete accessibility testing and a public-health domain review.
-- [ ] Review the dataset licence/provenance and publish source dates.
-- [ ] Replace synthetic data with clearly sourced data, or keep the synthetic
-      label and prevent policy use.
-- [ ] Add a real tile provider and review OSM attribution.
-- [ ] Perform a privacy impact assessment and confirm no patient data is ever
-      accepted.
+Build a new release offline:
+
+```bash
+.venv/bin/pip install -r backend/requirements-data.txt
+.venv/bin/python backend/scripts/fetch_delhi_sources.py
+.venv/bin/python backend/scripts/build_delhi_dataset.py
+```
+
+Then replace the stored release deliberately:
+
+```bash
+cd backend
+CAREGAP_DATABASE_URL=... ../.venv/bin/python scripts/refresh_dataset.py \
+  --dataset delhi-pilot --keep-scenarios
+```
+
+Normal startup **refuses** to replace a stored dataset whose release ID differs
+from the packaged release. This prevents silent data swaps. After a refresh,
+re-simulate saved scenarios and re-check exports. Scenario coordinates may no
+longer match new ward geography.
+
+## Backup and recovery
+
+- SQLite: stop the API, copy `backend/caregap.db` (or use `sqlite3 .backup`),
+  store it encrypted, and test restore on a separate path.
+- PostgreSQL: use `pg_dump --format=custom` on a schedule, retain WAL/point-in-
+  time recovery if the provider supports it, and test a restore into a scratch
+  database before relying on it.
+- The committed dataset release is reproducible from public sources and checksums
+  in `data/raw/delhi/SOURCES.json`. Back it up with the repository or release
+  artifact.
+- Recovery: restore the database, run `alembic upgrade head`, start the API, and
+  verify `/ready` plus a known coverage query.
+
+## Rollback outline
+
+1. Stop the API and web processes/containers.
+2. Restore the previous database backup or run `alembic downgrade` to the prior
+   revision if the schema change is reversible.
+3. Check out the previous application release and rebuild the web image with the
+   matching `NEXT_PUBLIC_API_URL`.
+4. If the dataset changed, restore the previous `backend/app/data/delhi/`
+   release and run the refresh script or restore the database.
+5. Start the API, verify `/health` and `/ready`, then run the demo script.
+
+## Deployment verification checklist
+
+- [ ] `alembic upgrade head` succeeds on a clean database.
+- [ ] `/health` returns the expected dataset, release, and routing model.
+- [ ] `/ready` returns 200.
+- [ ] `/api/v1/meta` shows the release, population year, represented population,
+      source dates, and vulnerability availability.
+- [ ] Overview shows the expected coverage for a known service/threshold.
+- [ ] A population-unavailable area is visible and excluded from denominators.
+- [ ] A scenario can be created and simulated (or returns 403 in read-only mode).
+- [ ] An export contains dataset ID, release, population year, and routing model.
+- [ ] CORS allows only the production origin.
+- [ ] `/docs` is disabled if not intended to be public.
+- [ ] No secrets in the client bundle or repository.
+- [ ] `npm audit` and `pip-audit` are clean or findings are documented.
+- [ ] Read-only mode is enabled for a public demo and the UI disables imports
+      and scenario creation.
+- [ ] Backup restore has been tested.
+- [ ] A second person completes the [demo script](demo-script.md) unaided.
+
+## Hosting arrangement (prepared, not provisioned)
+
+A practical arrangement compatible with this project:
+
+- **Web:** a Node 24 container host or Vercel.
+- **API:** a container host or VM running the backend image with 2 workers.
+- **Database:** managed PostgreSQL 16 with PostGIS available, backups, and
+  point-in-time recovery.
+- **Tiles:** a tile provider with an appropriate plan and attribution. The public
+  OSM tile endpoint is for low-volume demo use only.
+- **Edge:** TLS, rate limits, request size limits, and WAF.
+
+No provider-specific configuration has been tested or deployed. Do not claim a
+public deployment until it has actually been performed and verified.
 
 ## CI
 
@@ -121,8 +211,10 @@ No provider-specific configuration has been tested or deployed.
 - Backend lint, tests, SQLite migration validation, and PostgreSQL migration
   validation using a PostGIS service.
 - Frontend lint, typecheck, unit tests, and production build.
-- Playwright E2E with backend and frontend started by the test config.
+- Playwright E2E with backend and frontend started by the test config against
+  the Delhi release.
 
-The workflow passed all three jobs for commit `b55f0a4` (run
-[40145309253](https://github.com/BinarySpecter/CareGap/actions/runs/40145309253)).
-Check the latest run for newer commits before relying on it.
+Local verification for this release: 98 backend tests, 33 frontend unit tests,
+9 Playwright tests, frontend build, SQLite and PostgreSQL migrations, and both
+Docker images. GitHub Actions was not run in this offline workspace; the remote
+run for the eventual commit is the authoritative CI result.

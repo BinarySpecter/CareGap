@@ -1,5 +1,18 @@
 # Roadmap
 
+## Shipped in v0.2 (Delhi pilot)
+
+- [x] Real Delhi release: Census 2011 ward population, DataMeet wards, OSM
+      boundary/facilities/roads, release manifest, and data-quality report.
+- [x] Reproducible source fetch, build, validation, clipping, deduplication,
+      routing matrix, and deliberate refresh script.
+- [x] Explicit dataset profiles with no synthetic fallback and release mismatch
+      protection.
+- [x] Nullable population/vulnerability handling, dataset-scoped API, provenance
+      in responses and exports, readiness probe, read-only mode, docs toggle.
+- [x] Known-answer and release-validation tests; PostgreSQL/PostGIS migration
+      verification; live API run on PostgreSQL.
+
 ## Shipped in v0.1
 
 - [x] Deterministic synthetic demo dataset and generator.
@@ -22,8 +35,9 @@
 
 1. **Authentication and planning workspaces** — accounts, roles, audit trail,
    saved plans, and team review before any public deployment.
-2. **Real district pilot** — licence-cleared facility inventory, authoritative
-   population, stakeholder review, and a documented data-quality score.
+2. **Authoritative facility and population refresh** — licence-cleared facility
+   inventory, current population estimates, ward-level vulnerability input, and
+   stakeholder review.
 3. **PostGIS-native geometry** — migrate area and facility geometries, add spatial
    indexes and reproducible spatial data migrations.
 4. **Routing service integration** — self-hosted OSRM/Valhalla, realistic travel

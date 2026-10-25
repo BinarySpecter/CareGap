@@ -28,6 +28,15 @@ estimated, and synthetic data.
 - Do not present straight-line distance as road travel time.
 - Any new data source must be added to `docs/data-sources.md` with its URL,
   retrieval date, licence, coverage, and limitations.
+- Dataset releases must have an explicit release ID, provenance manifest, and
+  validation report. Do not mix synthetic and real records in one profile.
+- Missing population or vulnerability values must stay `null` and be excluded
+  from denominators or scoring. Never substitute invented values.
+- A real-data profile must not fall back to synthetic data or a straight-line
+  router. Fail loudly with recovery instructions instead.
+- Rebuild the Delhi release with `backend/scripts/fetch_delhi_sources.py` and
+  `backend/scripts/build_delhi_dataset.py`; do not edit committed artifacts by
+  hand.
 - Do not weaken or delete a failing test to make CI pass. Fix the cause or
   document a justified expectation change.
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { apiUrl } from "@/lib/api";
 import { formatNumber, formatPercent, formatSignedMinutes } from "@/lib/format";
-import type { RecommendationsResponse } from "@/lib/types";
+import type { MetaResponse, RecommendationsResponse } from "@/lib/types";
 import { useApiData } from "@/lib/use-api";
 
 const COMPONENTS = [
@@ -15,15 +15,22 @@ const COMPONENTS = [
 ] as const;
 
 export function CandidateSpotlight() {
+  const meta = useApiData<MetaResponse>(apiUrl("/api/v1/meta"));
+  const service = meta.data?.default_service ?? "maternal_health";
+  const threshold = meta.data?.default_threshold_minutes ?? 15;
+  const serviceLabel =
+    meta.data?.services.find((item) => item.id === service)?.label ?? "Maternal health";
+  const vulnerabilityAvailable =
+    meta.data?.dataset.vulnerability.available === true;
   const { data, error } = useApiData<RecommendationsResponse>(
     apiUrl("/api/v1/recommendations", {
-      service: "primary_care",
-      threshold_minutes: 30,
+      service,
+      threshold_minutes: threshold,
       intervention_type: "primary_care_clinic",
-      equity_weight: 0.35,
+      equity_weight: vulnerabilityAvailable ? 0.35 : 0,
       limit: 1,
       set_size: 1,
-      strategy: "equity_weighted",
+      strategy: vulnerabilityAvailable ? "equity_weighted" : "max_coverage",
     }),
   );
   const candidate = data?.candidates[0];
@@ -33,10 +40,12 @@ export function CandidateSpotlight() {
       <div className="relative z-[1]">
         <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-3">
           <span className="mono text-[8px] uppercase tracking-[0.12em] text-[var(--paper)]/50">
-            Engine sample / primary care / 30 min
+            Engine sample / {serviceLabel.toLowerCase()} / {threshold} min
           </span>
           <span className="mono text-[8px] uppercase tracking-[0.1em] text-[var(--paper)]/35">
-            Equity weight 0.35
+            {data?.vulnerability_available
+              ? `Equity weight ${data.equity_weight.toFixed(2)}`
+              : "Equity — unavailable"}
           </span>
         </div>
 
@@ -83,7 +92,7 @@ export function CandidateSpotlight() {
                     {candidate.area_name}
                   </h3>
                   <p className="mt-1 text-[10px] text-[var(--paper)]/45">
-                    {candidate.quadrant} quadrant · primary care clinic
+                    {candidate.quadrant} · proposed primary-care clinic
                   </p>
                 </div>
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[var(--gap)]/60 text-[var(--gap-soft)]">

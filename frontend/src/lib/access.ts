@@ -21,6 +21,9 @@ export interface AccessBand {
 
 export type MapColorMode = "access" | "improvement";
 
+export const NO_POPULATION_COLOR = "#6f6a5f";
+export const NO_POPULATION_LABEL = "No population data";
+
 export function niceMinutes(value: number): string {
   if (Number.isInteger(value)) return String(value);
   return value.toFixed(1).replace(/\.0$/, "");
@@ -109,6 +112,8 @@ export function buildAccessColorExpression(
   const value: unknown[] = ["coalesce", ["get", "travel_time_minutes"], 999999];
   return [
     "case",
+    ["==", ["coalesce", ["get", "population_included"], true], false],
+    NO_POPULATION_COLOR,
     ["==", ["get", "travel_time_minutes"], null],
     bands[5].color,
     ["<=", value, thresholdMinutes / 2],
@@ -193,10 +198,11 @@ export function normaliseBaselineAreas(areas: AreaCollection): AreaCollection {
 }
 
 export function accessStats(properties: AreaProperties[]) {
-  const total = properties.reduce((sum, area) => sum + area.population, 0);
-  const uncovered = properties.filter((area) => !area.covered);
+  const included = properties.filter((area) => area.population !== null);
+  const total = included.reduce((sum, area) => sum + (area.population ?? 0), 0);
+  const uncovered = included.filter((area) => !area.covered);
   const uncoveredPopulation = uncovered.reduce(
-    (sum, area) => sum + area.population,
+    (sum, area) => sum + (area.population ?? 0),
     0,
   );
   return {
@@ -205,6 +211,7 @@ export function accessStats(properties: AreaProperties[]) {
     uncoveredPercent: total > 0 ? (uncoveredPopulation / total) * 100 : 0,
     uncoveredAreas: uncovered.length,
     uncoveredPopulationLabel: formatNumber(uncoveredPopulation),
+    areasWithoutPopulation: properties.length - included.length,
   };
 }
 
@@ -213,7 +220,9 @@ export function sortByAccessRisk(properties: AreaProperties[]): AreaProperties[]
     const aTime = a.travel_time_minutes ?? Number.POSITIVE_INFINITY;
     const bTime = b.travel_time_minutes ?? Number.POSITIVE_INFINITY;
     if (bTime !== aTime) return bTime - aTime;
-    if (b.population !== a.population) return b.population - a.population;
+    if ((b.population ?? -1) !== (a.population ?? -1)) {
+      return (b.population ?? -1) - (a.population ?? -1);
+    }
     return a.area_id.localeCompare(b.area_id);
   });
 }

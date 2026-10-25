@@ -19,6 +19,7 @@ import { MetricTile } from "@/components/app/MetricTile";
 import { PageHeader } from "@/components/app/PageHeader";
 import { sortByAccessRisk } from "@/lib/access";
 import { apiUrl } from "@/lib/api";
+import { useDatasetMeta } from "@/lib/dataset-context";
 import {
   formatNumber,
   formatPercent,
@@ -28,10 +29,23 @@ import type { OverviewResponse } from "@/lib/types";
 import { useApiData } from "@/lib/use-api";
 
 export function OverviewClient() {
-  const [service, setService] = useState("primary_care");
-  const [threshold, setThreshold] = useState(30);
+  const { meta } = useDatasetMeta();
+  const defaultsApplied = useRef(false);
+  const [service, setService] = useState(
+    meta?.default_service ?? "maternal_health",
+  );
+  const [threshold, setThreshold] = useState(
+    meta?.default_threshold_minutes ?? 15,
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const lastDataKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!meta || defaultsApplied.current) return;
+    defaultsApplied.current = true;
+    setService(meta.default_service);
+    setThreshold(meta.default_threshold_minutes);
+  }, [meta]);
 
   const { data, error, loading, reload } = useApiData<OverviewResponse>(
     apiUrl("/api/v1/overview", { service, threshold_minutes: threshold }),
@@ -201,7 +215,9 @@ export function OverviewClient() {
                   <AccessMap
                     areas={mapAreas}
                     threshold={threshold}
-                    facilities={data.facilities}
+                    facilities={data.facilities.filter((facility) =>
+                      facility.services.includes(service),
+                    )}
                     catchment={data.catchment}
                     selectedAreaId={selectedId}
                     onSelectArea={setSelectedId}
@@ -280,7 +296,10 @@ export function OverviewClient() {
                             {area.name}
                           </span>
                           <span className="mono block text-[8px] uppercase tracking-[0.06em] text-[var(--ink-3)]">
-                            {formatNumber(area.population)} people · {area.quadrant}
+                            {area.population === null
+                              ? "Population unavailable"
+                              : `${formatNumber(area.population)} people`}{" "}
+                            · {area.quadrant}
                           </span>
                         </span>
                         <span className="mono shrink-0 text-[10px] text-[var(--gap)]">
@@ -304,9 +323,11 @@ export function OverviewClient() {
                   </p>
                   <p className="mt-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]">
                     A mapped facility is not verified staffing, opening hours,
-                    affordability, or quality. Missing maps records are not proof
-                    that care is absent. The demo uses a synthetic road network
-                    and fictional facilities.
+                    affordability, or quality. Missing map records are not proof
+                    that care is absent.{" "}
+                    {meta?.dataset.is_synthetic
+                      ? "This dataset is synthetic and uses a synthetic road network."
+                      : "This release uses Census 2011 population and OpenStreetMap facilities and roads; travel times are modelled, not live traffic."}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-3">
                     <Link href="/app/data-sources" className="link-dashed text-[10px]">

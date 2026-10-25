@@ -9,7 +9,13 @@ from shapely.ops import unary_union
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_session, get_travel_router, require_dataset
+from app.api.deps import (
+    get_active_dataset_id,
+    get_session,
+    get_travel_router,
+    require_active_dataset,
+    require_writable,
+)
 from app.api.schemas import (
     ComparisonDeltaOut,
     EquityOut,
@@ -21,11 +27,12 @@ from app.api.schemas import (
     ScenarioSimulationResponse,
 )
 from app.api.serializers import (
-    DATA_NOTICE,
-    WARNING_TEXT,
     area_domain,
     catchment,
     comparison_features,
+    data_notice,
+    dataset_info,
+    dataset_warnings,
     facility_domain,
     facility_out,
     proposed_facility_out,
@@ -33,7 +40,7 @@ from app.api.serializers import (
     summary_out,
 )
 from app.core.catalog import INTERVENTION_BY_ID, is_valid_service
-from app.models import Area, Facility, Scenario
+from app.models import Area, Dataset, Facility, Scenario
 from app.services.analysis import (
     AnalysisFacility,
     analyze,
@@ -58,8 +65,12 @@ def _scenario_out(scenario: Scenario) -> ScenarioOut:
     )
 
 
-def _dataset_areas(session: Session) -> list[Area]:
-    return list(session.scalars(select(Area).order_by(Area.id)).all())
+def _dataset_areas(session: Session, dataset_id: str) -> list[Area]:
+    return list(
+        session.scalars(
+            select(Area).where(Area.dataset_id == dataset_id).order_by(Area.id)
+        ).all()
+    )
 
 
 def _ensure_points_inside(areas: list[Area], payload: ScenarioCreate) -> None:
@@ -84,10 +95,11 @@ def _ensure_points_inside(areas: list[Area], payload: ScenarioCreate) -> None:
 @router.post("/scenarios", response_model=ScenarioOut, status_code=201)
 def create_scenario(
     payload: ScenarioCreate,
+    dataset: Dataset = Depends(require_active_dataset),
     session: Session = Depends(get_session),
+    _writable: None = Depends(require_writable),
 ) -> ScenarioOut:
-    dataset = require_dataset(session)
-    areas = _dataset_areas(session)
+    areas = _dataset_areas(session, dataset.id)
     _ensure_points_inside(areas, payload)
     scenario_id = str(uuid.uuid4())
     short_id = scenario_id[:8]
@@ -121,29 +133,39 @@ def create_scenario(
 @router.get("/scenarios", response_model=ScenarioListResponse)
 def list_scenarios(
     limit: Annotated[int, Query(ge=1, le=50)] = 20,
+    active_dataset_id: str = Depends(get_active_dataset_id),
     session: Session = Depends(get_session),
 ) -> ScenarioListResponse:
-    total = session.scalar(select(func.count()).select_from(Scenario)) or 0
+    total = session.scalar(
+        select(func.count())
+        .select_from(Scenario)
+        .where(Scenario.dataset_id == active_dataset_id)
+    ) or 0
     items = list(
         session.scalars(
-            select(Scenario).order_by(Scenario.created_at.desc()).limit(limit)
+            select(Scenario)
+            .where(Scenario.dataset_id == active_dataset_id)
+            .order_by(Scenario.created_at.desc())
+            .limit(limit)
         ).all()
     )
     return ScenarioListResponse(items=[_scenario_out(item) for item in items], total=total)
 
 
-def _get_scenario(session: Session, scenario_id: str) -> Scenario:
+def _get_scenario(session: Session, scenario_id: str, dataset_id: str) -> Scenario:
     scenario = session.get(Scenario, scenario_id)
-    if scenario is None:
+    if scenario is None or scenario.dataset_id != dataset_id:
         raise HTTPException(status_code=404, detail="Scenario not found")
     return scenario
 
 
 @router.get("/scenarios/{scenario_id}", response_model=ScenarioOut)
 def get_scenario(
-    scenario_id: str, session: Session = Depends(get_session)
+    scenario_id: str,
+    active_dataset_id: str = Depends(get_active_dataset_id),
+    session: Session = Depends(get_session),
 ) -> ScenarioOut:
-    return _scenario_out(_get_scenario(session, scenario_id))
+    return _scenario_out(_get_scenario(session, scenario_id, active_dataset_id))
 
 
 def _intervention_facilities(
@@ -196,17 +218,24 @@ def _intervention_facilities(
 )
 def simulate_scenario(
     scenario_id: str,
+    active_dataset_id: str = Depends(get_active_dataset_id),
+    dataset: Dataset = Depends(require_active_dataset),
     session: Session = Depends(get_session),
     travel_router: TravelTimeRouter = Depends(get_travel_router),
 ) -> ScenarioSimulationResponse:
-    scenario = _get_scenario(session, scenario_id)
+    scenario = _get_scenario(session, scenario_id, active_dataset_id)
     if not is_valid_service(scenario.service):
         raise HTTPException(status_code=409, detail="Scenario service is invalid")
-    require_dataset(session, scenario.dataset_id)
-    areas = _dataset_areas(session)
+    areas = _dataset_areas(session, scenario.dataset_id)
     if not areas:
         raise HTTPException(status_code=409, detail="Dataset has no population areas")
-    existing = list(session.scalars(select(Facility).order_by(Facility.id)).all())
+    existing = list(
+        session.scalars(
+            select(Facility)
+            .where(Facility.dataset_id == scenario.dataset_id)
+            .order_by(Facility.id)
+        ).all()
+    )
     proposed, labels, intervention_assumptions = _intervention_facilities(scenario)
 
     analysis_areas = [area_domain(area) for area in areas]
@@ -231,8 +260,14 @@ def simulate_scenario(
         (
             item
             for item in comparison.areas
-            if item.newly_covered_population > 0
-            or (item.improvement_minutes is not None and item.improvement_minutes > 0.05)
+            if item.area.has_population
+            and (
+                item.newly_covered_population > 0
+                or (
+                    item.improvement_minutes is not None
+                    and item.improvement_minutes > 0.05
+                )
+            )
         ),
         key=lambda item: (
             -item.newly_covered_population,
@@ -256,8 +291,12 @@ def simulate_scenario(
             )
         )
     residual = sorted(
-        (item for item in comparison.areas if not item.covered_proposed),
-        key=lambda item: (-item.area.population, item.area.id),
+        (
+            item
+            for item in comparison.areas
+            if not item.covered_proposed and item.area.has_population
+        ),
+        key=lambda item: (-(item.area.population or 0), item.area.id),
     )[:20]
     residual_out = [
         ResidualGapOut(
@@ -271,7 +310,7 @@ def simulate_scenario(
     ]
 
     warnings = [
-        *WARNING_TEXT,
+        *dataset_warnings(dataset),
         *travel_router.model_info.warnings,
         "Proposed interventions are modelled as additional facilities; existing "
         "services are not removed or degraded.",
@@ -288,10 +327,21 @@ def simulate_scenario(
         f"Travel times use the {travel_router.model_info.label.lower()}.",
         "Coverage means the nearest suitable mapped facility is within the selected threshold; capacity, staffing, hours, and quality are not modelled.",
         *intervention_assumptions,
-        "Population is synthetic ward-level population assigned to area centroids.",
+        (
+            "Population is synthetic ward-level population assigned to area centroids."
+            if dataset.is_synthetic
+            else "Population is the Census of India 2011 ward-level count assigned to the ward; intra-ward distribution is not modelled."
+        ),
     ]
 
+    info = dataset_info(
+        dataset,
+        area_count=len(areas),
+        facility_count=len(existing),
+        total_population=sum(area.population or 0 for area in areas),
+    )
     return ScenarioSimulationResponse(
+        dataset=info,
         scenario=_scenario_out(scenario),
         service=scenario.service,
         threshold_minutes=scenario.threshold_minutes,
@@ -300,7 +350,7 @@ def simulate_scenario(
         delta=ComparisonDeltaOut(**comparison.delta_dict()),
         equity=EquityOut(**comparison.equity.to_dict()),
         routing=routing_info(travel_router.model_info),
-        areas=comparison_features(comparison.areas),
+        areas=comparison_features(comparison.areas, dataset),
         facilities=[facility_out(facility) for facility in existing],
         proposed_facilities=[
             proposed_facility_out(facility, labels.get(facility.facility_type, "Proposed"))
@@ -311,16 +361,18 @@ def simulate_scenario(
             scenario.service,
             scenario.threshold_minutes,
             covered=True,
+            dataset=dataset,
         ),
         catchment_proposed=catchment(
             proposed_result.areas,
             scenario.service,
             scenario.threshold_minutes,
             covered=True,
+            dataset=dataset,
         ),
         top_improvements=improvement_out,
         residual_gaps=residual_out,
         assumptions=assumptions,
         warnings=list(dict.fromkeys(warnings)),
-        data_notice=DATA_NOTICE,
+        data_notice=data_notice(dataset),
     )

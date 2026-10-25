@@ -47,10 +47,10 @@ const WORKSPACE_STEPS = [
 const PRODUCT_IMAGES = [
   {
     src: "/screenshots/overview.png",
-    alt: "CareGap Overview workspace showing the synthetic district access map, coverage metrics, and selected ward details.",
+    alt: "CareGap Overview workspace showing the Delhi ward access map, coverage metrics, and selected ward details.",
     label: "Overview / live access surface",
     caption:
-      "A map-first baseline: population areas shaded by modelled travel time, mapped facilities, and a real inspector.",
+      "A map-first baseline: Census 2011 wards shaded by modelled travel time, OpenStreetMap facilities, and a live inspector.",
     href: "/app",
   },
   {
@@ -63,10 +63,10 @@ const PRODUCT_IMAGES = [
   },
   {
     src: "/screenshots/recommendations.png",
-    alt: "CareGap Recommended Locations workspace showing ranked candidate sites and equity-weighted set comparison.",
+    alt: "CareGap Recommended Locations workspace showing ranked candidate sites and strategy comparison.",
     label: "Recommended locations / explainable shortlist",
     caption:
-      "Candidate sites ranked with visible components, beneficiary areas, and documented assumptions — not an AI score.",
+      "Candidate sites ranked with visible components, beneficiary areas, and documented assumptions. Equity weighting is shown only when a validated vulnerability indicator exists.",
     href: "/app/recommendations",
   },
 ];
@@ -89,7 +89,7 @@ export default function LandingPage() {
                     </span>
                     <span className="h-3 w-px bg-[var(--rule-strong)]" aria-hidden="true" />
                     <span className="mono text-[9px] uppercase tracking-[0.12em] text-[var(--ink-3)]">
-                      Demo district · 2026
+                      Delhi pilot · Census 2011 baseline
                     </span>
                   </div>
 
@@ -124,7 +124,7 @@ export default function LandingPage() {
                     {[
                       "Deterministic spatial analysis",
                       "Explainable candidate ranking",
-                      "Synthetic data, clearly labelled",
+                      "Census 2011 population, dated",
                     ].map((item) => (
                       <span
                         key={item}
@@ -141,10 +141,10 @@ export default function LandingPage() {
                   <div className="flex items-end justify-between gap-4">
                     <div>
                       <p className="mono text-[8px] uppercase tracking-[0.12em] text-[var(--ink-3)]">
-                        Demonstration geography
+                        Study geography
                       </p>
                       <p className="mono mt-1 text-[10px] text-[var(--ink-2)]">
-                        18.52°N / 73.86°E · synthetic 1,556 km² district
+                        28.64°N / 77.21°E · 1,482 km² NCT of Delhi
                       </p>
                     </div>
                     <p className="mono text-right text-[8px] uppercase leading-[1.6] tracking-[0.08em] text-[var(--ink-3)]">
@@ -306,15 +306,15 @@ export default function LandingPage() {
                           </span>
                           <span className="mono flex items-center gap-1.5 text-[7.5px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
                             <span className="status-dot h-[4px] w-[4px]" aria-hidden="true" />
-                            Synthetic demo
+                            Census 2011 · OSM
                           </span>
                         </div>
                         <Link href={image.href} className="block bg-[var(--paper-2)]">
                           <Image
                             src={image.src}
                             alt={image.alt}
-                            width={1202}
-                            height={942}
+                            width={1440}
+                            height={1000}
                             className="h-auto w-full"
                             sizes="(min-width: 1024px) 55vw, 100vw"
                           />
@@ -326,8 +326,8 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <p className="mono mt-4 text-[8px] uppercase leading-relaxed tracking-[0.08em] text-[var(--ink-3)]">
-                    Captured from the running demo workspace. Values are synthetic
-                    and computed; screenshots are not decorative mockups.
+                    Captured from the running workspace. Values are computed by the
+                    analysis API; screenshots are not decorative mockups.
                   </p>
                 </div>
               </div>
@@ -443,7 +443,7 @@ export default function LandingPage() {
                   <p className="mono mt-3 text-[8px] uppercase tracking-[0.08em] text-[var(--ink-3)] sm:mt-0 sm:text-right">
                     No PHI · No clinical claims
                     <br />
-                    Synthetic demonstration data
+                    Census 2011 · OpenStreetMap · modelled travel
                   </p>
                 </div>
               </div>
@@ -459,7 +459,7 @@ export default function LandingPage() {
               <div className="grid gap-10 lg:grid-cols-12">
                 <div className="lg:col-span-8">
                   <p className="mono text-[8.5px] uppercase tracking-[0.14em] text-[var(--paper)]/45">
-                    Start with the demo district
+                    Start with the Delhi pilot
                   </p>
                   <h2 className="display mt-4 max-w-[900px] text-[clamp(2.7rem,2rem+3.2vw,5.4rem)] text-[var(--paper)]">
                     The next clinic
@@ -468,8 +468,9 @@ export default function LandingPage() {
                   </h2>
                   <p className="measure mt-5 text-[13.5px] leading-[1.75] text-[var(--paper)]/60">
                     Open the workspace, inspect the gaps, place a proposed
-                    resource, and see the district recalculate. The demonstration
-                    dataset is synthetic, the calculations are real.
+                    resource, and see the study area recalculate. The population
+                    and map sources are public and dated; the calculations are
+                    reproducible.
                   </p>
                 </div>
                 <div className="flex flex-col justify-end gap-3 lg:col-span-4">

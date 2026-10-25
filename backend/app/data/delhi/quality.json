@@ -1,0 +1,830 @@
+{
+  "release": "delhi-pilot-2026.10-r1",
+  "boundary": {
+    "name": "NCT of Delhi (OpenStreetMap administrative relation 1942586)",
+    "source_id": "osm:relation/1942586",
+    "admin_level": "4",
+    "iso3166_2": "IN-DL",
+    "osm_timestamp": "2026-10-25T00:46:01Z",
+    "area_km2": 1482.04,
+    "bbox": [
+      76.838835,
+      28.404629,
+      77.345338,
+      28.883446
+    ],
+    "geometry_type": "Polygon",
+    "valid": true
+  },
+  "areas": {
+    "features_in_source": 290,
+    "areas_written": 290,
+    "invalid_geometries_repaired": 0,
+    "invalid_geometry_input": 0,
+    "duplicate_area_ids": 0,
+    "population_wards_matched": 272,
+    "population_wards_unmatched": [],
+    "areas_without_population": [
+      "DL-CANT-1",
+      "DL-CANT-2",
+      "DL-CANT-4",
+      "DL-CANT-5",
+      "DL-CANT-6",
+      "DL-CANT-7",
+      "DL-CANT-8",
+      "DL-CANT-3",
+      "DL-NDMC-1",
+      "DL-NDMC-2",
+      "DL-NDMC-3",
+      "DL-NDMC-4",
+      "DL-NDMC-5",
+      "DL-NDMC-7",
+      "DL-NDMC-8",
+      "DL-NDMC-9",
+      "DL-NDMC-6",
+      "DL-UNASSIGNED"
+    ],
+    "municipality_counts": {
+      "Delhi Cantonment": 8,
+      "NDMC": 9,
+      "MCD": 272,
+      "Unassigned": 1
+    },
+    "population_represented": 16000745,
+    "area_sum_km2": 1477.23,
+    "wards_clipped_to_boundary": 44,
+    "area_outside_boundary_km2": 10.4645,
+    "clipped_wards": [
+      {
+        "area_id": "DL-W133",
+        "source_name": "CHHAWLA",
+        "ward_no": "133",
+        "source_area_km2": 77.9152,
+        "clipped_area_km2": 77.4084,
+        "outside_boundary_km2": 0.5068
+      },
+      {
+        "area_id": "DL-W140",
+        "source_name": "KHERA",
+        "ward_no": "140",
+        "source_area_km2": 77.0505,
+        "clipped_area_km2": 76.5757,
+        "outside_boundary_km2": 0.4748
+      },
+      {
+        "area_id": "DL-W242",
+        "source_name": "NEW SEEMA PURI",
+        "ward_no": "242",
+        "source_area_km2": 0.9636,
+        "clipped_area_km2": 0.9431,
+        "outside_boundary_km2": 0.0205
+      },
+      {
+        "area_id": "DL-W261",
+        "source_name": "JIWANPUR",
+        "ward_no": "261",
+        "source_area_km2": 1.6496,
+        "clipped_area_km2": 1.5905,
+        "outside_boundary_km2": 0.059
+      },
+      {
+        "area_id": "DL-W262",
+        "source_name": "GOKALPUR",
+        "ward_no": "262",
+        "source_area_km2": 1.183,
+        "clipped_area_km2": 1.128,
+        "outside_boundary_km2": 0.0551
+      },
+      {
+        "area_id": "DL-W263",
+        "source_name": "SABOLI",
+        "ward_no": "263",
+        "source_area_km2": 1.8429,
+        "clipped_area_km2": 1.6927,
+        "outside_boundary_km2": 0.1502
+      },
+      {
+        "area_id": "DL-W264",
+        "source_name": "HARSH VIHAR",
+        "ward_no": "264",
+        "source_area_km2": 2.5349,
+        "clipped_area_km2": 2.4874,
+        "outside_boundary_km2": 0.0476
+      },
+      {
+        "area_id": "DL-W265",
+        "source_name": "SHIV VIHAR",
+        "ward_no": "265",
+        "source_area_km2": 1.7398,
+        "clipped_area_km2": 1.7006,
+        "outside_boundary_km2": 0.0392
+      },
+      {
+        "area_id": "DL-W271",
+        "source_name": "KARAWAL NAGAR WEST",
+        "ward_no": "271",
+        "source_area_km2": 2.0829,
+        "clipped_area_km2": 2.0649,
+        "outside_boundary_km2": 0.018
+      },
+      {
+        "area_id": "DL-W272",
+        "source_name": "SONIA VIHAR",
+        "ward_no": "272",
+        "source_area_km2": 6.7756,
+        "clipped_area_km2": 6.7121,
+        "outside_boundary_km2": 0.0635
+      },
+      {
+        "area_id": "DL-W198",
+        "source_name": "PUL PEHLAD",
+        "ward_no": "198",
+        "source_area_km2": 2.9657,
+        "clipped_area_km2": 2.8673,
+        "outside_boundary_km2": 0.0984
+      },
+      {
+        "area_id": "DL-W199",
+        "source_name": "TEKHAND",
+        "ward_no": "199",
+        "source_area_km2": 4.1678,
+        "clipped_area_km2": 4.1595,
+        "outside_boundary_km2": 0.0084
+      },
+      {
+        "area_id": "DL-W201",
+        "source_name": "JAITPUR",
+        "ward_no": "201",
+        "source_area_km2": 3.6642,
+        "clipped_area_km2": 3.6187,
+        "outside_boundary_km2": 0.0455
+      },
+      {
+        "area_id": "DL-W202",
+        "source_name": "MEETHEYPUR",
+        "ward_no": "202",
+        "source_area_km2": 2.7077,
+        "clipped_area_km2": 2.7033,
+        "outside_boundary_km2": 0.0044
+      },
+      {
+        "area_id": "DL-W203",
+        "source_name": "BADAR PUR",
+        "ward_no": "203",
+        "source_area_km2": 2.4581,
+        "clipped_area_km2": 2.4503,
+        "outside_boundary_km2": 0.0078
+      },
+      {
+        "area_id": "DL-W204",
+        "source_name": "MOLARBAND",
+        "ward_no": "204",
+        "source_area_km2": 1.4434,
+        "clipped_area_km2": 1.4421,
+        "outside_boundary_km2": 0.0012
+      },
+      {
+        "area_id": "DL-W175",
+        "source_name": "AYA NAGAR",
+        "ward_no": "175",
+        "source_area_km2": 31.9053,
+        "clipped_area_km2": 30.8373,
+        "outside_boundary_km2": 1.068
+      },
+      {
+        "area_id": "DL-W176",
+        "source_name": "BHATI",
+        "ward_no": "176",
+        "source_area_km2": 46.5003,
+        "clipped_area_km2": 46.0759,
+        "outside_boundary_km2": 0.4244
+      },
+      {
+        "area_id": "DL-W207",
+        "source_name": "MADANPUR KHADAR",
+        "ward_no": "207",
+        "source_area_km2": 8.2156,
+        "clipped_area_km2": 7.2956,
+        "outside_boundary_km2": 0.9199
+      },
+      {
+        "area_id": "DL-W208",
+        "source_name": "SARITA VIHAR",
+        "ward_no": "208",
+        "source_area_km2": 7.3524,
+        "clipped_area_km2": 6.7885,
+        "outside_boundary_km2": 0.5638
+      },
+      {
+        "area_id": "DL-W239",
+        "source_name": "VIVEK VIHAR",
+        "ward_no": "239",
+        "source_area_km2": 2.4081,
+        "clipped_area_km2": 2.3769,
+        "outside_boundary_km2": 0.0312
+      },
+      {
+        "area_id": "DL-W240",
+        "source_name": "DILSHAD COLONY",
+        "ward_no": "240",
+        "source_area_km2": 0.9637,
+        "clipped_area_km2": 0.8974,
+        "outside_boundary_km2": 0.0663
+      },
+      {
+        "area_id": "DL-W211",
+        "source_name": "TRILOK PURI",
+        "ward_no": "211",
+        "source_area_km2": 3.6352,
+        "clipped_area_km2": 3.4951,
+        "outside_boundary_km2": 0.14
+      },
+      {
+        "area_id": "DL-W212",
+        "source_name": "NEW ASHOK NAGAR",
+        "ward_no": "212",
+        "source_area_km2": 1.6386,
+        "clipped_area_km2": 1.6261,
+        "outside_boundary_km2": 0.0125
+      },
+      {
+        "area_id": "DL-W214",
+        "source_name": "KHICHRIPUR",
+        "ward_no": "214",
+        "source_area_km2": 4.5689,
+        "clipped_area_km2": 4.5643,
+        "outside_boundary_km2": 0.0047
+      },
+      {
+        "area_id": "DL-W215",
+        "source_name": "KONDLI",
+        "ward_no": "215",
+        "source_area_km2": 1.5653,
+        "clipped_area_km2": 1.5612,
+        "outside_boundary_km2": 0.0041
+      },
+      {
+        "area_id": "DL-W216",
+        "source_name": "GHAROLI",
+        "ward_no": "216",
+        "source_area_km2": 2.0375,
+        "clipped_area_km2": 2.0271,
+        "outside_boundary_km2": 0.0104
+      },
+      {
+        "area_id": "DL-W029",
+        "source_name": "KARALA",
+        "ward_no": "29",
+        "source_area_km2": 37.7353,
+        "clipped_area_km2": 37.7103,
+        "outside_boundary_km2": 0.025
+      },
+      {
+        "area_id": "DL-W027",
+        "source_name": "BEGUMPUR",
+        "ward_no": "27",
+        "source_area_km2": 46.5552,
+        "clipped_area_km2": 46.5493,
+        "outside_boundary_km2": 0.0059
+      },
+      {
+        "area_id": "DL-W227",
+        "source_name": "I.P EXTENTION",
+        "ward_no": "227",
+        "source_area_km2": 4.5261,
+        "clipped_area_km2": 4.4407,
+        "outside_boundary_km2": 0.0854
+      },
+      {
+        "area_id": "DL-W225",
+        "source_name": "ANAND VIHAR",
+        "ward_no": "225",
+        "source_area_km2": 4.3983,
+        "clipped_area_km2": 4.3429,
+        "outside_boundary_km2": 0.0554
+      },
+      {
+        "area_id": "DL-UNASSIGNED",
+        "source_name": null,
+        "ward_no": "None",
+        "source_area_km2": 37.0975,
+        "clipped_area_km2": 34.2008,
+        "outside_boundary_km2": 2.8967
+      },
+      {
+        "area_id": "DL-W030",
+        "source_name": "MUNDAKA",
+        "ward_no": "30",
+        "source_area_km2": 53.0161,
+        "clipped_area_km2": 52.9782,
+        "outside_boundary_km2": 0.0378
+      },
+      {
+        "area_id": "DL-W004",
+        "source_name": "BAKHTAWAR PUR",
+        "ward_no": "4",
+        "source_area_km2": 53.935,
+        "clipped_area_km2": 52.5926,
+        "outside_boundary_km2": 1.3423
+      },
+      {
+        "area_id": "DL-W002",
+        "source_name": "BANKNER",
+        "ward_no": "2",
+        "source_area_km2": 21.1288,
+        "clipped_area_km2": 21.0987,
+        "outside_boundary_km2": 0.0301
+      },
+      {
+        "area_id": "DL-W028",
+        "source_name": "BAWANA",
+        "ward_no": "28",
+        "source_area_km2": 56.57,
+        "clipped_area_km2": 56.405,
+        "outside_boundary_km2": 0.165
+      },
+      {
+        "area_id": "DL-W143",
+        "source_name": "KAPASHERA",
+        "ward_no": "143",
+        "source_area_km2": 21.8183,
+        "clipped_area_km2": 21.8168,
+        "outside_boundary_km2": 0.0015
+      },
+      {
+        "area_id": "DL-W141",
+        "source_name": "BIJWASAN",
+        "ward_no": "141",
+        "source_area_km2": 22.9546,
+        "clipped_area_km2": 22.9048,
+        "outside_boundary_km2": 0.0497
+      },
+      {
+        "area_id": "DL-W139",
+        "source_name": "DICHAON KALAN",
+        "ward_no": "139",
+        "source_area_km2": 30.8265,
+        "clipped_area_km2": 30.802,
+        "outside_boundary_km2": 0.0245
+      },
+      {
+        "area_id": "DL-W172",
+        "source_name": "KISHANGARH",
+        "ward_no": "172",
+        "source_area_km2": 22.4393,
+        "clipped_area_km2": 22.4302,
+        "outside_boundary_km2": 0.0091
+      },
+      {
+        "area_id": "DL-W001",
+        "source_name": "NARELA",
+        "ward_no": "1",
+        "source_area_km2": 20.2667,
+        "clipped_area_km2": 20.195,
+        "outside_boundary_km2": 0.0718
+      },
+      {
+        "area_id": "DL-W007",
+        "source_name": "BURARI",
+        "ward_no": "7",
+        "source_area_km2": 17.3255,
+        "clipped_area_km2": 16.5757,
+        "outside_boundary_km2": 0.7498
+      },
+      {
+        "area_id": "DL-W177",
+        "source_name": "SAID UL AJAIB",
+        "ward_no": "177",
+        "source_area_km2": 6.5186,
+        "clipped_area_km2": 6.4643,
+        "outside_boundary_km2": 0.0543
+      },
+      {
+        "area_id": "DL-W186",
+        "source_name": "SANGAM VIHAR WEST",
+        "ward_no": "186",
+        "source_area_km2": 2.795,
+        "clipped_area_km2": 2.7805,
+        "outside_boundary_km2": 0.0145
+      }
+    ],
+    "issues": [],
+    "ward_union_km2": 1476.91,
+    "boundary_ward_symmetric_difference_km2": 5.14,
+    "boundary_ward_symmetric_difference_percent": 0.35
+  },
+  "census": {
+    "ward_rows": 476,
+    "wards": 272,
+    "total": 16000745,
+    "ndmc_total": 257803,
+    "cantonment_total": 110351,
+    "delhi_total_2011": 16787941
+  },
+  "facilities": {
+    "source_elements": 1856,
+    "records_without_usable_coordinates": 0,
+    "excluded_non_care_or_out_of_scope": 472,
+    "excluded_examples": [
+      {
+        "source_id": "node/544510422",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/544510424",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/993722911",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/1135146944",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/1305481204",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/1305488150",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/1442029382",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/1796122217",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/2443108934",
+        "labels": "yes",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/2445864733",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/2474266967",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/3476213754",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/4317850293",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/4437543449",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/4438975401",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/4438975404",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/4774864180",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5120631340",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5131701515",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5237131013",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5245999337",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5245999338",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5258047461",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5258047748",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5433538363",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5433538543",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5442979845",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5455135885",
+        "labels": "yes",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5483331223",
+        "labels": "dentist",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5487020905",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5550775605",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5552867865",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5586450861",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5630006583",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5784310847",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5885381450",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5896241638",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5903909960",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5906904544",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      },
+      {
+        "source_id": "node/5909689001",
+        "labels": "pharmacy",
+        "reason": "not a modelled care category"
+      }
+    ],
+    "outside_study_boundary": [],
+    "near_boundary_for_review": [
+      "OSM-N6991430266",
+      "OSM-N7138632127",
+      "OSM-N7138632142",
+      "OSM-N7138632224",
+      "OSM-N7138632233",
+      "OSM-N7138632270"
+    ],
+    "duplicates_removed": 16,
+    "duplicates": [
+      {
+        "kept": "OSM-N13192478575",
+        "dropped": "OSM-N13193794439",
+        "name": "Nobel Diagnostics, Nobel Gynae Clinic",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W1149207620",
+        "dropped": "OSM-N13930769734",
+        "name": "Sant Nirankari Health City (SNHC)",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W1550371732",
+        "dropped": "OSM-N4859968811",
+        "name": "Bhagat Chandra Hospital",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-N8151246223",
+        "dropped": "OSM-N7138493216",
+        "name": "DGD Prem Nagar",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W1363969237",
+        "dropped": "OSM-N7138493235",
+        "name": "Medeor Hospital",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W1153427186",
+        "dropped": "OSM-N7138534441",
+        "name": "Nazar Kanwar Surana Hospital",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W1153422950",
+        "dropped": "OSM-N7138632251",
+        "name": "DGD Surajmal Vihar",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W260463370",
+        "dropped": "OSM-W260463370",
+        "name": "ESI",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W284837724",
+        "dropped": "OSM-W284837724",
+        "name": "Saket City Hospital",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W350752331",
+        "dropped": "OSM-W350752331",
+        "name": "Gupta Ultrasound & Heart Care Centre",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W1485122542",
+        "dropped": "OSM-W350834247",
+        "name": "Dharmarth Hospital",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W350852625",
+        "dropped": "OSM-W350852625",
+        "name": "Delhi Government Dispensary",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-W351584017",
+        "dropped": "OSM-W351584017",
+        "name": "Aam Aadmi Mohalla Clinic",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-N5277289181",
+        "dropped": "OSM-W352513321",
+        "name": "Max Multi Speciality Centre",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-N7544955490",
+        "dropped": "OSM-W352789067",
+        "name": "Sawan Neelu Angel's Multispeciality Hospital",
+        "reason": "same normalised name within 150 m"
+      },
+      {
+        "kept": "OSM-N7890356012",
+        "dropped": "OSM-W845721919",
+        "name": "Goel Children Clinic",
+        "reason": "same normalised name within 150 m"
+      }
+    ],
+    "facilities_written": 1368,
+    "category_counts": {
+      "clinic": 357,
+      "diagnostic_laboratory": 56,
+      "dispensary": 241,
+      "health_centre": 50,
+      "hospital": 664
+    },
+    "service_counts": {
+      "diagnostics": 64,
+      "emergency": 29,
+      "maternal_health": 19,
+      "primary_care": 1312
+    },
+    "unnamed_facilities": 48,
+    "facilities_without_admin_area": [
+      "OSM-N8151246340"
+    ],
+    "facilities_with_address": 957,
+    "operational_status_unknown": 1368,
+    "issues": []
+  },
+  "routing": {
+    "ways_read": 125452,
+    "ways_used": 125452,
+    "ways_skipped": 0,
+    "road_class_counts": {
+      "living_street": 5555,
+      "motorway": 211,
+      "motorway_link": 97,
+      "primary": 1216,
+      "primary_link": 532,
+      "residential": 104868,
+      "secondary": 3428,
+      "secondary_link": 878,
+      "tertiary": 5711,
+      "tertiary_link": 493,
+      "trunk": 988,
+      "trunk_link": 603,
+      "unclassified": 872
+    },
+    "nodes": 532088,
+    "edges_undirected": 620076,
+    "component_sizes": [
+      532088,
+      810,
+      97,
+      68,
+      55
+    ],
+    "largest_component_share": 0.9951,
+    "speed_assumptions_kph": {
+      "motorway": 80,
+      "motorway_link": 50,
+      "trunk": 60,
+      "trunk_link": 45,
+      "primary": 50,
+      "primary_link": 40,
+      "secondary": 40,
+      "secondary_link": 35,
+      "tertiary": 35,
+      "tertiary_link": 30,
+      "unclassified": 30,
+      "residential": 25,
+      "living_street": 15
+    },
+    "maxspeed_rule": "class speed capped by a parsable OSM maxspeed tag",
+    "oneway_rule": "one-way restrictions are not modelled; every edge is bidirectional",
+    "method": "network_shortest_path",
+    "network": "OpenStreetMap drivable roads, clip to the NCT of Delhi relation",
+    "routing_engine": "SciPy Dijkstra over an undirected CSR graph",
+    "local_access_speed_kph": 15.0,
+    "local_access_detour_factor": 1.25,
+    "area_snap_issues": [],
+    "facility_snap_issues": [],
+    "areas_without_any_reachable_facility": 0,
+    "facilities_unreachable_from_every_area": 0,
+    "matrix_shape": [
+      290,
+      1368
+    ],
+    "matrix_compute_seconds": 122.4,
+    "live_traffic": false,
+    "public_transport": false,
+    "walking_network": false,
+    "known_limitations": [
+      "One-way restrictions are not modelled; edges are bidirectional.",
+      "Turn restrictions, traffic signals, congestion, and live traffic are not modelled.",
+      "Centroids snap to the nearest road node; local access uses a straight-line detour estimate.",
+      "Public transport, walking, and cycling networks are not modelled."
+    ]
+  }
+}

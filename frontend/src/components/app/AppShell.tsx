@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Logo } from "@/components/ui/Logo";
 import { apiUrl } from "@/lib/api";
+import { DatasetMetaProvider, datasetBadge } from "@/lib/dataset-context";
 import { cn, formatNumber } from "@/lib/format";
 import type { MetaResponse } from "@/lib/types";
 import { useApiData } from "@/lib/use-api";
@@ -170,16 +171,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <p className="mt-2 text-[11px] leading-relaxed text-[var(--paper)]/62">
               {meta.data
-                ? `${meta.data.dataset.counts.areas ?? "—"} population areas · ${meta.data.dataset.counts.facilities ?? "—"} mapped facilities`
-                : "Loading the synthetic demonstration dataset."}
+                ? `${meta.data.dataset.short_name} · ${meta.data.dataset.counts.areas ?? "—"} areas · ${meta.data.dataset.counts.facilities ?? "—"} mapped facilities`
+                : "Loading the active dataset."}
             </p>
+            {meta.data && (
+              <p className="mono mt-1.5 break-all text-[8px] uppercase tracking-[0.08em] text-[var(--paper)]/35">
+                {meta.data.dataset.release ?? meta.data.dataset.id}
+              </p>
+            )}
             <Link
               href="/app/data-sources"
               className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-medium text-[var(--paper)]/72 hover:text-[var(--paper)]"
             >
-              Synthetic demo data
+              {meta.data?.dataset.is_synthetic
+                ? "Synthetic demo data"
+                : "Dataset provenance"}
               <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
             </Link>
+            {meta.data?.read_only && (
+              <p className="mono mt-2 text-[8px] uppercase tracking-[0.1em] text-[var(--gap-soft)]">
+                Read-only demo · mutations disabled
+              </p>
+            )}
           </div>
           <Link
             href="/"
@@ -226,9 +239,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="flex items-center gap-2">
               <span className="hidden items-center gap-2 rounded-[2px] border border-[var(--rule)] bg-[var(--sheet)] px-2.5 py-1.5 sm:inline-flex">
-                <span className="status-dot status-dot--gap h-[5px] w-[5px]" aria-hidden="true" />
+                <span
+                  className={cn(
+                    "h-[5px] w-[5px] rounded-full",
+                    meta.data?.dataset.is_synthetic
+                      ? "bg-[var(--gap)]"
+                      : "bg-[var(--signal)]",
+                  )}
+                  aria-hidden="true"
+                />
                 <span className="mono text-[8.5px] uppercase tracking-[0.12em] text-[var(--ink-2)]">
-                  Synthetic demo
+                  {datasetBadge(meta.data)}
                 </span>
               </span>
               <Link
@@ -248,7 +269,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main id="main-content">{children}</main>
+        <DatasetMetaProvider
+          value={{ meta: meta.data, error: meta.error, loading: meta.loading }}
+        >
+          <main id="main-content">{children}</main>
+        </DatasetMetaProvider>
 
         <footer className="border-t border-[var(--rule)] px-4 py-5 sm:px-6">
           <div className="flex flex-col justify-between gap-2 text-[10.5px] text-[var(--ink-3)] sm:flex-row sm:items-center">
@@ -258,8 +283,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-4">
               <span className="mono uppercase tracking-[0.1em]">
                 {meta.data
-                  ? `${formatNumber(meta.data.dataset.counts.population)} people in demo`
-                  : "Synthetic demo"}
+                  ? `${formatNumber(meta.data.dataset.counts.population)} people · ${meta.data.dataset.short_name}`
+                  : "Loading dataset"}
               </span>
               <Link href="/app/data-sources" className="hover:text-[var(--ink)]">
                 Provenance

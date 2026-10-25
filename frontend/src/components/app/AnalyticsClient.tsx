@@ -322,7 +322,9 @@ export function AnalyticsClient() {
                   areas={proposedAreas}
                   threshold={data.threshold_minutes}
                   colorMode={mapView === "change" ? "improvement" : "access"}
-                  facilities={data.facilities}
+                  facilities={data.facilities.filter((facility) =>
+                    facility.services.includes(data.service),
+                  )}
                   proposedFacilities={data.proposed_facilities}
                   catchment={data.catchment_proposed}
                   fitKey={`analytics-${data.scenario.dataset_id}`}
@@ -367,9 +369,17 @@ export function AnalyticsClient() {
                       {data.residual_gaps.slice(0, 9).map((area) => (
                         <tr key={area.area_id}>
                           <td>{area.name}</td>
-                          <td className="num">{formatNumber(area.population)}</td>
+                          <td className="num">
+                            {area.population === null
+                              ? "Unavailable"
+                              : formatNumber(area.population)}
+                          </td>
                           <td className="num">{formatMinutes(area.travel_time_minutes)}</td>
-                          <td className="num">{formatPercent(area.vulnerability_index * 100, 0)}</td>
+                          <td className="num">
+                            {area.vulnerability_index === null
+                              ? "n/a"
+                              : formatPercent(area.vulnerability_index * 100, 0)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -682,7 +692,11 @@ function BaselineAnalytics({ overview }: { overview: ReturnType<typeof useApiDat
                 {topGaps.map((area) => (
                   <tr key={area.area_id}>
                     <td>{area.name}</td>
-                    <td className="num">{formatNumber(area.population)}</td>
+                    <td className="num">
+                      {area.population === null
+                        ? "Unavailable"
+                        : formatNumber(area.population)}
+                    </td>
                     <td className="num">{formatMinutes(area.travel_time_minutes)}</td>
                   </tr>
                 ))}

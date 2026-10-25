@@ -10,15 +10,20 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_app_settings, get_session, require_dataset
+from app.api.deps import (
+    get_active_dataset_id,
+    get_app_settings,
+    get_session,
+    require_active_dataset,
+    require_writable,
+)
 from app.api.schemas import (
     ImportReportOut,
     ImportRunListResponse,
     ImportRunOut,
 )
 from app.config import Settings
-from app.models import Area, Facility, ImportRun
-from app.seed import DEMO_DATASET_ID
+from app.models import Area, Dataset, Facility, ImportRun
 from app.services.importer import (
     ExistingContext,
     ImportFormatError,
@@ -46,12 +51,20 @@ def _run_out(run: ImportRun) -> ImportRunOut:
 @router.get("/data/imports", response_model=ImportRunListResponse)
 def import_history(
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    active_dataset_id: str = Depends(get_active_dataset_id),
     session: Session = Depends(get_session),
 ) -> ImportRunListResponse:
-    total = session.scalar(select(func.count()).select_from(ImportRun)) or 0
+    total = session.scalar(
+        select(func.count())
+        .select_from(ImportRun)
+        .where(ImportRun.dataset_id == active_dataset_id)
+    ) or 0
     runs = list(
         session.scalars(
-            select(ImportRun).order_by(ImportRun.created_at.desc()).limit(limit)
+            select(ImportRun)
+            .where(ImportRun.dataset_id == active_dataset_id)
+            .order_by(ImportRun.created_at.desc())
+            .limit(limit)
         ).all()
     )
     return ImportRunListResponse(items=[_run_out(run) for run in runs], total=total)
@@ -61,11 +74,21 @@ def import_history(
 async def import_data(
     file: Annotated[UploadFile, File()],
     kind: Annotated[Literal["facilities", "areas"], Form()],
-    dataset_id: Annotated[str, Form()] = DEMO_DATASET_ID,
+    dataset: Dataset = Depends(require_active_dataset),
     session: Session = Depends(get_session),
     settings: Settings = Depends(get_app_settings),
+    _writable: None = Depends(require_writable),
 ) -> ImportReportOut:
-    dataset = require_dataset(session, dataset_id)
+    dataset_id = dataset.id
+    capabilities = (dataset.meta or {}).get("capabilities") or {}
+    if kind == "areas" and capabilities.get("area_import") is False:
+        raise HTTPException(
+            status_code=403,
+            detail=str(
+                capabilities.get("area_import_reason")
+                or "Area imports are disabled for this dataset."
+            ),
+        )
     filename = Path(file.filename or "upload").name
     if len(filename) > 255:
         raise HTTPException(status_code=422, detail="Filename is too long")
@@ -81,8 +104,10 @@ async def import_data(
         )
     await file.close()
 
-    areas = list(session.scalars(select(Area)))
-    facilities = list(session.scalars(select(Facility)))
+    areas = list(session.scalars(select(Area).where(Area.dataset_id == dataset_id)))
+    facilities = list(
+        session.scalars(select(Facility).where(Facility.dataset_id == dataset_id))
+    )
     context = ExistingContext.from_rows(facilities, areas)
 
     run_id = str(uuid.uuid4())
@@ -116,6 +141,14 @@ async def import_data(
                     lon=item["lon"],
                     lat=item["lat"],
                     data_status=item["data_status"],
+                    source=item.get("source", "User import"),
+                    source_id=item.get("source_id", ""),
+                    source_url=item.get("source_url", ""),
+                    ownership=item.get("ownership", "unknown"),
+                    operational_status=item.get("operational_status", "unknown"),
+                    address=item.get("address", ""),
+                    admin_area=item.get("admin_area", ""),
+                    source_tags=item.get("source_tags", {}),
                 )
             )
         for item in parsed.areas:
@@ -125,6 +158,8 @@ async def import_data(
                     dataset_id=dataset.id,
                     name=item["name"],
                     population=item["population"],
+                    population_status="imported",
+                    population_reference_year=None,
                     vulnerability_index=item["vulnerability_index"],
                     geometry=item["geometry"],
                     centroid_lon=item["centroid_lon"],

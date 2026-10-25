@@ -19,6 +19,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { AccessMap } from "@/components/map/AccessMap";
 import { accessBandFor, sortByAccessRisk } from "@/lib/access";
 import { apiUrl } from "@/lib/api";
+import { useDatasetMeta } from "@/lib/dataset-context";
 import {
   formatMinutes,
   formatNumber,
@@ -33,17 +34,30 @@ type SortMode = "time" | "population" | "vulnerability";
 
 export function ExploreClient() {
   const searchParams = useSearchParams();
-  const initialService = searchParams.get("service") || "primary_care";
-  const initialThreshold = Number(searchParams.get("threshold")) || 30;
+  const { meta } = useDatasetMeta();
+  const defaultsApplied = useRef(false);
+  const initialService = searchParams.get("service");
+  const initialThreshold = Number(searchParams.get("threshold")) || null;
   const initialArea = searchParams.get("area");
 
-  const [service, setService] = useState(initialService);
-  const [threshold, setThreshold] = useState(initialThreshold);
+  const [service, setService] = useState(
+    initialService ?? meta?.default_service ?? "maternal_health",
+  );
+  const [threshold, setThreshold] = useState(
+    initialThreshold ?? meta?.default_threshold_minutes ?? 15,
+  );
   const [selectedId, setSelectedId] = useState<string | null>(initialArea);
   const [query, setQuery] = useState("");
   const [accessFilter, setAccessFilter] = useState<AccessFilter>("all");
   const [sortMode, setSortMode] = useState<SortMode>("time");
   const lastDataKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!meta || defaultsApplied.current || initialService || initialThreshold) return;
+    defaultsApplied.current = true;
+    setService(meta.default_service);
+    setThreshold(meta.default_threshold_minutes);
+  }, [meta, initialService, initialThreshold]);
 
   const { data, error, loading, reload } = useApiData<OverviewResponse>(
     apiUrl("/api/v1/overview", { service, threshold_minutes: threshold }),
@@ -79,17 +93,23 @@ export function ExploreClient() {
     const text = query.trim().toLowerCase();
     let items = allAreas.filter((area) => {
       if (text) {
-        const haystack = `${area.name} ${area.quadrant} ${area.area_id}`.toLowerCase();
+        const haystack = `${area.name} ${area.quadrant} ${area.municipality ?? ""} ${area.area_id}`.toLowerCase();
         if (!haystack.includes(text)) return false;
       }
-      if (accessFilter === "outside") return !area.covered;
-      if (accessFilter === "inside") return area.covered;
+      if (accessFilter === "outside") {
+        return area.population !== null && !area.covered;
+      }
+      if (accessFilter === "inside") {
+        return area.population !== null && area.covered;
+      }
       return true;
     });
     items = [...items].sort((a, b) => {
-      if (sortMode === "population") return b.population - a.population;
+      if (sortMode === "population") {
+        return (b.population ?? -1) - (a.population ?? -1);
+      }
       if (sortMode === "vulnerability") {
-        return b.vulnerability_index - a.vulnerability_index;
+        return (b.vulnerability_index ?? -1) - (a.vulnerability_index ?? -1);
       }
       return (
         (b.travel_time_minutes ?? Number.POSITIVE_INFINITY) -
@@ -120,26 +140,44 @@ export function ExploreClient() {
   function downloadCsv() {
     if (!data) return;
     const header = [
+      "dataset_id",
+      "dataset_release",
+      "population_reference_year",
+      "service",
+      "threshold_minutes",
       "area_id",
       "name",
+      "municipality",
       "quadrant",
       "population",
+      "population_status",
       "vulnerability_index",
       "travel_time_minutes",
       "covered",
       "nearest_facility",
       "suitable_facilities_within_threshold",
+      "routing_model",
+      "data_notice",
     ];
     const rows = riskSorted.map((area) => [
+      data.dataset.id,
+      data.dataset.release ?? "",
+      data.summary.population_reference_year ?? "",
+      service,
+      threshold,
       area.area_id,
       area.name,
+      area.municipality ?? "",
       area.quadrant,
-      area.population,
-      area.vulnerability_index,
+      area.population ?? "",
+      area.population_status ?? "",
+      area.vulnerability_index ?? "",
       area.travel_time_minutes ?? "",
       area.covered ? "yes" : "no",
       area.nearest_facility_name ?? "",
       area.suitable_facilities_within_threshold ?? 0,
+      data.routing.label,
+      data.data_notice,
     ]);
     const csv = [header, ...rows]
       .map((row) =>
@@ -152,7 +190,7 @@ export function ExploreClient() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `caregap-access-${service}-${threshold}min.csv`;
+    anchor.download = `caregap-${data.dataset.id}-${service}-${threshold}min.csv`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -250,7 +288,9 @@ export function ExploreClient() {
                 <AccessMap
                   areas={mapAreas}
                   threshold={threshold}
-                  facilities={data.facilities}
+                  facilities={data.facilities.filter((facility) =>
+                    facility.services.includes(service),
+                  )}
                   catchment={data.catchment}
                   selectedAreaId={selectedId}
                   onSelectArea={setSelectedId}
@@ -328,7 +368,7 @@ export function ExploreClient() {
                     <input
                       id="area-search"
                       className="input h-8 w-[190px] pl-8 text-[11px]"
-                      placeholder="Search ward or quadrant"
+                      placeholder="Search area, municipality, or zone"
                       value={query}
                       onChange={(event) => setQuery(event.target.value)}
                     />
@@ -408,8 +448,16 @@ export function ExploreClient() {
                             <td className="whitespace-nowrap text-[var(--ink-2)]">
                               {area.quadrant}
                             </td>
-                            <td className="num">{formatNumber(area.population)}</td>
-                            <td className="num">{formatPercent(area.vulnerability_index * 100, 0)}</td>
+                            <td className="num">
+                              {area.population === null
+                                ? "Unavailable"
+                                : formatNumber(area.population)}
+                            </td>
+                            <td className="num">
+                              {area.vulnerability_index === null
+                                ? "n/a"
+                                : formatPercent(area.vulnerability_index * 100, 0)}
+                            </td>
                             <td className="num">{formatMinutes(area.travel_time_minutes)}</td>
                             <td className="max-w-[220px] text-[11px] text-[var(--ink-2)]">
                               {area.nearest_facility_name ?? "No suitable mapped facility"}

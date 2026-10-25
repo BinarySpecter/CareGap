@@ -68,5 +68,20 @@
     "The demo maps six facilities. Missing facilities in the synthetic inventory do not prove that care is absent.",
     "Coverage within a travel-time threshold is not the same as receiving quality care.",
     "Vulnerability index is synthetic and must not be used for real policy decisions."
-  ]
+  ],
+  "release": "caregap-demo-2026.10-r1",
+  "population": {
+    "reference_year": null,
+    "source": "Deterministic synthetic generator",
+    "represented_population": 3571121,
+    "note": "Synthetic area-level population. Not a real count."
+  },
+  "vulnerability": {
+    "available": true,
+    "reason": "Synthetic demonstration index for workflow testing only; not a real demographic measure."
+  },
+  "capabilities": {
+    "facility_import": true,
+    "area_import": true
+  }
 }

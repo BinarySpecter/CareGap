@@ -21,8 +21,8 @@ import type {
 import { useApiData } from "@/lib/use-api";
 
 const FALLBACK_SERVICES = [
+  { id: "maternal_health", label: "Maternal health", default_threshold_minutes: 15 },
   { id: "primary_care", label: "Primary care", default_threshold_minutes: 30 },
-  { id: "maternal_health", label: "Maternal health", default_threshold_minutes: 45 },
   { id: "diagnostics", label: "Diagnostics", default_threshold_minutes: 45 },
   { id: "emergency", label: "Emergency care", default_threshold_minutes: 60 },
 ];
@@ -92,8 +92,8 @@ function buildProjection(
 }
 
 export function AccessScanner() {
-  const [service, setService] = useState("primary_care");
-  const [threshold, setThreshold] = useState(30);
+  const [service, setService] = useState("maternal_health");
+  const [threshold, setThreshold] = useState(15);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const url = useMemo(
@@ -176,7 +176,9 @@ export function AccessScanner() {
           <div className="flex items-center gap-2">
             <span className="status-dot h-[5px] w-[5px] bg-[var(--signal-bright)] pulse-dot" aria-hidden="true" />
             <span className="mono text-[8.5px] uppercase tracking-[0.14em] text-[var(--paper)]/55">
-              Live analysis · synthetic data
+              {data?.dataset.is_synthetic
+                ? "Live analysis · synthetic data"
+                : "Live analysis · Census 2011 + OpenStreetMap"}
             </span>
           </div>
           <h2 className="serif mt-1.5 text-[19px] leading-none text-[var(--paper)]">
@@ -241,7 +243,7 @@ export function AccessScanner() {
         <div className="relative z-[1] flex-1 p-4">
           <LoadingPanel
             light
-            label="Scanning the demo district"
+            label="Scanning the study area"
             detail="Computing nearest suitable facility travel times for every population area."
           />
         </div>
@@ -299,18 +301,20 @@ export function AccessScanner() {
               <div className="scan-line" aria-hidden="true" />
               <div className="pointer-events-none absolute left-2 top-2 z-10">
                 <p className="mono text-[7.5px] uppercase tracking-[0.12em] text-[var(--paper)]/40">
-                  Synthetic demo district
+                  {data.dataset.short_name}
                 </p>
               </div>
               <div className="pointer-events-none absolute bottom-2 right-2 z-10 text-right">
                 <p className="mono text-[7.5px] uppercase tracking-[0.08em] text-[var(--paper)]/35">
-                  18.52°N / 73.86°E
+                  {data.dataset.geography.center
+                    ? `${data.dataset.geography.center[1].toFixed(2)}°N / ${data.dataset.geography.center[0].toFixed(2)}°E`
+                    : "NCT Delhi"}
                 </p>
               </div>
               <svg
                 viewBox={`0 0 ${VIEW.width} ${VIEW.height}`}
                 role="img"
-                aria-label={`Accessibility map of the synthetic demo district at a ${threshold}-minute ${service.replaceAll("_", " ")} threshold. ${formatPercent(data.summary.coverage_percent)} of the modelled population is within the threshold. Use the adjacent area list to inspect specific wards.`}
+                aria-label={`Accessibility map of ${data.dataset.short_name} at a ${threshold}-minute ${service.replaceAll("_", " ")} threshold. ${formatPercent(data.summary.coverage_percent)} of the modelled population is within the threshold. Use the adjacent area list to inspect specific areas.`}
                 className="block h-auto w-full"
               >
                 <defs>
@@ -378,16 +382,25 @@ export function AccessScanner() {
                   );
                 })()}
                 {projected &&
-                  data.facilities.map((facility) => {
-                    const [x, y] = projected.project(facility.lon, facility.lat);
-                    return (
-                      <g key={facility.id}>
-                        <title>{facility.name}</title>
-                        <circle cx={x} cy={y} r="4.4" fill="#f7f4eb" stroke="#081a1c" strokeWidth="1.6" />
-                        <circle cx={x} cy={y} r="1.2" fill="#081a1c" />
-                      </g>
-                    );
-                  })}
+                  data.facilities
+                    .filter((facility) => facility.services.includes(service))
+                    .map((facility) => {
+                      const [x, y] = projected.project(facility.lon, facility.lat);
+                      return (
+                        <g key={facility.id}>
+                          <title>{facility.name}</title>
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r="2.2"
+                            fill="#f7f4eb"
+                            stroke="#081a1c"
+                            strokeWidth="0.8"
+                            opacity="0.85"
+                          />
+                        </g>
+                      );
+                    })}
               </svg>
             </div>
 
@@ -431,7 +444,9 @@ export function AccessScanner() {
                   </p>
                   <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1.5">
                     <p className="text-[11.5px] text-[var(--paper)]/70">
-                      {formatNumber(active.population)} people
+                      {active.population === null
+                        ? "Population unavailable"
+                        : `${formatNumber(active.population)} people`}
                     </p>
                     <p className="text-[11.5px] text-[var(--paper)]/70">
                       {formatMinutes(active.travel_time_minutes)} to nearest suitable facility
@@ -440,7 +455,7 @@ export function AccessScanner() {
                   <p className="mt-2 text-[10px] leading-relaxed text-[var(--paper)]/42">
                     {active.nearest_facility_name
                       ? `Nearest mapped option: ${active.nearest_facility_name}. Modelled access only; capacity, hours, and quality are not verified.`
-                      : "No mapped facility provides this service in the demo inventory. Absence of a map record does not prove care is unavailable."}
+                      : "No mapped facility provides this service in the mapped inventory. Absence of a map record does not prove care is unavailable."}
                   </p>
                   <Link
                     href={`/app/explore?area=${active.area_id}&service=${service}&threshold=${threshold}`}

@@ -298,6 +298,12 @@ def _validate_facility_row(
         "lon": lon,
         "lat": lat,
         "data_status": "imported",
+        "source": "User import",
+        "source_id": "",
+        "source_url": "",
+        "ownership": "unknown",
+        "operational_status": "unknown",
+        "source_tags": {},
     }, issues
 
 
@@ -362,6 +368,12 @@ def _validate_facility_geojson(
         "lon": lon,
         "lat": lat,
         "data_status": "imported",
+        "source": "User import",
+        "source_id": "",
+        "source_url": "",
+        "ownership": "unknown",
+        "operational_status": "unknown",
+        "source_tags": {},
     }, issues
 
 
@@ -396,17 +408,26 @@ def _validate_area_geojson(
         population = 0
     if population <= 0:
         issues.append(ImportIssue(row, "population", "Population must be positive"))
-    try:
-        vulnerability = float(properties.get("vulnerability_index", 0.5))
-    except (TypeError, ValueError):
-        issues.append(
-            ImportIssue(row, "vulnerability_index", "vulnerability_index must be a number")
-        )
-        vulnerability = 0.5
-    if not 0.0 <= vulnerability <= 1.0:
-        issues.append(
-            ImportIssue(row, "vulnerability_index", "vulnerability_index must be between 0 and 1")
-        )
+    vulnerability: float | None = None
+    raw_vulnerability = properties.get("vulnerability_index")
+    if raw_vulnerability not in (None, ""):
+        try:
+            vulnerability = float(raw_vulnerability)
+        except (TypeError, ValueError):
+            issues.append(
+                ImportIssue(
+                    row, "vulnerability_index", "vulnerability_index must be a number"
+                )
+            )
+            vulnerability = None
+        if vulnerability is not None and not 0.0 <= vulnerability <= 1.0:
+            issues.append(
+                ImportIssue(
+                    row,
+                    "vulnerability_index",
+                    "vulnerability_index must be between 0 and 1",
+                )
+            )
 
     centroid = geom.centroid
     centroid_lon, centroid_lat = centroid.x, centroid.y

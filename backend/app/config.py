@@ -20,12 +20,26 @@ class Settings(BaseSettings):
 
     app_name: str = "CareGap API"
     env: str = "development"
-    version: str = "0.1.0"
+    version: str = "0.2.0"
     database_url: str = "sqlite:///./caregap.db"
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     max_import_bytes: int = 2_097_152
     demo_seed: int = 20261024
     log_level: str = "INFO"
+
+    # Dataset profile loaded into the database at startup. Supported values are
+    # "delhi-pilot" (real public data) and "caregap-demo" (deterministic
+    # synthetic data for development and testing). There is no silent fallback:
+    # an unavailable profile stops startup with a clear error.
+    active_dataset: str = "delhi-pilot"
+    # Optional override for the profile directory (used by tests and operators).
+    dataset_dir: str = ""
+    # Disable mutating endpoints for a public demonstration deployment.
+    read_only: bool = False
+    # Expose /docs, /redoc, and /openapi.json. Disable in production if not needed.
+    enable_docs: bool = True
+    # Comma-separated hosts accepted by TrustedHostMiddleware. Empty disables the check.
+    allowed_hosts: str = ""
 
     @field_validator("database_url")
     @classmethod
@@ -41,6 +55,10 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.env.lower() in {"production", "prod"}
+
+    @property
+    def allowed_host_list(self) -> list[str]:
+        return [host.strip() for host in self.allowed_hosts.split(",") if host.strip()]
 
 
 @lru_cache

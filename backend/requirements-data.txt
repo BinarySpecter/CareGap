@@ -1,0 +1,5 @@
+# Offline data-pipeline dependencies (not required by the API runtime).
+# Install with: .venv/bin/pip install -r backend/requirements-data.txt
+numpy==2.5.4
+openpyxl==3.1.5
+scipy==1.18.1

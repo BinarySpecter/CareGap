@@ -39,11 +39,27 @@ describe("AreaInspector", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("45–60 min")).toBeInTheDocument();
     expect(screen.getByText("39%")).toBeInTheDocument();
-    expect(screen.getByText(/synthetic demo index/i)).toBeInTheDocument();
+    expect(screen.getByText(/model input/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /explore this area/i })).toHaveAttribute(
       "href",
       "/app/explore?area=A093&service=primary_care&threshold=30",
     );
+  });
+
+  it("marks missing population and vulnerability honestly", () => {
+    render(
+      <AreaInspector
+        area={{
+          ...baseArea,
+          population: null,
+          vulnerability_index: null,
+        }}
+        threshold={30}
+        service="primary_care"
+      />,
+    );
+    expect(screen.getAllByText("Unavailable").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText(/no validated ward-level vulnerability indicator/i)).toBeInTheDocument();
   });
 
   it("does not invent a travel time when no suitable facility is mapped", () => {

@@ -5,16 +5,22 @@ import Link from "next/link";
 
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { apiUrl } from "@/lib/api";
-import { formatDate } from "@/lib/format";
 import type { MetaResponse } from "@/lib/types";
 import { useApiData } from "@/lib/use-api";
 
-type StatusTone = "modelled" | "estimate" | "synthetic" | "excluded" | "not-modelled";
+type StatusTone =
+  | "modelled"
+  | "estimate"
+  | "synthetic"
+  | "official"
+  | "excluded"
+  | "not-modelled";
 
 const STATUS_LABEL: Record<StatusTone, string> = {
   modelled: "Modelled",
   estimate: "Estimate",
   synthetic: "Synthetic",
+  official: "Official count",
   excluded: "Excluded",
   "not-modelled": "Not modelled",
 };
@@ -25,6 +31,14 @@ function Status({ tone }: { tone: StatusTone }) {
   if (tone === "modelled") {
     return (
       <span className={`${base} border-[var(--signal)]/25 bg-[var(--signal-soft)] text-[var(--signal-deep)]`}>
+        <Check className="h-2.5 w-2.5" strokeWidth={2} aria-hidden="true" />
+        {STATUS_LABEL[tone]}
+      </span>
+    );
+  }
+  if (tone === "official") {
+    return (
+      <span className={`${base} border-[var(--positive)]/25 bg-[#dcebe2] text-[var(--positive)]`}>
         <Check className="h-2.5 w-2.5" strokeWidth={2} aria-hidden="true" />
         {STATUS_LABEL[tone]}
       </span>
@@ -58,24 +72,30 @@ export function ModelLedger() {
   const { data, error } = useApiData<MetaResponse>(apiUrl("/api/v1/meta"));
   const counts = data?.dataset.counts;
 
+  const synthetic = data?.dataset.is_synthetic ?? true;
+  const populationYear = data?.dataset.population.reference_year;
   const rows: Array<{ item: string; detail: string; status: StatusTone }> = [
     {
       item: "Population denominator",
-      detail: counts
-        ? `${counts.areas} synthetic population areas · ${counts.population?.toLocaleString("en-IN")} people`
-        : "Area-level synthetic population only; no individual records.",
-      status: "synthetic",
+      detail: synthetic
+        ? counts
+          ? `${counts.areas} synthetic population areas · ${counts.population?.toLocaleString("en-IN")} people`
+          : "Area-level synthetic population only; no individual records."
+        : `Census of India ${populationYear ?? 2011} ward counts · ${counts?.population?.toLocaleString("en-IN")} people represented across ${counts?.areas_with_population ?? "—"} wards. NDMC, Cantonment, and rural populations are not in the denominator.`,
+      status: synthetic ? "synthetic" : "official",
     },
     {
       item: "Mapped facilities",
-      detail: counts
-        ? `${counts.facilities} fictional facilities with modelled service suitability`
-        : "Fictional facility inventory with mapped service tags.",
-      status: "synthetic",
+      detail: synthetic
+        ? counts
+          ? `${counts.facilities} fictional facilities with modelled service suitability`
+          : "Fictional facility inventory with mapped service tags."
+        : `${counts?.facilities?.toLocaleString("en-IN") ?? "—"} OpenStreetMap facilities. Operating status, staffing, and service availability are not verified; services come only from mapped tags.`,
+      status: synthetic ? "synthetic" : "estimate",
     },
     {
       item: "Travel time",
-      detail: data?.routing.label ?? "Synthetic street-grid shortest paths",
+      detail: data?.routing.label ?? "Road-network shortest paths",
       status: "estimate",
     },
     {
@@ -99,13 +119,17 @@ export function ModelLedger() {
       status: "not-modelled",
     },
     {
-      item: "Live traffic & real roads",
-      detail: "No live feeds. The demo road network is synthetic.",
+      item: "Live traffic",
+      detail: synthetic
+        ? "No live feeds. The demo road network is synthetic."
+        : "No live feeds. Speeds are road-class assumptions; one-way restrictions, congestion, and public transport are not modelled.",
       status: "not-modelled",
     },
     {
       item: "Patient-identifiable data",
-      detail: "None collected or required. The dataset is area-level and synthetic.",
+      detail: synthetic
+        ? "None collected or required. The dataset is area-level and synthetic."
+        : "None collected or required. The release is area-level Census and map data.",
       status: "excluded",
     },
   ];
@@ -131,13 +155,13 @@ export function ModelLedger() {
               Dataset
             </p>
             <p className="mt-2 text-[12px] font-medium text-[var(--ink)]">
-              {data?.dataset.name ?? "CareGap Synthetic Demo District"}
+              {data?.dataset.name ?? "CareGap dataset"}
             </p>
             <dl className="mt-3 space-y-2">
               {[
-                ["Seed", data ? String(data.dataset.seed ?? "—") : "—"],
-                ["Generated", formatDate(data?.dataset.generated_at)],
-                ["Projection", data?.dataset.geography.projected_crs ?? "EPSG:32643"],
+                ["Release", data?.dataset.release ?? "—"],
+                ["Population", populationYear ? `Census ${populationYear}` : "Synthetic"],
+                ["Boundary", data?.dataset.geography.study_boundary ?? "Synthetic district"],
                 ["API", data ? `v${data.api_version}` : "—"],
               ].map(([label, value]) => (
                 <div

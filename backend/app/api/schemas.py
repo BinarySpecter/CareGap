@@ -51,6 +51,7 @@ class DatasetInfoOut(BaseModel):
     description: str
     is_synthetic: bool
     data_status: str
+    release: str | None = None
     seed: int | None = None
     generated_at: str | None = None
     geography: dict[str, Any]
@@ -58,6 +59,19 @@ class DatasetInfoOut(BaseModel):
     sources: list[dict[str, Any]]
     limitations: list[str]
     road_model: dict[str, Any]
+    population: dict[str, Any] = Field(default_factory=dict)
+    vulnerability: dict[str, Any] = Field(default_factory=dict)
+    capabilities: dict[str, Any] = Field(default_factory=dict)
+    validation_summary: dict[str, Any] = Field(default_factory=dict)
+
+
+class DatasetProfileOut(BaseModel):
+    id: str
+    label: str
+    is_synthetic: bool
+    active: bool
+    available: bool
+    release: str | None = None
 
 
 class RoutingInfoOut(BaseModel):
@@ -90,6 +104,11 @@ class AccessSummaryOut(BaseModel):
     unreachable_wards: int
     suitable_facility_count: int
     distribution: list[DistributionBucketOut]
+    areas_total: int = 0
+    areas_with_population: int = 0
+    areas_without_population: int = 0
+    areas_without_population_over_threshold: int = 0
+    population_reference_year: int | None = None
 
 
 class FacilityOut(BaseModel):
@@ -101,16 +120,28 @@ class FacilityOut(BaseModel):
     lon: float
     lat: float
     data_status: str
+    source: str = ""
+    source_id: str = ""
+    source_url: str = ""
+    ownership: str = "unknown"
+    operational_status: str = "unknown"
+    address: str = ""
+    admin_area: str = ""
+    source_tags: dict[str, str] = Field(default_factory=dict)
 
 
 class AreaAccessOut(BaseModel):
     area_id: str
     name: str
-    population: int
-    vulnerability_index: float
+    population: int | None
+    population_status: str = "unknown"
+    population_reference_year: int | None = None
+    population_included: bool = True
+    vulnerability_index: float | None
     area_km2: float
     centroid: list[float]
     quadrant: str
+    municipality: str = ""
     travel_time_minutes: float | None
     nearest_facility_id: str | None
     nearest_facility_name: str | None
@@ -163,6 +194,7 @@ class AnalysisRequest(StrictModel):
 
 
 class FacilityListResponse(BaseModel):
+    dataset: DatasetInfoOut
     items: list[FacilityOut]
     total: int
     limit: int
@@ -170,6 +202,7 @@ class FacilityListResponse(BaseModel):
 
 
 class AreaListResponse(BaseModel):
+    dataset: DatasetInfoOut
     areas: dict[str, Any]
     total: int
     limit: int
@@ -245,7 +278,7 @@ class ImprovementOut(BaseModel):
     area_id: str
     name: str
     population: int
-    vulnerability_index: float
+    vulnerability_index: float | None = None
     travel_time_baseline: float | None
     travel_time_proposed: float | None
     improvement_minutes: float | None
@@ -257,7 +290,7 @@ class ResidualGapOut(BaseModel):
     name: str
     population: int
     travel_time_minutes: float | None
-    vulnerability_index: float
+    vulnerability_index: float | None = None
 
 
 class EquityOut(BaseModel):
@@ -285,6 +318,7 @@ class ComparisonDeltaOut(BaseModel):
 
 
 class ScenarioSimulationResponse(BaseModel):
+    dataset: DatasetInfoOut
     scenario: ScenarioOut
     service: str
     threshold_minutes: int
@@ -309,7 +343,7 @@ class BenefitAreaOut(BaseModel):
     area_id: str
     name: str
     population: int
-    vulnerability_index: float
+    vulnerability_index: float | None = None
 
 
 class CandidateMetricsOut(BaseModel):
@@ -392,6 +426,10 @@ class RecommendationMethodologyOut(BaseModel):
 
 
 class RecommendationResponse(BaseModel):
+    dataset_id: str = ""
+    release: str | None = None
+    vulnerability_available: bool = True
+    data_notice: str = ""
     service: str
     threshold_minutes: int
     intervention_type: str
@@ -430,14 +468,17 @@ class ImportReportOut(BaseModel):
 class MetaResponse(BaseModel):
     api_version: str
     dataset: DatasetInfoOut
+    datasets: list[DatasetProfileOut]
     services: list[ServiceOut]
     interventions: list[InterventionOut]
     facility_types: list[FacilityTypeOut]
     allowed_thresholds: list[int]
     default_service: str
     default_threshold_minutes: int
+    default_lens_note: str
     routing: RoutingInfoOut
     data_notice: str
+    read_only: bool = False
 
 
 class HealthResponse(BaseModel):
@@ -447,6 +488,16 @@ class HealthResponse(BaseModel):
     dataset_loaded: bool
     database: str
     environment: str
+    dataset_id: str | None = None
+    release: str | None = None
+    routing_model: str | None = None
+    read_only: bool = False
+
+
+class ReadinessResponse(BaseModel):
+    status: str
+    dataset_id: str
+    checks: dict[str, str]
 
 
 class ImportRunOut(BaseModel):

@@ -5,14 +5,20 @@ import Link from "next/link";
 
 import { apiUrl } from "@/lib/api";
 import { formatMinutes, formatNumber, formatPercent } from "@/lib/format";
-import type { OverviewResponse } from "@/lib/types";
+import type { MetaResponse, OverviewResponse } from "@/lib/types";
 import { useApiData } from "@/lib/use-api";
 
 export function LiveProblemStats() {
+  const meta = useApiData<MetaResponse>(apiUrl("/api/v1/meta"));
+  const service = meta.data?.default_service ?? "maternal_health";
+  const threshold = meta.data?.default_threshold_minutes ?? 15;
+  const serviceLabel =
+    meta.data?.services.find((item) => item.id === service)?.label ??
+    "Maternal health";
   const { data, error, loading } = useApiData<OverviewResponse>(
     apiUrl("/api/v1/overview", {
-      service: "primary_care",
-      threshold_minutes: 30,
+      service,
+      threshold_minutes: threshold,
     }),
   );
 
@@ -38,7 +44,7 @@ export function LiveProblemStats() {
         </p>
         <p className="mt-2 max-w-[64ch] text-[12px] leading-relaxed text-[var(--ink-2)]">
           {error ??
-            "The demonstration analysis API is not running. The methodology and limitations remain available below."}
+            "The analysis API is not running. The methodology and limitations remain available below."}
         </p>
         <Link href="/app/methodology" className="link-dashed mt-3">
           Read the methodology
@@ -55,7 +61,8 @@ export function LiveProblemStats() {
       <div className="grid gap-px border-y border-[var(--rule)] bg-[var(--rule)] sm:grid-cols-3">
         <div className="bg-[var(--paper)] py-6 sm:px-6 sm:pl-0">
           <p className="mono text-[8.5px] uppercase tracking-[0.12em] text-[var(--ink-3)]">
-            Outside a 30-minute primary-care threshold · demo district
+            Outside a {threshold}-minute {serviceLabel.toLowerCase()} threshold ·{" "}
+            {data.dataset.short_name}
           </p>
           <p className="serif mt-3 text-[clamp(2.6rem,2rem+2.6vw,4.4rem)] leading-none tracking-[-0.03em] text-[var(--gap)]">
             {formatNumber(outside)}
@@ -76,7 +83,8 @@ export function LiveProblemStats() {
             </span>
           </p>
           <p className="mt-2 text-[11px] text-[var(--ink-2)]">
-            wards where the nearest suitable facility is over 30 minutes
+            population areas where the nearest suitable facility is over{" "}
+            {threshold} minutes
           </p>
         </div>
         <div className="bg-[var(--paper)] py-6 sm:px-6">
@@ -87,14 +95,16 @@ export function LiveProblemStats() {
             {formatMinutes(data.summary.weighted_median_travel_time)}
           </p>
           <p className="mt-2 text-[11px] text-[var(--ink-2)]">
-            estimated nearest-facility time across {data.dataset.counts.areas} areas
+            estimated nearest-facility time across {data.summary.areas_with_population} populated areas
           </p>
         </div>
       </div>
       <div className="mt-3 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
         <p className="mono text-[8.5px] uppercase leading-relaxed tracking-[0.08em] text-[var(--ink-3)]">
-          Computed live from the same deterministic API · {data.routing.label} ·
-          synthetic data
+          Computed live from the same deterministic API · {data.routing.label} ·{" "}
+          {data.dataset.is_synthetic
+            ? "synthetic data"
+            : `Census ${data.dataset.population.reference_year ?? "2011"} population · OSM facilities`}
         </p>
         <Link
           href="/app/explore"

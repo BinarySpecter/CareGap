@@ -42,11 +42,25 @@ pyproj, NetworkX, MapLibre GL JS, Recharts, and others) under their respective
 licences. Dependency versions are pinned in `frontend/package-lock.json`,
 `backend/requirements.txt`, and `backend/requirements-postgres.txt`.
 
-## Dataset
+## Dataset and geodata
 
-The demo dataset is synthetic and was generated in this repository by
-`backend/scripts/generate_demo_data.py`. It contains no real patient, provider, or
-facility records. See [data sources](data-sources.md).
+Delhi pilot:
+
+- Population: Census of India 2011 ward-level Primary Census Abstract, Office of
+  the Registrar General & Census Commissioner, India.
+- Ward boundaries: DataMeet Municipal_Spatial_Data, CC BY-SA 2.5 India.
+- Boundary, facilities, and roads: © OpenStreetMap contributors, ODbL 1.0.
+- District population cross-check: Directorate of Economics & Statistics, GNCT
+  of Delhi.
+
+The synthetic demo dataset was generated in this repository by
+`backend/scripts/generate_demo_data.py` and is clearly labelled. Neither dataset
+contains patient-identifiable information. See [data sources](data-sources.md).
+
+Screenshots are captured from the running Delhi workspace with
+`frontend/scripts/capture-screenshots.mjs`.
 
 CareGap itself is **proprietary and confidential**; all rights are reserved and
-no open-source licence is granted. See `LICENSE`.
+no open-source licence is granted. See `LICENSE`. Data files incorporate
+third-party material under separate terms; see
+[data licences](data-licenses.md).

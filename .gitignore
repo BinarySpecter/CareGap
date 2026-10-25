@@ -30,3 +30,6 @@ backend/imports/
 public/maplibre-gl-worker.mjs
 
 frontend/public/maplibre-gl-worker.mjs
+
+# Raw third-party downloads (large; rebuild with backend/scripts/fetch_delhi_sources.py)
+data/raw/

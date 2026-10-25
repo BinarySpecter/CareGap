@@ -25,13 +25,20 @@ UNREACHABLE_SORT_KEY = 1_000_000.0
 class AnalysisArea:
     id: str
     name: str
-    population: int
-    vulnerability_index: float
+    population: int | None
+    vulnerability_index: float | None
     area_km2: float
     centroid_lon: float
     centroid_lat: float
     quadrant: str
     geometry: dict[str, Any]
+    population_status: str = "unknown"
+    population_reference_year: int | None = None
+    municipality: str = ""
+
+    @property
+    def has_population(self) -> bool:
+        return self.population is not None and self.population > 0
 
 
 @dataclass(frozen=True)
@@ -69,10 +76,14 @@ class AreaAccess:
             "area_id": area.id,
             "name": area.name,
             "population": area.population,
+            "population_status": area.population_status,
+            "population_reference_year": area.population_reference_year,
             "vulnerability_index": area.vulnerability_index,
             "area_km2": area.area_km2,
             "centroid": [area.centroid_lon, area.centroid_lat],
             "quadrant": area.quadrant,
+            "municipality": area.municipality,
+            "population_included": area.has_population,
             "travel_time_minutes": (
                 round(self.travel_time_minutes, 1)
                 if self.travel_time_minutes is not None
@@ -101,6 +112,11 @@ class AccessSummary:
     unreachable_wards: int
     suitable_facility_count: int
     distribution: list[dict[str, Any]]
+    areas_total: int = 0
+    areas_with_population: int = 0
+    areas_without_population: int = 0
+    areas_without_population_over_threshold: int = 0
+    population_reference_year: int | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -118,6 +134,13 @@ class AccessSummary:
             "unreachable_wards": self.unreachable_wards,
             "suitable_facility_count": self.suitable_facility_count,
             "distribution": self.distribution,
+            "areas_total": self.areas_total,
+            "areas_with_population": self.areas_with_population,
+            "areas_without_population": self.areas_without_population,
+            "areas_without_population_over_threshold": (
+                self.areas_without_population_over_threshold
+            ),
+            "population_reference_year": self.population_reference_year,
         }
 
 
@@ -149,8 +172,10 @@ class AreaComparison:
             "area_id": area.id,
             "name": area.name,
             "population": area.population,
+            "population_included": area.has_population,
             "vulnerability_index": area.vulnerability_index,
             "quadrant": area.quadrant,
+            "municipality": area.municipality,
             "centroid": [area.centroid_lon, area.centroid_lat],
             "travel_time_baseline": _round_optional(self.baseline_time),
             "travel_time_proposed": _round_optional(self.proposed_time),
@@ -262,22 +287,45 @@ def analyze(
         RoutingArea(id=area.id, centroid_lon=area.centroid_lon, centroid_lat=area.centroid_lat)
         for area in areas
     ]
-    if suitable:
-        matrix = router.travel_matrix(
-            routing_areas, [facility.to_routing() for facility in suitable]
+    if suitable and hasattr(router, "travel_matrix_array"):
+        access = _analyze_array(
+            areas, suitable, routing_areas, threshold_minutes, router
         )
     else:
-        matrix = {area.id: {} for area in areas}
+        if suitable:
+            matrix = router.travel_matrix(
+                routing_areas, [facility.to_routing() for facility in suitable]
+            )
+        else:
+            matrix = {area.id: {} for area in areas}
+        access = _analyze_dicts(areas, suitable, matrix, threshold_minutes)
 
+    summary = summarize(access, service, threshold_minutes, len(suitable))
+    return AccessibilityResult(
+        service=service,
+        threshold_minutes=threshold_minutes,
+        areas=access,
+        summary=summary,
+        routing=router.model_info,
+        suitable_facilities=suitable,
+    )
+
+
+def _analyze_dicts(
+    areas: list[AnalysisArea],
+    suitable: list[AnalysisFacility],
+    matrix: dict[str, dict[str, float]],
+    threshold_minutes: int,
+) -> list[AreaAccess]:
+    by_id = {facility.id: facility for facility in suitable}
     access: list[AreaAccess] = []
     for area in areas:
         times = matrix.get(area.id, {})
         if times:
             nearest_id = min(times, key=lambda facility_id: (times[facility_id], facility_id))
             nearest_time = times[nearest_id]
-            nearest = next(f for f in suitable if f.id == nearest_id)
+            nearest = by_id[nearest_id]
             within = sum(1 for value in times.values() if value <= threshold_minutes)
-            covered = nearest_time <= threshold_minutes
             access.append(
                 AreaAccess(
                     area=area,
@@ -285,7 +333,7 @@ def analyze(
                     nearest_facility_id=nearest.id,
                     nearest_facility_name=nearest.name,
                     suitable_facilities_within_threshold=within,
-                    covered=covered,
+                    covered=nearest_time <= threshold_minutes,
                 )
             )
         else:
@@ -299,16 +347,61 @@ def analyze(
                     covered=False,
                 )
             )
+    return access
 
-    summary = summarize(access, service, threshold_minutes, len(suitable))
-    return AccessibilityResult(
-        service=service,
-        threshold_minutes=threshold_minutes,
-        areas=access,
-        summary=summary,
-        routing=router.model_info,
-        suitable_facilities=suitable,
+
+def _analyze_array(
+    areas: list[AnalysisArea],
+    suitable: list[AnalysisFacility],
+    routing_areas: list[RoutingArea],
+    threshold_minutes: int,
+    router: TravelTimeRouter,
+) -> list[AreaAccess]:
+    """Vectorised equivalent of the dictionary path for packaged road networks."""
+    import numpy as np
+
+    values = np.asarray(
+        router.travel_matrix_array(  # type: ignore[attr-defined]
+            routing_areas, [facility.to_routing() for facility in suitable]
+        ),
+        dtype=float,
     )
+    finite = np.isfinite(values)
+    has_any = finite.any(axis=1)
+    masked = np.where(finite, values, np.inf)
+    nearest_index = np.argmin(masked, axis=1)
+    nearest_time = np.where(
+        has_any,
+        masked[np.arange(len(areas)), nearest_index],
+        np.inf,
+    )
+    within = (values <= threshold_minutes).sum(axis=1)
+    access: list[AreaAccess] = []
+    for position, area in enumerate(areas):
+        if not has_any[position]:
+            access.append(
+                AreaAccess(
+                    area=area,
+                    travel_time_minutes=None,
+                    nearest_facility_id=None,
+                    nearest_facility_name=None,
+                    suitable_facilities_within_threshold=0,
+                    covered=False,
+                )
+            )
+            continue
+        facility = suitable[int(nearest_index[position])]
+        access.append(
+            AreaAccess(
+                area=area,
+                travel_time_minutes=float(nearest_time[position]),
+                nearest_facility_id=facility.id,
+                nearest_facility_name=facility.name,
+                suitable_facilities_within_threshold=int(within[position]),
+                covered=bool(nearest_time[position] <= threshold_minutes),
+            )
+        )
+    return access
 
 
 def summarize(
@@ -317,31 +410,36 @@ def summarize(
     threshold_minutes: int,
     suitable_facility_count: int,
 ) -> AccessSummary:
-    total_population = sum(item.area.population for item in access)
+    # Areas without a valid population value are still analysed for travel time
+    # but are excluded from every population denominator. They are reported
+    # explicitly rather than being treated as zero.
+    included = [item for item in access if item.area.has_population]
+    excluded = [item for item in access if not item.area.has_population]
+    total_population = sum(item.area.population or 0 for item in included)
     covered_population = sum(
-        item.area.population for item in access if item.covered
+        item.area.population or 0 for item in included if item.covered
     )
     coverage_percent = (
         (covered_population / total_population) * 100 if total_population else 0.0
     )
 
     finite = [
-        (item.travel_time_minutes, item.area.population)
-        for item in access
+        (item.travel_time_minutes, item.area.population or 0)
+        for item in included
         if item.travel_time_minutes is not None
     ]
     weighted_mean = _weighted_mean(finite)
     weighted_median = _weighted_percentile(finite, 0.5)
     weighted_p90 = _weighted_percentile(finite, 0.9)
     max_time = max((value for value, _ in finite), default=None)
-    unreachable = sum(1 for item in access if item.travel_time_minutes is None)
-    over_threshold = sum(1 for item in access if not item.covered)
+    unreachable = sum(1 for item in included if item.travel_time_minutes is None)
+    over_threshold = sum(1 for item in included if not item.covered)
 
     distribution = []
     for lower, upper, label in DISTRIBUTION_BOUNDS:
         matching = [
             item
-            for item in access
+            for item in included
             if item.travel_time_minutes is not None
             and item.travel_time_minutes >= lower
             and item.travel_time_minutes < upper
@@ -350,12 +448,12 @@ def summarize(
             {
                 "bucket": label,
                 "areas": len(matching),
-                "population": sum(item.area.population for item in matching),
+                "population": sum(item.area.population or 0 for item in matching),
             }
         )
     unreachable_population = sum(
-        item.area.population
-        for item in access
+        item.area.population or 0
+        for item in included
         if item.travel_time_minutes is None
     )
     distribution.append(
@@ -365,6 +463,15 @@ def summarize(
             "population": unreachable_population,
         }
     )
+
+    reference_years = sorted(
+        {
+            item.area.population_reference_year
+            for item in included
+            if item.area.population_reference_year is not None
+        }
+    )
+    reference_year = reference_years[-1] if len(reference_years) == 1 else None
 
     return AccessSummary(
         service=service,
@@ -376,11 +483,18 @@ def summarize(
         weighted_median_travel_time=weighted_median,
         weighted_p90_travel_time=weighted_p90,
         max_travel_time=max_time,
-        wards_total=len(access),
+        wards_total=len(included),
         wards_over_threshold=over_threshold,
         unreachable_wards=unreachable,
         suitable_facility_count=suitable_facility_count,
         distribution=distribution,
+        areas_total=len(access),
+        areas_with_population=len(included),
+        areas_without_population=len(excluded),
+        areas_without_population_over_threshold=sum(
+            1 for item in excluded if not item.covered
+        ),
+        population_reference_year=reference_year,
     )
 
 
@@ -405,8 +519,9 @@ def compare_access(
         prop = proposed_by_id[base.area.id]
         became_covered = prop.covered and not base.covered
         if became_covered:
-            newly_covered += base.area.population
-            wards_newly_covered += 1
+            newly_covered += base.area.population or 0
+            if base.area.has_population:
+                wards_newly_covered += 1
         improvement: float | None = None
         if base.travel_time_minutes is not None and prop.travel_time_minutes is not None:
             improvement = base.travel_time_minutes - prop.travel_time_minutes
@@ -423,7 +538,7 @@ def compare_access(
                 proposed_time=prop.travel_time_minutes,
                 covered_baseline=base.covered,
                 covered_proposed=prop.covered,
-                newly_covered_population=base.area.population if became_covered else 0,
+                newly_covered_population=(base.area.population or 0) if became_covered else 0,
                 improvement_minutes=improvement,
                 baseline_facility_id=base.nearest_facility_id,
                 proposed_facility_id=prop.nearest_facility_id,
@@ -477,8 +592,9 @@ def compute_equity(
     if not 0 < worst_share <= 1:
         raise ValueError("Worst-served population share must be between 0 and 1")
 
+    included = [item for item in baseline.areas if item.area.has_population]
     ordered = sorted(
-        baseline.areas,
+        included,
         key=lambda item: (
             -(item.travel_time_minutes
               if item.travel_time_minutes is not None
@@ -492,7 +608,7 @@ def compute_equity(
     cumulative = 0
     for item in ordered:
         selected.append(item.area.id)
-        cumulative += item.area.population
+        cumulative += item.area.population or 0
         if cumulative >= target:
             break
     if not selected and ordered:
@@ -503,9 +619,9 @@ def compute_equity(
     prop_by_id = {item.area.id: item for item in proposed.areas}
     prop_group = [prop_by_id[item.area.id] for item in base_group]
 
-    group_population = sum(item.area.population for item in base_group)
-    base_covered = sum(item.area.population for item in base_group if item.covered)
-    prop_covered = sum(item.area.population for item in prop_group if item.covered)
+    group_population = sum(item.area.population or 0 for item in base_group)
+    base_covered = sum(item.area.population or 0 for item in base_group if item.covered)
+    prop_covered = sum(item.area.population or 0 for item in prop_group if item.covered)
     base_cov_pct = (base_covered / group_population * 100) if group_population else 0.0
     prop_cov_pct = (prop_covered / group_population * 100) if group_population else 0.0
     base_mean = _population_weighted_mean_time(base_group)
@@ -528,9 +644,9 @@ def compute_equity(
 
 def _population_weighted_mean_time(access: list[AreaAccess]) -> float | None:
     finite = [
-        (item.travel_time_minutes, item.area.population)
+        (item.travel_time_minutes, item.area.population or 0)
         for item in access
-        if item.travel_time_minutes is not None
+        if item.travel_time_minutes is not None and item.area.has_population
     ]
     return _weighted_mean(finite)
 

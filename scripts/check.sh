@@ -32,4 +32,11 @@ echo "== Frontend unit tests =="
 echo "== Frontend production build =="
 (cd frontend && npm run build)
 
+echo "== SQLite migrations =="
+rm -f /tmp/caregap-check-migrate.db
+(cd backend && CAREGAP_DATABASE_URL=sqlite:////tmp/caregap-check-migrate.db ../.venv/bin/alembic upgrade head)
+(cd backend && CAREGAP_DATABASE_URL=sqlite:////tmp/caregap-check-migrate.db ../.venv/bin/alembic downgrade base)
+(cd backend && CAREGAP_DATABASE_URL=sqlite:////tmp/caregap-check-migrate.db ../.venv/bin/alembic upgrade head)
+
 echo "All local checks passed."
+echo "Optional E2E: cd frontend && PLAYWRIGHT_CHROME_PATH=/usr/bin/google-chrome npx playwright test"

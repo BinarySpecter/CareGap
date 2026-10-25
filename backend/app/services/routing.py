@@ -16,7 +16,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 import networkx as nx
 
@@ -222,6 +222,289 @@ class StraightLineFallbackRouter:
                 )
             matrix[area.id] = times
         return matrix
+
+
+@dataclass
+class NetworkRoadRouter:
+    """Shortest-path travel times over a packaged OpenStreetMap road graph.
+
+    The graph, node coordinates, and a precomputed facility-to-area matrix are
+    shipped with the dataset release. New facilities (proposed interventions or
+    validated imports) are snapped to the same graph and evaluated with a
+    single-source Dijkstra run on demand. The router never invents a fallback:
+    if the packaged network cannot be loaded, the application refuses to start.
+    """
+
+    graph: Any
+    node_lon: Any
+    node_lat: Any
+    node_utm: Any
+    tree: Any
+    area_snaps: dict[str, tuple[int, float]]
+    facility_snaps: dict[str, tuple[int, float]]
+    facility_ids: list[str]
+    area_ids: list[str]
+    matrix: Any
+    area_distance: Any
+    model_info: RoutingModelInfo
+    _facility_positions: dict[str, int] = field(default_factory=dict, init=False)
+    _area_positions: dict[str, int] = field(default_factory=dict, init=False)
+    _centroid_positions: dict[tuple[float, float], int] = field(
+        default_factory=dict, init=False
+    )
+    _area_lon: Any = None
+    _area_lat: Any = None
+    _facility_cache: dict[str, dict[str, float]] = field(default_factory=dict, init=False)
+    _area_cache: dict[str, dict[str, float]] = field(default_factory=dict, init=False)
+
+    def __post_init__(self) -> None:
+        self._facility_positions = {
+            facility_id: index for index, facility_id in enumerate(self.facility_ids)
+        }
+        self._area_positions = {
+            area_id: index for index, area_id in enumerate(self.area_ids)
+        }
+        if self._area_lon is not None and self._area_lat is not None:
+            self._centroid_positions = {
+                (round(float(lon), 6), round(float(lat), 6)): index
+                for index, (lon, lat) in enumerate(
+                    zip(self._area_lon, self._area_lat, strict=False)
+                )
+            }
+
+    @classmethod
+    def from_npz(
+        cls, path: Path, model_info: RoutingModelInfo | None = None
+    ) -> NetworkRoadRouter:
+        try:
+            import numpy as np
+            from scipy.sparse import csr_matrix
+            from scipy.spatial import cKDTree
+        except ImportError as exc:  # pragma: no cover - operator environment
+            raise RouterUnavailableError(
+                "The Delhi network router requires NumPy and SciPy. "
+                "Install with: pip install -r backend/requirements.txt"
+            ) from exc
+        try:
+            with np.load(path, allow_pickle=False) as payload:
+                graph = csr_matrix(
+                    (
+                        payload["data"].astype(float),
+                        payload["indices"].astype(int),
+                        payload["indptr"].astype(int),
+                    )
+                )
+                node_lon = payload["node_lon"].astype(float)
+                node_lat = payload["node_lat"].astype(float)
+                area_node = payload["area_node"].astype(int)
+                area_access = payload["area_access"].astype(float)
+                facility_node = payload["facility_node"].astype(int)
+                facility_access = payload["facility_access"].astype(float)
+                travel = payload["travel_minutes"].astype(float)
+                area_distance = payload["area_distance"].astype(float)
+                area_lon = payload["area_lon"].astype(float)
+                area_lat = payload["area_lat"].astype(float)
+                area_ids = [str(value) for value in payload["area_ids"]]
+                facility_ids = [str(value) for value in payload["facility_ids"]]
+        except (OSError, KeyError, ValueError) as exc:
+            raise RouterUnavailableError(
+                f"Packaged road network at {path} could not be read: {exc}"
+            ) from exc
+
+        if graph.shape[0] != node_lon.shape[0] or graph.shape[0] != node_lat.shape[0]:
+            raise RouterUnavailableError("Road graph node arrays are inconsistent")
+        if travel.shape != (len(area_ids), len(facility_ids)):
+            raise RouterUnavailableError("Travel-time matrix shape does not match its identifiers")
+        if area_distance.shape != (len(area_ids), len(area_ids)):
+            raise RouterUnavailableError("Area-to-area matrix shape is inconsistent")
+        if graph.nnz < 1000:
+            raise RouterUnavailableError("Road graph has too few edges")
+
+        x, y = _to_utm_arrays(node_lon, node_lat)
+        node_utm = np.column_stack((x, y))
+        info = model_info or RoutingModelInfo(
+            id="osm_network",
+            label="OpenStreetMap road-network estimate",
+            description=(
+                "Travel time is the shortest path over an OpenStreetMap drivable "
+                "road graph using documented road-class speeds and a local-access "
+                "estimate. It is not live traffic, public transport, or turn-by-turn routing."
+            ),
+            warnings=(
+                "Travel times are model estimates, not live traffic.",
+                "One-way restrictions, turn restrictions, and congestion are not modelled.",
+                "Facility opening hours, queues, capacity, and staffing are not included.",
+            ),
+        )
+        return cls(
+            graph=graph,
+            node_lon=node_lon,
+            node_lat=node_lat,
+            node_utm=node_utm,
+            tree=cKDTree(node_utm),
+            area_snaps={
+                area_ids[index]: (int(area_node[index]), float(area_access[index]))
+                for index in range(len(area_ids))
+            },
+            facility_snaps={
+                facility_ids[index]: (
+                    int(facility_node[index]),
+                    float(facility_access[index]),
+                )
+                for index in range(len(facility_ids))
+            },
+            facility_ids=facility_ids,
+            area_ids=area_ids,
+            matrix=travel,
+            area_distance=area_distance,
+            model_info=info,
+            _area_lon=area_lon,
+            _area_lat=area_lat,
+        )
+
+    @property
+    def area_snap(self) -> dict[str, tuple[int, float]]:
+        return self.area_snaps
+
+    def _snap(self, lon: float, lat: float) -> tuple[int, float]:
+        x, y = to_utm(float(lon), float(lat))
+        distance, node = self.tree.query([x, y], k=1)
+        distance_km = float(distance) / 1000.0 * 1.25
+        return int(node), distance_km / 15.0 * 60.0
+
+    def _single_source(self, node: int) -> Any:
+        from scipy.sparse.csgraph import dijkstra
+
+        distances = dijkstra(self.graph, directed=False, indices=node)
+        if distances.ndim > 1:
+            distances = distances[0]
+        return distances
+
+    def _facility_column(self, facility: RoutingFacility) -> dict[str, float]:
+        cached = self._facility_cache.get(facility.id)
+        if cached is not None:
+            return cached
+        known = self.facility_snaps.get(facility.id)
+        if known is not None:
+            index = self._facility_positions[facility.id]
+            column = {
+                area_id: float(self.matrix[position, index])
+                for position, area_id in enumerate(self.area_ids)
+                if float(self.matrix[position, index]) < float("inf")
+            }
+        else:
+            node, access = self._snap(facility.lon, facility.lat)
+            centroid_index = self._centroid_positions.get(
+                (round(float(facility.lon), 6), round(float(facility.lat), 6))
+            )
+            centroid_row = None
+            if centroid_index is not None and self.area_distance is not None:
+                centroid_row = self.area_distance[centroid_index]
+            else:
+                distances = self._single_source(node)
+            column = {}
+            for area_id, (area_node, area_access) in self.area_snaps.items():
+                if centroid_row is not None:
+                    value = float(centroid_row[self._area_positions[area_id]])
+                else:
+                    value = float(distances[area_node])
+                if value < float("inf"):
+                    column[area_id] = round(value + access + area_access, 3)
+        if len(self._facility_cache) < 20_000:
+            self._facility_cache[facility.id] = column
+        return column
+
+    def _area_column(self, area: RoutingArea) -> dict[str, float]:
+        cached = self._area_cache.get(area.id)
+        if cached is not None:
+            return cached
+        node, access = self._snap(area.centroid_lon, area.centroid_lat)
+        distances = self._single_source(node)
+        column: dict[str, float] = {}
+        for facility_id, (facility_node, facility_access) in self.facility_snaps.items():
+            value = float(distances[facility_node])
+            if value < float("inf"):
+                column[facility_id] = round(value + access + facility_access, 3)
+        if len(self._area_cache) < 5_000:
+            self._area_cache[area.id] = column
+        return column
+
+    def travel_matrix_array(
+        self, areas: list[RoutingArea], facilities: list[RoutingFacility]
+    ) -> Any:
+        """Return a float matrix of shape (areas, facilities) for fast analysis."""
+        import numpy as np
+
+        row_positions = [self._area_positions.get(area.id) for area in areas]
+        column_positions = [
+            self._facility_positions.get(facility.id) for facility in facilities
+        ]
+        values = np.full((len(areas), len(facilities)), np.inf, dtype=np.float32)
+        known_rows = [index for index, value in enumerate(row_positions) if value is not None]
+        known_columns = [
+            index for index, value in enumerate(column_positions) if value is not None
+        ]
+        if known_rows and known_columns:
+            values[np.ix_(known_rows, known_columns)] = self.matrix[
+                np.ix_(
+                    [row_positions[index] for index in known_rows],
+                    [column_positions[index] for index in known_columns],
+                )
+            ]
+        for column, facility in enumerate(facilities):
+            if column_positions[column] is not None:
+                continue
+            column_times = self._facility_column(facility)
+            for row, area in enumerate(areas):
+                value = column_times.get(area.id)
+                if value is not None:
+                    values[row, column] = value
+        for row, area in enumerate(areas):
+            if row_positions[row] is not None:
+                continue
+            row_times = self._area_column(area)
+            for column, facility in enumerate(facilities):
+                value = row_times.get(facility.id)
+                if value is not None:
+                    values[row, column] = value
+        return values
+
+    def travel_matrix(
+        self, areas: list[RoutingArea], facilities: list[RoutingFacility]
+    ) -> dict[str, dict[str, float]]:
+        matrix: dict[str, dict[str, float]] = {}
+        for area in areas:
+            area_position = self._area_positions.get(area.id)
+            if area_position is not None:
+                times: dict[str, float] = {}
+                row = self.matrix[area_position]
+                for facility in facilities:
+                    facility_position = self._facility_positions.get(facility.id)
+                    if facility_position is None:
+                        value = self._facility_column(facility).get(area.id)
+                    else:
+                        value = float(row[facility_position])
+                    if value is not None and value < float("inf"):
+                        times[facility.id] = value
+                matrix[area.id] = times
+            else:
+                # An imported or otherwise unknown area: one Dijkstra run from
+                # the area node yields its times to every mapped facility node.
+                times = dict(self._area_column(area))
+                for facility in facilities:
+                    if facility.id not in times:
+                        value = self._facility_column(facility).get(area.id)
+                        if value is not None:
+                            times[facility.id] = value
+                matrix[area.id] = times
+        return matrix
+
+
+def _to_utm_arrays(lon: Any, lat: Any) -> tuple[Any, Any]:
+    from pyproj import Transformer
+
+    transformer = Transformer.from_crs("EPSG:4326", "EPSG:32643", always_xy=True)
+    return transformer.transform(lon, lat)
 
 
 def build_router(roads_path: Path | None = None) -> TravelTimeRouter:

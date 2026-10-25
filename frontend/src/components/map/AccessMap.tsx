@@ -17,6 +17,8 @@ import {
   buildImprovementColorExpression,
   getAccessBands,
   getImprovementLegend,
+  NO_POPULATION_COLOR,
+  NO_POPULATION_LABEL,
   type MapColorMode,
 } from "@/lib/access";
 import { cn, formatMinutes, formatNumber, titleCase } from "@/lib/format";
@@ -179,6 +181,7 @@ export function AccessMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const maplibreRef = useRef<Awaited<typeof import("maplibre-gl")> | null>(null);
   const popupRef = useRef<MapLibrePopup | null>(null);
   const markersRef = useRef<MapLibreMarker[]>([]);
   const loadedRef = useRef(false);
@@ -214,6 +217,27 @@ export function AccessMap({
 
   const bands = useMemo(() => getAccessBands(threshold), [threshold]);
   const improvementLegend = useMemo(() => getImprovementLegend(), []);
+  const facilityCollection = useMemo<FeatureCollection>(
+    () => ({
+      type: "FeatureCollection",
+      features: facilities.map((facility) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [facility.lon, facility.lat] },
+        properties: {
+          id: facility.id,
+          name: facility.name,
+          facility_type: facility.facility_type,
+          facility_type_label: facility.facility_type_label,
+          services: facility.services,
+          data_status: facility.data_status,
+          admin_area: facility.admin_area,
+          address: facility.address,
+          initial: facilityInitial(facility),
+        },
+      })),
+    }),
+    [facilities],
+  );
 
   useEffect(() => {
     const container = containerRef.current;
@@ -224,12 +248,13 @@ export function AccessMap({
     async function init() {
       try {
         const maplibregl = await import("maplibre-gl");
+        maplibreRef.current = maplibregl;
         maplibregl.setWorkerUrl("/maplibre-gl-worker.mjs");
         if (cancelled || !container) return;
         const map = new maplibregl.Map({
           container,
           style: baseStyle(),
-          center: [73.86, 18.52],
+          center: [77.21, 28.64],
           zoom: 9,
           minZoom: 6,
           maxZoom: 16,
@@ -294,7 +319,11 @@ export function AccessMap({
             id: "areas-gap",
             type: "line",
             source: "areas",
-            filter: ["==", ["get", "covered"], false],
+            filter: [
+              "all",
+              ["==", ["get", "covered"], false],
+              ["!=", ["coalesce", ["get", "population_included"], true], false],
+            ],
             paint: {
               "line-color": "#8e3b32",
               "line-width": 0.8,
@@ -311,6 +340,71 @@ export function AccessMap({
               "line-color": "#0c1d1e",
               "line-width": 2.3,
               "line-opacity": 1,
+            },
+          });
+
+          map.addSource("facilities", {
+            type: "geojson",
+            data: facilityCollection as unknown as GeoJSON.GeoJSON,
+            cluster: true,
+            clusterMaxZoom: 13,
+            clusterRadius: 48,
+          });
+          map.addLayer({
+            id: "facility-clusters",
+            type: "circle",
+            source: "facilities",
+            filter: ["has", "point_count"],
+            paint: {
+              "circle-color": "#0b5d56",
+              "circle-radius": [
+                "step",
+                ["get", "point_count"],
+                13,
+                10,
+                17,
+                50,
+                21,
+                200,
+                25,
+              ],
+              "circle-opacity": 0.9,
+              "circle-stroke-color": "#f7f4eb",
+              "circle-stroke-width": 1.4,
+            },
+          });
+          map.addLayer({
+            id: "facility-cluster-count",
+            type: "symbol",
+            source: "facilities",
+            filter: ["has", "point_count"],
+            layout: {
+              "text-field": ["get", "point_count_abbreviated"],
+              "text-size": 10,
+              "text-font": ["Open Sans Bold"],
+            },
+            paint: { "text-color": "#f7f4eb" },
+          });
+          map.addLayer({
+            id: "facility-points",
+            type: "circle",
+            source: "facilities",
+            filter: ["!", ["has", "point_count"]],
+            paint: {
+              "circle-color": [
+                "match",
+                ["get", "facility_type"],
+                "hospital",
+                "#0c1d1e",
+                "diagnostic_laboratory",
+                "#7a5b2e",
+                "birthing_centre",
+                "#8e3b32",
+                "#0b5d56",
+              ],
+              "circle-radius": 4.2,
+              "circle-stroke-color": "#f7f4eb",
+              "circle-stroke-width": 1.1,
             },
           });
 
@@ -335,6 +429,7 @@ export function AccessMap({
             const name = stringProperty(props, "name") ?? "Population area";
             const minutes = numericProperty(props, "travel_time_minutes");
             const population = numericProperty(props, "population");
+            const populationIncluded = props.population_included !== false;
             const isImprovement = colorMode === "improvement";
             const proposed = numericProperty(props, "travel_time_proposed");
             const newlyCovered = numericProperty(
@@ -348,8 +443,8 @@ export function AccessMap({
               "font-size:12px;font-weight:600;color:var(--ink);line-height:1.3;";
             const detail = document.createElement("p");
             detail.textContent = isImprovement
-              ? `${formatNumber(population)} people · ${formatMinutes(proposed)} after intervention${(newlyCovered ?? 0) > 0 ? ` · ${formatNumber(newlyCovered)} newly covered` : ""}`
-              : `${formatNumber(population)} people · ${minutes === null ? "no suitable facility" : formatMinutes(minutes)} to nearest suitable facility`;
+              ? `${populationIncluded ? `${formatNumber(population)} people` : "Population data unavailable"} · ${formatMinutes(proposed)} after intervention${(newlyCovered ?? 0) > 0 ? ` · ${formatNumber(newlyCovered)} newly covered` : ""}`
+              : `${populationIncluded ? `${formatNumber(population)} people` : "Population data unavailable"} · ${minutes === null ? "no suitable facility" : formatMinutes(minutes)} to nearest suitable facility`;
             detail.style.cssText =
               "margin-top:4px;font-size:10px;line-height:1.5;color:var(--ink-2);";
             tooltip.append(title, detail);
@@ -370,6 +465,12 @@ export function AccessMap({
 
           map.on("click", (event: MapMouseEvent) => {
             const callbacks = callbackRef.current;
+            if (!callbacks.placementMode) {
+              const facilityHits = map.queryRenderedFeatures(event.point, {
+                layers: ["facility-clusters", "facility-points"],
+              });
+              if (facilityHits.length) return;
+            }
             if (callbacks.placementMode) {
               const features = map.queryRenderedFeatures(event.point, {
                 layers: ["areas-fill"],
@@ -449,6 +550,104 @@ export function AccessMap({
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map || !loaded || !map.getSource("facilities")) return;
+    const source = map.getSource("facilities") as GeoJSONSource;
+    source.setData(facilityCollection as unknown as GeoJSON.GeoJSON);
+  }, [facilityCollection, loaded]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loaded) return;
+    const handleClusterClick = (event: MapMouseEvent) => {
+      if (callbackRef.current.placementMode) return;
+      const features = map.queryRenderedFeatures(event.point, {
+        layers: ["facility-clusters"],
+      });
+      const cluster = features[0];
+      if (!cluster) return;
+      const clusterId = cluster.properties?.cluster_id as number | undefined;
+      const source = map.getSource("facilities") as GeoJSONSource;
+      if (clusterId === undefined) return;
+      source.getClusterExpansionZoom(clusterId).then((zoom) => {
+        const [lon, lat] = (cluster.geometry as unknown as { coordinates: [number, number] })
+          .coordinates;
+        map.easeTo({ center: [lon, lat], zoom });
+      });
+    };
+    const handleFacilityClick = (event: MapMouseEvent) => {
+      if (callbackRef.current.placementMode) return;
+      const features = map.queryRenderedFeatures(event.point, {
+        layers: ["facility-points"],
+      });
+      const feature = features[0];
+      if (!feature) return;
+      const properties = feature.properties ?? {};
+      const coordinates = (
+        feature.geometry as unknown as { coordinates: [number, number] }
+      ).coordinates;
+      const maplibregl = maplibreRef.current;
+      if (!maplibregl) return;
+      popupRef.current?.remove();
+      const services = String(properties.services ?? "")
+        .split(",")
+        .filter(Boolean);
+      const popup = document.createElement("div");
+      popup.appendChild(
+        buildPopupContent(
+          String(properties.name ?? "Mapped facility"),
+          [
+            ["Type", String(properties.facility_type_label ?? "Facility")],
+            [
+              "Services",
+              services.length ? services.map(titleCase).join(", ") : "Not modelled",
+            ],
+            ["Status", String(properties.data_status ?? "mapped")],
+            [
+              "Ward",
+              String(properties.admin_area || "Not assigned"),
+            ],
+            ...(properties.address
+              ? [["Address", String(properties.address)] as [string, string]]
+              : []),
+          ],
+          "Mapped facility. Presence does not verify staffing, hours, or service availability.",
+        ),
+      );
+      popupRef.current = new maplibregl.Popup({
+        offset: 14,
+        closeButton: true,
+        maxWidth: "270px",
+      })
+        .setLngLat(coordinates)
+        .setDOMContent(popup)
+        .addTo(map);
+    };
+    map.on("click", "facility-clusters", handleClusterClick);
+    map.on("click", "facility-points", handleFacilityClick);
+    map.on("mouseenter", "facility-clusters", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+    map.on("mouseenter", "facility-points", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+    map.on("mouseleave", "facility-clusters", () => {
+      map.getCanvas().style.cursor = callbackRef.current.placementMode
+        ? "crosshair"
+        : "";
+    });
+    map.on("mouseleave", "facility-points", () => {
+      map.getCanvas().style.cursor = callbackRef.current.placementMode
+        ? "crosshair"
+        : "";
+    });
+    return () => {
+      map.off("click", "facility-clusters", handleClusterClick);
+      map.off("click", "facility-points", handleFacilityClick);
+    };
+  }, [loaded]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!map || !loaded) return;
     if (map.getLayer("areas-fill")) {
       map.setPaintProperty(
@@ -506,20 +705,17 @@ export function AccessMap({
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
 
-      const attachFacility = (
-        facility: Facility,
-        proposed: boolean,
-      ) => {
+      const attachProposed = (facility: Facility) => {
         const element = document.createElement("button");
         element.type = "button";
         element.className = "map-marker-facility";
-        if (proposed) element.dataset.status = "proposed";
+        element.dataset.status = "proposed";
         const inner = document.createElement("span");
-        inner.textContent = facilityInitial(facility);
+        inner.textContent = "+";
         element.appendChild(inner);
         element.setAttribute(
           "aria-label",
-          `${proposed ? "Proposed" : "Existing"} facility: ${facility.name}. Open details.`,
+          `Proposed facility: ${facility.name}. Open details.`,
         );
         element.title = `${facility.name} · ${facility.facility_type_label}`;
         element.addEventListener("click", (event) => {
@@ -542,11 +738,9 @@ export function AccessMap({
                       ? facility.services.map(titleCase).join(", ")
                       : "Not modelled",
                   ],
-                  ["Status", proposed ? "Proposed" : facility.data_status],
+                  ["Status", "Proposed"],
                 ],
-                proposed
-                  ? "Proposed facility. Not part of the baseline."
-                  : "Mapped facility. Presence does not verify staffing, hours, or service availability.",
+                "Proposed facility. Not part of the baseline.",
               ),
             )
             .addTo(map);
@@ -557,8 +751,7 @@ export function AccessMap({
         markersRef.current.push(marker);
       };
 
-      facilities.forEach((facility) => attachFacility(facility, false));
-      proposedFacilities.forEach((facility) => attachFacility(facility, true));
+      proposedFacilities.forEach(attachProposed);
 
       candidates.forEach((candidate) => {
         const element = document.createElement("button");
@@ -593,7 +786,6 @@ export function AccessMap({
     };
   }, [
     candidates,
-    facilities,
     loaded,
     onSelectCandidate,
     proposedFacilities,
@@ -704,6 +896,18 @@ export function AccessMap({
                   <p className="mono mt-2 border-t border-[var(--rule)] pt-1.5 text-[8px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
                     Dashed outline = outside {threshold}-min threshold
                   </p>
+                  <p className="mono mt-1 flex items-center gap-1.5 text-[8px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-[1px] border border-black/10"
+                      style={{ background: NO_POPULATION_COLOR }}
+                      aria-hidden="true"
+                    />
+                    {NO_POPULATION_LABEL}
+                  </p>
+                  <p className="mono mt-1 text-[8px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
+                    Facilities: {facilities.length.toLocaleString("en-IN")} mapped
+                    · clustered
+                  </p>
                 </>
               )}
             </div>
@@ -715,7 +919,7 @@ export function AccessMap({
         <div className="pointer-events-none absolute left-1/2 top-3 z-10 flex -translate-x-1/2 items-center gap-2 rounded-[3px] border border-[var(--gap)]/50 bg-[var(--ink)] px-3 py-2 text-[var(--paper)] shadow-lg">
           <Crosshair className="h-3.5 w-3.5 text-[var(--gap-soft)]" aria-hidden="true" />
           <span className="mono whitespace-nowrap text-[8.5px] uppercase tracking-[0.08em]">
-            Click inside the district to place
+            Click inside the study boundary to place
           </span>
         </div>
       )}

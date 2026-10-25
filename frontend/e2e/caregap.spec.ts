@@ -12,7 +12,7 @@ async function settle(page: Page, ms = 900) {
 
 async function overviewFromApi(request: APIRequestContext) {
   const response = await request.get(
-    `${API}/api/v1/overview?service=primary_care&threshold_minutes=30`,
+    `${API}/api/v1/overview?service=maternal_health&threshold_minutes=15`,
   );
   expect(response.ok()).toBeTruthy();
   return response.json();
@@ -23,9 +23,10 @@ test("landing page shows a live analysis and no horizontal overflow", async ({ p
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /Put care/ })).toBeVisible();
   await expect(page.getByText("Access scanner")).toBeVisible();
-  await expect(page.getByText("Scanning the demo district")).toHaveCount(0, { timeout: 20_000 });
-  await expect(page.getByText("Synthetic demo district", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Scanning the study area")).toHaveCount(0, { timeout: 20_000 });
+  await expect(page.getByText("Delhi pilot", { exact: false }).first()).toBeVisible();
   await expect(page.getByText(/outside threshold/i).first()).toBeVisible();
+  await expect(page.getByText(/Census 2011/i).first()).toBeVisible();
   await expect(
     page.getByText(overview.summary.coverage_percent.toFixed(1) + "%").first(),
   ).toBeVisible();
@@ -62,15 +63,23 @@ test("explore ranks areas, updates the inspector, and exports CSV", async ({ pag
   const rowCount = await table.locator("tbody tr").count();
   expect(rowCount).toBeGreaterThan(10);
 
-  await page.getByLabel("Search population areas").fill("Ward 93");
-  await expect(table.locator("tbody tr").first()).toContainText("Ward 93");
+  await page.getByLabel("Search population areas").fill("Ward 262");
+  await expect(table.locator("tbody tr").first()).toContainText("Ward 262");
   await table.locator("tbody tr").first().getByRole("button", { name: "Inspect" }).click();
-  await expect(page.getByText("AREA INSPECTOR · A093")).toBeVisible();
+  await expect(page.getByText("AREA INSPECTOR · DL-W262")).toBeVisible();
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export area CSV" }).click();
   const file = await download;
-  expect(file.suggestedFilename()).toMatch(/^caregap-access-primary_care-30min\.csv$/);
+  expect(file.suggestedFilename()).toMatch(
+    /^caregap-delhi-pilot-maternal_health-15min\.csv$/,
+  );
+  const stream = await file.createReadStream();
+  let csv = "";
+  for await (const chunk of stream) csv += chunk.toString();
+  expect(csv.split("\n")[0]).toContain("dataset_release");
+  expect(csv).toContain("delhi-pilot-2026.10-r1");
+  expect(csv).toContain("census_2011");
 });
 
 test("simulator places a facility, recalculates the API, and shows before/after", async ({
@@ -110,6 +119,19 @@ test("simulator places a facility, recalculates the API, and shows before/after"
   await expect(page.getByText(/Change: newly covered/i)).toBeVisible();
   await page.getByText("Assumptions, warnings, and model limits").click();
   await expect(page.getByText(/Existing facilities remain available/i)).toBeVisible();
+
+  const exportDownload = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export scenario JSON" }).click();
+  const exportFile = await exportDownload;
+  expect(exportFile.suggestedFilename()).toMatch(
+    /^caregap-delhi-pilot-scenario-.*\.json$/,
+  );
+  const exportStream = await exportFile.createReadStream();
+  let exportJson = "";
+  for await (const chunk of exportStream) exportJson += chunk.toString();
+  expect(exportJson).toContain("delhi-pilot-2026.10-r1");
+  expect(exportJson).toContain("data_notice");
+  expect(exportJson).toContain("assumptions");
 });
 
 test("impact analytics recomputes the saved scenario", async ({ page }) => {
@@ -149,7 +171,7 @@ test("data sources validates an upload and records the import", async ({ page })
     name: filename,
     mimeType: "text/csv",
     buffer: Buffer.from(
-      `name,facility_type,lon,lat,services\n${facilityName},primary_health_centre,73.860,18.520,primary_care\n`,
+      `name,facility_type,lon,lat,services\n${facilityName},clinic,77.209,28.614,primary_care\n`,
     ),
   });
   await page.getByRole("button", { name: /Validate & import/i }).click();
@@ -163,8 +185,8 @@ test("methodology documents the model invariants and limitations", async ({ page
   await expect(
     page.getByRole("heading", { name: "A conclusion you can trace." }),
   ).toBeVisible();
-  await expect(page.getByText("Mathematical invariant", { exact: true })).toBeVisible();
-  await expect(page.getByText("Known limitations", { exact: true })).toBeVisible();
+  await expect(page.getByText("Known answers, not vibes.")).toBeVisible();
+  await expect(page.getByText("What this pilot cannot establish.")).toBeVisible();
   await expect(page.getByText("Design record", { exact: true })).toBeVisible();
 });
 

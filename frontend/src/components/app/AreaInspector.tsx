@@ -31,7 +31,9 @@ export function AreaInspector({
           </h2>
           <p className="mt-1.5 flex items-center gap-1.5 text-[10.5px] text-[var(--ink-3)]">
             <MapPin className="h-3 w-3" strokeWidth={1.6} aria-hidden="true" />
-            {area.quadrant || "Unassigned quadrant"} ·{" "}
+            {[area.quadrant, area.municipality].filter(Boolean).join(" · ") ||
+              "Unassigned area"}{" "}
+            ·{" "}
             {area.centroid ? formatCoordinate(area.centroid[0], area.centroid[1]) : "—"}
           </p>
         </div>
@@ -77,13 +79,23 @@ export function AreaInspector({
 
       <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
         {[
-          ["Population", formatNumber(area.population)],
+          [
+            "Population",
+            area.population === null
+              ? "Unavailable"
+              : formatNumber(area.population),
+          ],
           [
             "Suitable facilities within threshold",
             String(area.suitable_facilities_within_threshold ?? 0),
           ],
           ["Area", area.area_km2 ? `${area.area_km2.toFixed(1)} km²` : "—"],
-          ["Vulnerability index", formatPercent(area.vulnerability_index * 100, 0)],
+          [
+            "Vulnerability index",
+            area.vulnerability_index === null
+              ? "Unavailable"
+              : formatPercent(area.vulnerability_index * 100, 0),
+          ],
         ].map(([label, value]) => (
           <div key={label} className="border-t border-[var(--rule)] pt-2">
             <dt className="mono text-[7.5px] uppercase leading-tight tracking-[0.08em] text-[var(--ink-3)]">
@@ -96,8 +108,10 @@ export function AreaInspector({
 
       <p className="mt-3 flex items-start gap-1.5 text-[9px] leading-relaxed text-[var(--ink-3)]">
         <Info className="mt-px h-2.5 w-2.5 shrink-0" aria-hidden="true" />
-        Vulnerability is a synthetic demo index, not a real demographic
-        measure. Coverage is modelled access, not observed care.
+        {area.vulnerability_index === null
+          ? "This release has no validated ward-level vulnerability indicator, so equity weighting is disabled. Missing population values are null, not zero."
+          : "The vulnerability index is a model input, not a real demographic measure in every dataset."}{" "}
+        Coverage is modelled access, not observed care.
       </p>
 
       {showLink && (

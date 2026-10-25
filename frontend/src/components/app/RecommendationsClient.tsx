@@ -9,7 +9,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { DataNotice } from "@/components/app/Controls";
 import { ErrorPanel } from "@/components/app/Feedback";
@@ -43,12 +43,12 @@ interface Config {
 }
 
 const INITIAL_CONFIG: Config = {
-  service: "primary_care",
-  threshold: 30,
+  service: "maternal_health",
+  threshold: 15,
   interventionType: "primary_care_clinic",
-  equityWeight: 0.35,
+  equityWeight: 0,
   setSize: 3,
-  strategy: "equity_weighted",
+  strategy: "max_coverage",
 };
 
 const FALLBACK_INTERVENTIONS = [
@@ -59,6 +59,7 @@ const FALLBACK_INTERVENTIONS = [
 ];
 
 export function RecommendationsClient() {
+  const defaultsApplied = useRef(false);
   const [draft, setDraft] = useState<Config>(INITIAL_CONFIG);
   const [applied, setApplied] = useState<Config>(INITIAL_CONFIG);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(
@@ -83,6 +84,27 @@ export function RecommendationsClient() {
       strategy: applied.strategy,
     }),
   );
+
+  useEffect(() => {
+    if (!meta.data || defaultsApplied.current) return;
+    defaultsApplied.current = true;
+    const available = meta.data.dataset.vulnerability.available === true;
+    const next: Config = {
+      ...INITIAL_CONFIG,
+      service: meta.data.default_service,
+      threshold: meta.data.default_threshold_minutes,
+      interventionType: meta.data.interventions[0]?.id ?? INITIAL_CONFIG.interventionType,
+      equityWeight: available ? 0.35 : 0,
+      strategy: available ? "equity_weighted" : "max_coverage",
+    };
+    setDraft(next);
+    setApplied(next);
+  }, [meta.data]);
+
+  const vulnerabilityAvailable =
+    recommendations.data?.vulnerability_available ??
+    overview.data?.dataset.vulnerability.available ??
+    false;
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(applied);
   const metaInterventions = meta.data?.interventions ?? [];
@@ -304,7 +326,9 @@ export function RecommendationsClient() {
             </div>
             <div className="lg:col-span-2">
               <label htmlFor="rec-equity" className="field-label">
-                Equity weight · {draft.equityWeight.toFixed(2)}
+                {vulnerabilityAvailable
+                  ? `Equity weight · ${draft.equityWeight.toFixed(2)}`
+                  : "Equity weight · unavailable"}
               </label>
               <input
                 id="rec-equity"
@@ -312,12 +336,23 @@ export function RecommendationsClient() {
                 min={0}
                 max={1}
                 step={0.05}
-                value={draft.equityWeight}
+                value={vulnerabilityAvailable ? draft.equityWeight : 0}
                 onChange={(event) =>
                   updateDraft({ equityWeight: Number(event.target.value) })
                 }
-                className="mt-3 w-full accent-[var(--signal)]"
+                disabled={!vulnerabilityAvailable}
+                aria-describedby="rec-equity-note"
+                className="mt-3 w-full accent-[var(--signal)] disabled:opacity-40"
               />
+              {!vulnerabilityAvailable && (
+                <p
+                  id="rec-equity-note"
+                  className="mt-1 text-[9px] leading-relaxed text-[var(--ink-3)]"
+                >
+                  This release has no validated ward-level vulnerability
+                  indicator; equity weighting is disabled.
+                </p>
+              )}
             </div>
             <div className="lg:col-span-2">
               <span className="field-label">Set size</span>
@@ -357,9 +392,10 @@ export function RecommendationsClient() {
                 </div>
                 <p className="max-w-[76ch] text-[9.5px] leading-relaxed text-[var(--ink-3)]">
                   Candidates are population-area centroids. Scores combine
-                  normalised coverage, vulnerability-weighted coverage, and
-                  person-minutes saved. Changing the weights changes the ranking;
-                  the underlying accessibility calculation does not.
+                  normalised coverage, equity-weighted coverage when a
+                  vulnerability indicator exists, and person-minutes saved.
+                  Changing the weights changes the ranking; the underlying
+                  accessibility calculation does not.
                 </p>
               </div>
             </div>
@@ -368,7 +404,7 @@ export function RecommendationsClient() {
 
         {payload && (
           <DataNotice
-            notice="Candidate benefits are modelled, not observed outcomes. The demo dataset and vulnerability index are synthetic."
+            notice={payload.data_notice}
             routing={payload.routing}
             className="mt-4"
           />
@@ -445,7 +481,9 @@ export function RecommendationsClient() {
                 <AccessMap
                   areas={mapAreas}
                   threshold={applied.threshold}
-                  facilities={overview.data?.facilities ?? []}
+                  facilities={(overview.data?.facilities ?? []).filter(
+                    (facility) => facility.services.includes(effectiveService),
+                  )}
                   catchment={overview.data?.catchment}
                   candidates={candidateMarkers}
                   selectedCandidateId={selected?.area_id ?? null}
@@ -840,7 +878,9 @@ function CandidateDetail({
                 <span className="text-[10px] text-[var(--ink-2)]">{area.name}</span>
                 <span className="mono text-[9px] text-[var(--ink-3)]">
                   {formatNumber(area.population)} people · vuln{" "}
-                  {formatPercent(area.vulnerability_index * 100, 0)}
+                  {area.vulnerability_index === null
+                    ? "unavailable"
+                    : formatPercent(area.vulnerability_index * 100, 0)}
                 </span>
               </li>
             ))

@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Check,
   Crosshair,
+  Download,
   Info,
   MapPin,
   Plus,
@@ -13,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { DataNotice } from "@/components/app/Controls";
 import { ErrorPanel } from "@/components/app/Feedback";
@@ -56,11 +57,12 @@ interface DraftPlacement {
 
 export function SimulatorClient() {
   const searchParams = useSearchParams();
-  const initialService = searchParams.get("service") || "primary_care";
-  const initialThreshold = Number(searchParams.get("threshold")) || 30;
+  const queryService = searchParams.get("service");
+  const queryThreshold = Number(searchParams.get("threshold")) || null;
+  const defaultsApplied = useRef(false);
 
-  const [service, setService] = useState(initialService);
-  const [threshold, setThreshold] = useState(initialThreshold);
+  const [service, setService] = useState(queryService ?? "maternal_health");
+  const [threshold, setThreshold] = useState(queryThreshold ?? 15);
   const [interventionType, setInterventionType] = useState(
     "primary_care_clinic",
   );
@@ -79,9 +81,21 @@ export function SimulatorClient() {
   );
   const meta = useApiData<MetaResponse>(apiUrl("/api/v1/meta"));
 
+  const readOnly = meta.data?.read_only ?? false;
   const intervention = meta.data?.interventions.find(
     (item) => item.id === interventionType,
   );
+
+  useEffect(() => {
+    if (!meta.data || defaultsApplied.current) return;
+    defaultsApplied.current = true;
+    /* eslint-disable react-hooks/set-state-in-effect -- apply server-declared defaults once metadata loads */
+    if (!queryService) setService(meta.data.default_service);
+    if (!queryThreshold) setThreshold(meta.data.default_threshold_minutes);
+    const preferred = meta.data.interventions[0]?.id;
+    if (preferred) setInterventionType(preferred);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [meta.data, queryService, queryThreshold]);
   const compatibleServiceIds = intervention?.services ?? [service];
   const compatibleServices = (overview.data?.services ?? []).filter((item) =>
     compatibleServiceIds.includes(item.id),
@@ -107,6 +121,14 @@ export function SimulatorClient() {
     lon: placement.lon,
     lat: placement.lat,
     data_status: "proposed",
+    source: "CareGap scenario",
+    source_id: placement.id,
+    source_url: "",
+    ownership: "proposed",
+    operational_status: "proposed",
+    address: "",
+    admin_area: "",
+    source_tags: {},
   }));
 
   const baselineAreas = overview.data?.areas as unknown as FeatureCollection<
@@ -181,7 +203,7 @@ export function SimulatorClient() {
 
   function addPlacement(lon: number, lat: number) {
     if (!overview.data) {
-      setFormError("The district boundary is still loading. Try again shortly.");
+      setFormError("The study boundary is still loading. Try again shortly.");
       return;
     }
     if (placements.length >= 5) {
@@ -193,7 +215,7 @@ export function SimulatorClient() {
     }));
     if (!pointInAreas(lon, lat, geometries)) {
       setFormError(
-        "The proposed facility must be inside the synthetic demo district boundary.",
+        "The proposed facility must be inside the study boundary.",
       );
       return;
     }
@@ -308,7 +330,7 @@ export function SimulatorClient() {
           <PageHeader
             index="03"
             eyebrow="Intervention simulator"
-            title="Place a resource. Read the district."
+            title="Place a resource. Read the study area."
             description="Test a proposed healthcare intervention against the baseline."
           />
           <div className="mt-8">
@@ -339,7 +361,7 @@ export function SimulatorClient() {
         <PageHeader
           index="03"
           eyebrow="Intervention simulator"
-          title="Place a resource. Read the district."
+          title="Place a resource. Read the study area."
           description="Add a proposed facility to the network, re-run accessibility for every population area, and compare the result with the baseline. Existing facilities stay in place; the intervention is additive."
           actions={
             <>
@@ -520,7 +542,7 @@ export function SimulatorClient() {
                 </div>
                 <p className="mt-2 text-[9.5px] leading-relaxed text-[var(--ink-3)]">
                   {placing
-                    ? "Click inside the district on the map. The point is validated against the boundary before the scenario is run."
+                    ? "Click inside the study boundary on the map. The point is validated before the scenario is run."
                     : "Place a point on the map or enter coordinates. Candidate sites are proposal points, not verified parcels."}
                 </p>
 
@@ -535,7 +557,9 @@ export function SimulatorClient() {
                       value={lonInput}
                       onChange={(event) => setLonInput(event.target.value)}
                       inputMode="decimal"
-                      placeholder="73.86"
+                      placeholder={String(
+                        meta.data?.dataset.geography.center?.[0] ?? 77.21,
+                      )}
                       autoComplete="off"
                     />
                   </div>
@@ -549,7 +573,9 @@ export function SimulatorClient() {
                       value={latInput}
                       onChange={(event) => setLatInput(event.target.value)}
                       inputMode="decimal"
-                      placeholder="18.52"
+                      placeholder={String(
+                        meta.data?.dataset.geography.center?.[1] ?? 28.64,
+                      )}
                       autoComplete="off"
                     />
                   </div>
@@ -605,7 +631,9 @@ export function SimulatorClient() {
                   type="button"
                   className="btn btn-primary w-full"
                   onClick={runScenario}
-                  disabled={pending || !placements.length || !overview.data}
+                  disabled={
+                    pending || !placements.length || !overview.data || readOnly
+                  }
                 >
                   {pending ? (
                     <span className="spinner h-3.5 w-3.5 border-white/30 border-t-white" aria-hidden="true" />
@@ -614,6 +642,13 @@ export function SimulatorClient() {
                   )}
                   {pending ? "Running simulation…" : "Run scenario"}
                 </button>
+                {readOnly && (
+                  <p className="border border-[var(--gap)]/30 bg-[var(--gap-soft)]/35 p-2 text-[9.5px] leading-relaxed text-[var(--ink-2)]">
+                    This deployment is read-only. Scenario creation is disabled
+                    for the public demonstration; the baseline and method remain
+                    available.
+                  </p>
+                )}
                 <button
                   type="button"
                   className="btn btn-outline w-full btn-sm"
@@ -668,7 +703,9 @@ export function SimulatorClient() {
                 areas={mapAreas}
                 threshold={threshold}
                 colorMode={activeView === "change" ? "improvement" : "access"}
-                facilities={overview.data?.facilities ?? []}
+                facilities={(overview.data?.facilities ?? []).filter((facility) =>
+                  facility.services.includes(service),
+                )}
                 proposedFacilities={draftFacilities}
                 catchment={catchment}
                 selectedAreaId={selectedAreaId}
@@ -707,8 +744,16 @@ export function SimulatorClient() {
                       {selectedComparison.name}
                     </h2>
                     <p className="mono mt-1 text-[8.5px] uppercase tracking-[0.06em] text-[var(--ink-3)]">
-                      {formatNumber(selectedComparison.population)} people · vulnerability{" "}
-                      {formatPercent(selectedComparison.vulnerability_index * 100, 0)}
+                      {selectedComparison.population === null
+                        ? "Population unavailable"
+                        : `${formatNumber(selectedComparison.population)} people`}{" "}
+                      · vulnerability{" "}
+                      {selectedComparison.vulnerability_index === null
+                        ? "unavailable"
+                        : formatPercent(
+                            selectedComparison.vulnerability_index * 100,
+                            0,
+                          )}
                     </p>
                   </div>
                   <span className="status-pill">
@@ -835,6 +880,33 @@ function SimulationResults({
   const coverageGainTone =
     delta.coverage_gain_percentage_points > 0 ? "text-[var(--positive)]" : "text-[var(--ink)]";
 
+  function downloadScenario() {
+    const payload = {
+      exported_at: new Date().toISOString(),
+      dataset: simulation.dataset,
+      scenario: simulation.scenario,
+      service: simulation.service,
+      threshold_minutes: simulation.threshold_minutes,
+      baseline: simulation.baseline,
+      proposed: simulation.proposed,
+      delta: simulation.delta,
+      equity: simulation.equity,
+      routing: simulation.routing,
+      assumptions: simulation.assumptions,
+      warnings: simulation.warnings,
+      data_notice: simulation.data_notice,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `caregap-${simulation.dataset.id}-scenario-${simulation.scenario.id.slice(0, 8)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="mt-4 space-y-4">
       <div className="border border-[var(--rule-strong)] bg-[var(--sheet)]">
@@ -852,6 +924,10 @@ function SimulationResults({
             <span className="mono text-[8px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
               Scenario {simulation.scenario.id.slice(0, 8)}
             </span>
+            <button type="button" className="btn btn-outline btn-sm" onClick={downloadScenario}>
+              <Download className="h-3.5 w-3.5" strokeWidth={1.7} aria-hidden="true" />
+              Export scenario JSON
+            </button>
             <Link href="/app/analytics" className="btn btn-outline btn-sm">
               Open impact analytics
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -1099,7 +1175,11 @@ function SimulationResults({
                       <td>{area.name}</td>
                       <td className="num">{formatNumber(area.population)}</td>
                       <td className="num">{formatMinutes(area.travel_time_minutes)}</td>
-                      <td className="num">{formatPercent(area.vulnerability_index * 100, 0)}</td>
+                      <td className="num">
+                        {area.vulnerability_index === null
+                          ? "n/a"
+                          : formatPercent(area.vulnerability_index * 100, 0)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

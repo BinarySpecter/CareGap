@@ -358,6 +358,7 @@ def main() -> None:
         },
         "is_synthetic": True,
         "data_status": "synthetic",
+        "release": "caregap-demo-2026.10-r1",
         "seed": SEED,
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "generator": "backend/scripts/generate_demo_data.py",
@@ -367,6 +368,23 @@ def main() -> None:
             "road_nodes": len(nodes),
             "road_edges": len(edges),
             "population": total_population,
+        },
+        "population": {
+            "reference_year": None,
+            "source": "Deterministic synthetic generator",
+            "represented_population": total_population,
+            "note": "Synthetic area-level population. Not a real count.",
+        },
+        "vulnerability": {
+            "available": True,
+            "reason": (
+                "Synthetic demonstration index for workflow testing only; "
+                "not a real demographic measure."
+            ),
+        },
+        "capabilities": {
+            "facility_import": True,
+            "area_import": True,
         },
         "road_model": {
             "name": "Synthetic street grid",

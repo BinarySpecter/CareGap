@@ -73,6 +73,7 @@ def app(tmp_path: Path):
         env="test",
         database_url=f"sqlite:///{tmp_path / 'caregap-test.db'}",
         cors_origins="http://localhost:3000",
+        active_dataset="caregap-demo",
     )
     return create_app(settings)
 

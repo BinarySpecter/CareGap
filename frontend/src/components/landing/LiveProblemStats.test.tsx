@@ -19,6 +19,19 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+const metaPayload = {
+  default_service: "maternal_health",
+  default_threshold_minutes: 15,
+  services: [{ id: "maternal_health", label: "Maternal health" }],
+  dataset: {
+    id: "delhi-pilot",
+    short_name: "Delhi pilot",
+    is_synthetic: false,
+    population: { reference_year: 2011 },
+    counts: { areas: 290 },
+  },
+};
+
 const payload = {
   summary: {
     total_population: 1_000,
@@ -26,22 +39,36 @@ const payload = {
     coverage_percent: 81.4,
     wards_over_threshold: 4,
     wards_total: 10,
+    areas_with_population: 10,
     weighted_median_travel_time: 18.3,
   },
-  dataset: { counts: { areas: 10 } },
-  routing: { label: "Synthetic street-grid estimate" },
+  dataset: {
+    id: "delhi-pilot",
+    short_name: "Delhi pilot",
+    is_synthetic: false,
+    population: { reference_year: 2011 },
+    counts: { areas: 290 },
+  },
+  routing: { label: "OpenStreetMap road-network estimate" },
 };
+
+function jsonResponse(value: unknown): Response {
+  return new Response(JSON.stringify(value), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
 describe("LiveProblemStats", () => {
   it("renders values from the overview API rather than hard-coded KPIs", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(
-        new Response(JSON.stringify(payload), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }),
-      ),
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        return Promise.resolve(
+          jsonResponse(url.includes("/meta") ? metaPayload : payload),
+        );
+      }),
     );
     render(<LiveProblemStats />);
     expect(await screen.findByText("186")).toBeInTheDocument();
@@ -49,8 +76,9 @@ describe("LiveProblemStats", () => {
     expect(screen.getByText("4")).toBeInTheDocument();
     expect(screen.getByText(/18.3 min/)).toBeInTheDocument();
     expect(
-      screen.getByText(/Synthetic street-grid estimate/),
+      screen.getByText(/OpenStreetMap road-network estimate/),
     ).toBeInTheDocument();
+    expect(screen.getByText(/Delhi pilot/)).toBeInTheDocument();
   });
 
   it("shows an honest unavailable state when the API fails", async () => {

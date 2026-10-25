@@ -9,8 +9,8 @@ from __future__ import annotations
 from typing import Literal, TypedDict
 
 SERVICE_IDS = ("primary_care", "maternal_health", "diagnostics", "emergency")
-DEFAULT_SERVICE = "primary_care"
-DEFAULT_THRESHOLD_MINUTES = 30
+DEFAULT_SERVICE = "maternal_health"
+DEFAULT_THRESHOLD_MINUTES = 15
 ALLOWED_THRESHOLDS = (15, 30, 45, 60, 90)
 MIN_THRESHOLD_MINUTES = 5
 MAX_THRESHOLD_MINUTES = 180
@@ -44,7 +44,7 @@ SERVICES: list[ServiceDefinition] = [
             "a facility is mapped as offering maternal health, not whether a service "
             "slot or specialist is available."
         ),
-        "default_threshold_minutes": 45,
+        "default_threshold_minutes": 15,
         "thresholds": [15, 30, 45, 60, 90],
     },
     {
@@ -61,8 +61,9 @@ SERVICES: list[ServiceDefinition] = [
         "id": "emergency",
         "label": "Emergency care",
         "description": (
-            "Emergency-capable hospital care. In the demo dataset only the district "
-            "hospital is modelled as providing this service."
+            "Emergency-capable hospital care. In the Delhi pilot, emergency "
+            "suitability is attributed only where OpenStreetMap carries an "
+            "emergency=yes tag; it is not verified."
         ),
         "default_threshold_minutes": 60,
         "thresholds": [15, 30, 45, 60, 90],
@@ -71,25 +72,62 @@ SERVICES: list[ServiceDefinition] = [
 
 SERVICE_BY_ID = {service["id"]: service for service in SERVICES}
 
+DEFAULT_LENS_NOTE = (
+    "Default lens: maternal health within 15 minutes. This is a configurable "
+    "planning assumption chosen to surface variation in the mapped inventory, "
+    "not a clinical standard. Primary-care coverage is near-saturated in this "
+    "release because OpenStreetMap maps a dense clinic and hospital inventory; "
+    "switch service or threshold to inspect emergency, diagnostic, or maternal "
+    "access gaps."
+)
+
 FACILITY_TYPES: dict[str, dict[str, object]] = {
+    # Real-data categories used by the Delhi pilot. Services are only defaults
+    # for imports; the released facilities carry tag-derived service lists.
+    "hospital": {
+        "label": "Hospital",
+        "services": ["primary_care"],
+    },
+    "health_centre": {
+        "label": "Health centre / Ayushman Arogya Mandir",
+        "services": ["primary_care"],
+    },
+    "dispensary": {
+        "label": "Dispensary",
+        "services": ["primary_care"],
+    },
+    "clinic": {
+        "label": "Clinic / doctor",
+        "services": ["primary_care"],
+    },
+    "birthing_centre": {
+        "label": "Birthing centre",
+        "services": ["maternal_health"],
+    },
+    "diagnostic_laboratory": {
+        "label": "Diagnostic laboratory",
+        "services": ["diagnostics"],
+    },
+    # Synthetic demonstration categories. Retained so the demo dataset and its
+    # tests remain stable and clearly separate from real-data categories.
     "district_hospital": {
-        "label": "District hospital",
+        "label": "District hospital (demo)",
         "services": ["primary_care", "maternal_health", "diagnostics", "emergency"],
     },
     "primary_health_centre": {
-        "label": "Primary health centre",
+        "label": "Primary health centre (demo)",
         "services": ["primary_care", "maternal_health", "diagnostics"],
     },
     "community_health_centre": {
-        "label": "Community health centre",
+        "label": "Community health centre (demo)",
         "services": ["primary_care", "maternal_health"],
     },
     "diagnostic_centre": {
-        "label": "Diagnostic centre",
+        "label": "Diagnostic centre (demo)",
         "services": ["diagnostics"],
     },
     "maternal_health_centre": {
-        "label": "Maternal health centre",
+        "label": "Maternal health centre (demo)",
         "services": ["maternal_health"],
     },
 }
@@ -160,6 +198,32 @@ INTERVENTIONS: list[InterventionDefinition] = [
             "Assumes a recurring camp rather than a one-off event.",
             "Travel time treats the camp as available at the proposed location; frequency, staffing, and duration are not modelled.",
             "Maternal services only count if the camp is assumed to offer them.",
+        ],
+    },
+    {
+        "id": "sub_centre",
+        "label": "Sub-centre",
+        "description": "A new sub-centre delivering first-contact primary and maternal care.",
+        "services": ["primary_care", "maternal_health"],
+        "default_service": "primary_care",
+        "operation": "full_time",
+        "assumptions": [
+            "Assumes the sub-centre is staffed and stocked as an operational facility.",
+            "Assumes maternal health is offered; a sub-centre without a skilled birth attendant would not deliver delivery care.",
+            "Capacity, staffing, and referral linkages are not modelled.",
+        ],
+    },
+    {
+        "id": "health_wellness_centre",
+        "label": "Ayushman Arogya Mandir / Health & Wellness Centre",
+        "description": "A comprehensive primary-care centre with maternal and basic diagnostic services.",
+        "services": ["primary_care", "maternal_health", "diagnostics"],
+        "default_service": "primary_care",
+        "operation": "full_time",
+        "assumptions": [
+            "Assumes services consistent with the Ayushman Arogya Mandir comprehensive primary-care package.",
+            "Assumes diagnostic equipment is functional and staffed.",
+            "Actual service packages, staffing, and opening hours are not verified or modelled.",
         ],
     },
 ]

@@ -46,7 +46,7 @@ function StatusBadge({ status }: { status: string }) {
 
 const CSV_TEMPLATE =
   "name,facility_type,lon,lat,services\n" +
-  "New Primary Health Centre,primary_health_centre,73.860,18.520,primary_care;diagnostics\n";
+  "New clinic,clinic,77.2090,28.6139,primary_care\n";
 
 export function DataSourcesClient() {
   const meta = useApiData<MetaResponse>(apiUrl("/api/v1/meta"));
@@ -57,6 +57,7 @@ export function DataSourcesClient() {
   const [report, setReport] = useState<ImportReport | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const readOnly = meta.data?.read_only ?? false;
 
   async function submitImport() {
     if (!file) {
@@ -112,7 +113,7 @@ export function DataSourcesClient() {
           index="06"
           eyebrow="Data management"
           title="What this model knows, and where it came from."
-          description="A source register, provenance record, and validated import path. Synthetic demonstration data is labelled as synthetic; imports are checked for coordinates, schema, duplicates, and boundary containment before they reach the analysis database."
+          description={`A source register, provenance record, and validated import path for the ${meta.data?.dataset.short_name ?? "active dataset"}. Imports are checked for coordinates, schema, duplicates, and study-boundary containment before they reach the analysis database.`}
           actions={
             <>
               <button
@@ -244,11 +245,28 @@ export function DataSourcesClient() {
                 <dl className="mt-4 space-y-0">
                   {[
                     ["Dataset ID", meta.data.dataset.id],
+                    ["Release", meta.data.dataset.release ?? "—"],
                     ["Status", meta.data.dataset.data_status],
                     ["Region", meta.data.dataset.geography.region ?? "—"],
                     ["Area", `${formatNumber(meta.data.dataset.geography.area_km2 ?? 0)} km²`],
-                    ["Population", formatNumber(meta.data.dataset.counts.population ?? 0)],
+                    [
+                      "Population",
+                      `${formatNumber(meta.data.dataset.counts.population ?? 0)} (${meta.data.dataset.population.reference_year ?? "—"})`,
+                    ],
+                    [
+                      "Not represented",
+                      formatNumber(
+                        meta.data.dataset.population.unrepresented_population ?? 0,
+                      ),
+                    ],
+                    [
+                      "Vulnerability",
+                      meta.data.dataset.vulnerability.available
+                        ? "Available"
+                        : "Unavailable",
+                    ],
                     ["Areas", String(meta.data.dataset.counts.areas ?? "—")],
+                    ["With population", String(meta.data.dataset.counts.areas_with_population ?? "—")],
                     ["Facilities", String(meta.data.dataset.counts.facilities ?? "—")],
                     ["Seed", String(meta.data.dataset.seed ?? "—")],
                     ["Generated", formatDate(meta.data.dataset.generated_at)],
@@ -352,8 +370,9 @@ export function DataSourcesClient() {
                     Import records
                   </p>
                   <p className="mt-1 text-[11px] text-[var(--ink-2)]">
-                    Add facilities (CSV or GeoJSON) or population areas (GeoJSON).
-                    Imports are validated against the current district boundary.
+                    Add facilities (CSV or GeoJSON). Imports are validated
+                    against the active study boundary. Population-area imports
+                    are disabled when the release requires a fixed Census ward set.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -383,6 +402,15 @@ export function DataSourcesClient() {
                         type="button"
                         aria-pressed={uploadKind === "areas"}
                         onClick={() => setUploadKind("areas")}
+                        disabled={meta.data?.dataset.capabilities.area_import === false}
+                        title={
+                          meta.data?.dataset.capabilities.area_import === false
+                            ? String(
+                                meta.data.dataset.capabilities.area_import_reason ??
+                                  "Area imports are disabled for this dataset.",
+                              )
+                            : undefined
+                        }
                       >
                         Population areas
                       </button>
@@ -402,7 +430,8 @@ export function DataSourcesClient() {
                         setUploadError(null);
                         setReport(null);
                       }}
-                      className="block w-full cursor-pointer rounded-[4px] border border-[var(--rule-strong)] bg-[var(--paper)] px-3 py-2 text-[10.5px] text-[var(--ink-2)] file:mr-3 file:rounded-[2px] file:border-0 file:bg-[var(--ink)] file:px-2.5 file:py-1.5 file:text-[9px] file:font-medium file:uppercase file:tracking-[0.06em] file:text-[var(--paper)]"
+                      disabled={readOnly}
+                      className="block w-full cursor-pointer rounded-[4px] border border-[var(--rule-strong)] bg-[var(--paper)] px-3 py-2 text-[10.5px] text-[var(--ink-2)] file:mr-3 file:rounded-[2px] file:border-0 file:bg-[var(--ink)] file:px-2.5 file:py-1.5 file:text-[9px] file:font-medium file:uppercase file:tracking-[0.06em] file:text-[var(--paper)] disabled:cursor-not-allowed disabled:opacity-50"
                     />
                     <p className="mt-1.5 text-[9px] leading-relaxed text-[var(--ink-3)]">
                       Maximum 2 MB.{" "}
@@ -415,7 +444,7 @@ export function DataSourcesClient() {
                     type="button"
                     className="btn btn-primary btn-sm mt-3"
                     onClick={submitImport}
-                    disabled={uploading || !file}
+                    disabled={uploading || !file || readOnly}
                   >
                     {uploading ? (
                       <span className="spinner h-3 w-3 border-white/30 border-t-white" aria-hidden="true" />
@@ -424,6 +453,13 @@ export function DataSourcesClient() {
                     )}
                     {uploading ? "Validating & importing…" : "Validate & import"}
                   </button>
+                  {readOnly && (
+                    <p className="mt-2 border border-[var(--gap)]/30 bg-[var(--gap-soft)]/35 p-2 text-[9.5px] leading-relaxed text-[var(--ink-2)]">
+                      This deployment is read-only. Imports are disabled for the
+                      public demonstration; the source register and provenance
+                      export remain available.
+                    </p>
+                  )}
 
                   {uploadError && (
                     <p className="error-note mt-3 text-[10.5px]" role="alert">
