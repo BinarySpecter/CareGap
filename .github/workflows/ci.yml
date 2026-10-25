@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend lint, tests, migrations
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: caregap_ci
+          POSTGRES_USER: caregap
+          POSTGRES_PASSWORD: caregap_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U caregap -d caregap_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            backend/requirements.txt
+            backend/requirements-postgres.txt
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r backend/requirements.txt -r backend/requirements-postgres.txt
+      - name: Lint
+        working-directory: backend
+        run: ../.venv/bin/ruff check app tests
+      - name: Unit and API tests
+        working-directory: backend
+        run: ../.venv/bin/pytest -q
+      - name: Validate migrations on SQLite
+        working-directory: backend
+        env:
+          CAREGAP_DATABASE_URL: sqlite:////tmp/caregap-ci.db
+        run: ../.venv/bin/alembic upgrade head
+      - name: Validate migrations on PostgreSQL/PostGIS
+        working-directory: backend
+        env:
+          CAREGAP_DATABASE_URL: postgresql+psycopg://caregap:caregap_ci@localhost:5432/caregap_ci
+        run: ../.venv/bin/alembic upgrade head
+
+  frontend:
+    name: Frontend lint, types, tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+      - name: Type check
+        working-directory: frontend
+        run: npm run typecheck
+      - name: Unit tests
+        working-directory: frontend
+        run: npm test
+      - name: Production build
+        working-directory: frontend
+        run: npm run build
+
+  e2e:
+    name: End-to-end Playwright
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install backend dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r backend/requirements.txt
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Install Playwright browser
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+      - name: Run end-to-end tests
+        working-directory: frontend
+        run: npx playwright test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
