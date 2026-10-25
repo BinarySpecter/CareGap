@@ -1,7 +1,9 @@
 # Contributing to CareGap
 
-CareGap is a decision-support product. Contributions must preserve the
-distinction between verified, estimated, and synthetic data.
+CareGap is a proprietary, private decision-support project. Contributions are
+accepted only under the repository owner's terms; no public or open-source
+licence is granted. Contributions must preserve the distinction between verified,
+estimated, and synthetic data.
 
 ## Development workflow
 

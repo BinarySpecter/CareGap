@@ -1,10 +1,19 @@
 Copyright (c) 2026 BinarySpecter. All rights reserved.
 
-CareGap is currently developed in a private repository. No open-source
-licence has been selected or granted yet. Until the repository owner
-confirms a licence, no permission is granted to copy, modify, distribute,
-or use this software except by the repository owner and collaborators
-explicitly authorised by the owner.
+CareGap is proprietary and confidential software. The repository is private.
+No licence is granted to copy, modify, distribute, sublicense, publish, or use
+this software, in source or compiled form, except by the repository owner and
+collaborators explicitly authorised in writing by the owner.
 
-The demo dataset under backend/app/data/demo/ is synthetic and was generated
-by scripts in this repository; it contains no real patient or facility data.
+The synthetic demonstration dataset under backend/app/data/demo/ was generated
+by scripts in this repository and contains no real patient, provider, or facility
+data. It is covered by the same proprietary terms.
+
+Third-party libraries, fonts, design references, and map tiles remain subject to
+their own licences and attribution requirements. See docs/credits.md and
+docs/data-sources.md. No third-party code or assets from the design references
+are redistributed by this repository.
+
+This software is a decision-support demonstration. It is not a medical device,
+clinical decision system, or diagnostic tool, and it must not be used to make
+clinical or individual patient decisions.

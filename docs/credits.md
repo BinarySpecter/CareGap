@@ -48,4 +48,5 @@ The demo dataset is synthetic and was generated in this repository by
 `backend/scripts/generate_demo_data.py`. It contains no real patient, provider, or
 facility records. See [data sources](data-sources.md).
 
-CareGap itself currently has **no open-source licence granted**; see `LICENSE`.
+CareGap itself is **proprietary and confidential**; all rights are reserved and
+no open-source licence is granted. See `LICENSE`.

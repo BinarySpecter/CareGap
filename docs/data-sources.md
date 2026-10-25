@@ -29,7 +29,7 @@ this synthetic dataset.
 
 | Source | Type | Publisher | Licence / terms | Retrieved | Limitations |
 | --- | --- | --- | --- | --- | --- |
-| CareGap synthetic demonstration dataset | Synthetic | CareGap project | Repository licence (see `LICENSE`; all rights reserved pending owner decision) | Generated locally | Synthetic boundary, population, vulnerability, facilities, and roads; not a real place |
+| CareGap synthetic demonstration dataset | Synthetic | CareGap project | Proprietary repository licence (see `LICENSE`; all rights reserved) | Generated locally | Synthetic boundary, population, vulnerability, facilities, and roads; not a real place |
 
 ## Basemap
 
