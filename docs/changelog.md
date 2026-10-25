@@ -30,7 +30,8 @@ application, while the API is separately versioned (`v1`).
   residual gaps, scenario map, and equity.
 - Data source register, provenance export, import UI, and methodology page.
 - Test suites: 64 backend, 29 frontend unit/integration, 9 Playwright E2E.
-- GitHub Actions CI, Dependabot, Dockerfiles, Compose stack with PostgreSQL/PostGIS.
+- GitHub Actions CI (verified green: backend, frontend, E2E), Dependabot,
+  Dockerfiles, Compose stack with PostgreSQL/PostGIS.
 - Governance and documentation: README, architecture, API, methodology, data
   sources, testing, deployment, design audit, credits, roadmap, changelog,
   contributing, security, code of conduct, issue/PR templates.

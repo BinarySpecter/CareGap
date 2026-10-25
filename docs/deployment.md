@@ -123,4 +123,6 @@ No provider-specific configuration has been tested or deployed.
 - Frontend lint, typecheck, unit tests, and production build.
 - Playwright E2E with backend and frontend started by the test config.
 
-Check the actual workflow run for the pushed commit before claiming CI passes.
+The workflow passed all three jobs for commit `2f97b87` (run
+[40145025379](https://github.com/BinarySpecter/CareGap/actions/runs/40145025379)).
+Check the latest run for newer commits before relying on it.
