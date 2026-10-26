@@ -12,7 +12,7 @@ const LINKS = [
 
 export function LandingHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--rule)] bg-[color-mix(in_srgb,var(--paper)_93%,transparent)] backdrop-blur-[4px]">
+    <header className="sticky top-0 z-50 border-b-2 border-[var(--rule)] shadow-md bg-[color-mix(in_srgb,var(--paper)_93%,transparent)] backdrop-blur-[4px]">
       <div className="page-gutter">
         <div className="content-max flex h-[64px] items-center justify-between gap-4">
           <div className="flex items-center gap-6">
