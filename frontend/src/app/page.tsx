@@ -84,8 +84,8 @@ export default function LandingPage() {
               <div className="flex flex-col justify-between lg:col-span-5">
                 <div>
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                    <span className="mono text-[9px] uppercase tracking-[0.14em] text-[var(--ink-2)]">
-                      Healthcare access intelligence
+                    <span className="mono text-[9px] uppercase tracking-[0.14em] text-[var(--ink-2)] font-semibold bg-yellow-300 px-1 py-0.5">
+                      Healthcare Access Intelligence
                     </span>
                     <span className="h-3 w-px bg-[var(--rule-strong)]" aria-hidden="true" />
                     <span className="mono text-[9px] uppercase tracking-[0.12em] text-[var(--ink-3)]">
@@ -102,6 +102,7 @@ export default function LandingPage() {
                   <p className="serif mt-4 text-[clamp(1.35rem,1.1rem+0.9vw,1.9rem)] italic leading-tight text-[var(--ink-2)]">
                     Not just on the map.
                   </p>
+                  <br/>
 
                   <p className="measure-narrow mt-6 text-[14px] leading-[1.7] text-[var(--ink-2)]">
                     CareGap measures who can actually reach suitable care,
@@ -123,12 +124,11 @@ export default function LandingPage() {
                   <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
                     {[
                       "Deterministic spatial analysis",
-                      "Explainable candidate ranking",
                       "Census 2011 population, dated",
                     ].map((item) => (
                       <span
                         key={item}
-                        className="mono flex items-center gap-1.5 text-[8.5px] uppercase tracking-[0.07em] text-[var(--ink-3)]"
+                        className="mono flex items-center gap-1.5 text-[8.5px] uppercase tracking-[0.07em] text-[var(--ink-3) font-semibold]"
                       >
                         <span className="h-1 w-1 rounded-full bg-[var(--signal)]" aria-hidden="true" />
                         {item}
