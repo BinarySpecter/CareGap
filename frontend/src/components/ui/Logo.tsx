@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { cn } from "@/lib/format";
 
@@ -11,24 +12,14 @@ interface LogoProps {
 
 export function CareGapMark({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 64 64"
-      role="img"
-      aria-label="CareGap mark"
-      className={cn("h-8 w-8", className)}
-    >
-      <rect width="64" height="64" rx="9" fill="currentColor" />
-      <path
-        d="M8 20h48M8 32h48M8 44h48M20 8v48M32 8v48M44 8v48"
-        stroke="var(--paper)"
-        strokeOpacity=".16"
-        strokeWidth=".8"
-      />
-      <circle cx="32" cy="32" r="17" fill="none" stroke="var(--signal-soft)" strokeOpacity=".5" strokeWidth="1.1" />
-      <circle cx="32" cy="32" r="10" fill="none" stroke="var(--signal-bright)" strokeWidth="1.4" />
-      <circle cx="32" cy="32" r="3" fill="var(--gap-soft)" />
-      <path d="M32 8v9M32 47v9M8 32h9M47 32h9" stroke="var(--paper)" strokeWidth="1.4" />
-    </svg>
+    <Image
+      src="/caregap-logo.webp"
+      alt="CareGap mark"
+      width={32}
+      height={32}
+      className={cn("h-8 w-8 object-contain", className)}
+      priority
+    />
   );
 }
 
